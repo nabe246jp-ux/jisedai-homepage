@@ -1,0 +1,19 @@
+# OS / エディタ系
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.vscode/
+.idea/
+
+# 一時ファイル
+*.tmp
+*.bak
+~$*
+.git_old/
+
+# 自動同期 セットアップ
+bootstrap.ps1
+auto-sync.ps1
+auto-sync.log
+.no-auto-sync

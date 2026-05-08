@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>次世代ホームページ — モック一覧</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "游明朝", serif;
+  background: linear-gradient(135deg, #1a1410 0%, #0a0604 100%);
+  color: #f3e7d3;
+  min-height: 100vh;
+  padding: 60px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.head {
+  text-align: center;
+  margin-bottom: 60px;
+}
+.head .label {
+  font-size: 12px;
+  letter-spacing: 6px;
+  color: #d4a574;
+  margin-bottom: 18px;
+}
+.head h1 {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  color: #f3e7d3;
+  margin-bottom: 16px;
+}
+.head p {
+  font-size: 14px;
+  color: #c8b89a;
+  letter-spacing: 0.1em;
+  line-height: 2;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  max-width: 1240px;
+  width: 100%;
+}
+
+@media (max-width: 980px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+
+.card {
+  background: #14100a;
+  border: 1px solid rgba(212, 165, 116, 0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  color: #f3e7d3;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+}
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+  border-color: rgba(212, 165, 116, 0.5);
+}
+
+.card-thumb {
+  aspect-ratio: 16 / 9;
+  position: relative;
+  overflow: hidden;
+}
+.card-thumb svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.card-body {
+  padding: 28px 30px 32px;
+}
+.card .num {
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: #d4a574;
+  margin-bottom: 12px;
+}
+.card h2 {
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  margin-bottom: 14px;
+}
+.card p {
+  font-size: 13px;
+  color: #c8b89a;
+  letter-spacing: 0.05em;
+  line-height: 2;
+  margin-bottom: 18px;
+}
+.card .open {
+  font-size: 12px;
+  letter-spacing: 0.4em;
+  color: #d4a574;
+  display: inline-block;
+  border-bottom: 1px solid #d4a574;
+  padding-bottom: 4px;
+}
+
+.foot {
+  margin-top: 60px;
+  font-size: 11px;
+  color: #888;
+  letter-spacing: 0.2em;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <div class="label">NEXT GENERATION HOMEPAGE</div>
+  <h1>次世代ホームページ モック一覧</h1>
+  <p>動きのある企業体験・商品体験を試せる見本のホームページ集です。<br>カードをクリックすると、その見本が開きます。</p>
+</div>
+
+<div class="grid">
+
+  <a href="mock_v1_techpartners_town.html" class="card">
+    <div class="card-thumb">
+      <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="t1Sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#fde7d3"/>
+            <stop offset="1" stop-color="#f8d8b8"/>
+          </linearGradient>
+        </defs>
+        <rect width="800" height="450" fill="url(#t1Sky)"/>
+        <circle cx="660" cy="80" r="28" fill="#ffd97a"/>
+        <ellipse cx="120" cy="60" rx="40" ry="11" fill="#fff" opacity="0.9"/>
+        <ellipse cx="500" cy="80" rx="38" ry="10" fill="#fff" opacity="0.85"/>
+        <ellipse cx="160" cy="290" rx="160" ry="35" fill="#d4c1a3" opacity="0.5"/>
+        <ellipse cx="640" cy="285" rx="180" ry="38" fill="#d4c1a3" opacity="0.5"/>
+        <rect x="0" y="320" width="800" height="130" fill="#e0cfaa"/>
+        <ellipse cx="400" cy="395" rx="140" ry="22" fill="#d4b896" opacity="0.7"/>
+        <rect x="100" y="180" width="100" height="135" fill="#7eb8d3"/>
+        <polygon points="95,180 205,180 195,165 105,165" fill="#3a7d99"/>
+        <rect x="140" y="280" width="20" height="35" fill="#5a3a25"/>
+        <rect x="600" y="170" width="120" height="145" fill="#cc9560"/>
+        <polygon points="600,170 720,170 660,140" fill="#a87545"/>
+        <rect x="650" y="270" width="22" height="45" fill="#3a2515"/>
+        <rect x="160" y="335" width="100" height="65" fill="#e0d8c2"/>
+        <path d="M 150 335 L 270 335 Q 265 325 260 320 L 160 320 Q 155 325 150 335 Z" fill="#5a8e5a"/>
+        <rect x="200" y="370" width="20" height="30" fill="#5a3a25"/>
+        <rect x="540" y="335" width="100" height="65" fill="#a585cb"/>
+        <polygon points="535,335 645,335 590,318" fill="#6a4a8a"/>
+        <rect x="580" y="370" width="20" height="30" fill="#3a2515"/>
+        <ellipse cx="400" cy="395" rx="22" ry="7" fill="#a3c5d8"/>
+        <rect x="397" y="372" width="6" height="22" fill="#b89868"/>
+        <line x1="280" y1="370" x2="280" y2="335" stroke="#5a3a25" stroke-width="2"/>
+        <circle cx="280" cy="333" r="5" fill="#ffd97a"/>
+        <line x1="520" y1="370" x2="520" y2="335" stroke="#5a3a25" stroke-width="2"/>
+        <circle cx="520" cy="333" r="5" fill="#ffd97a"/>
+        <g transform="translate(400, 360)">
+          <ellipse cx="0" cy="20" rx="12" ry="3" fill="#000" opacity="0.2"/>
+          <rect x="-7" y="3" width="14" height="18" fill="#d97757" rx="3"/>
+          <circle cx="0" cy="-2" r="9" fill="#ffd9b8"/>
+          <path d="M -8 -3 Q -9 -8 -5 -10 Q 0 -12 5 -10 Q 9 -8 8 -3" fill="#5a3a25"/>
+        </g>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="num">MOCK 01</div>
+      <h2>TECH PARTNERS の街</h2>
+      <p>架空のIT会社の街並みを歩いて回る。建物=部署をクリックすると、各部署のダッシュボードが開く。明るい色合いで親しみやすい雰囲気。</p>
+      <span class="open">開く ›</span>
+    </div>
+  </a>
+
+  <a href="mock_v2_kotonoha_pen_showroom.html" class="card">
+    <div class="card-thumb">
+      <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="t2Bg" cx="50%" cy="40%" r="80%">
+            <stop offset="0" stop-color="#3d2817" stop-opacity="0.4"/>
+            <stop offset="1" stop-color="#0a0604"/>
+          </radialGradient>
+          <radialGradient id="t2Spot" cx="50%" cy="0%" r="60%">
+            <stop offset="0" stop-color="#ffe4a0" stop-opacity="0.5"/>
+            <stop offset="1" stop-color="#d4a574" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="t2Wall" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3d2817"/>
+            <stop offset="1" stop-color="#2a1a0d"/>
+          </linearGradient>
+        </defs>
+        <rect width="800" height="450" fill="url(#t2Bg)"/>
+        <rect x="0" y="0" width="800" height="80" fill="#1a0f06"/>
+        <rect x="0" y="80" width="800" height="3" fill="#3d2817"/>
+        <rect x="50" y="40" width="700" height="5" fill="#3d2817"/>
+        <rect x="0" y="83" width="800" height="220" fill="url(#t2Wall)"/>
+        <ellipse cx="120" cy="290" rx="70" ry="200" fill="url(#t2Spot)"/>
+        <ellipse cx="280" cy="290" rx="70" ry="200" fill="url(#t2Spot)"/>
+        <ellipse cx="400" cy="290" rx="70" ry="200" fill="url(#t2Spot)"/>
+        <ellipse cx="520" cy="290" rx="70" ry="200" fill="url(#t2Spot)"/>
+        <ellipse cx="680" cy="290" rx="70" ry="200" fill="url(#t2Spot)"/>
+        <text x="400" y="135" text-anchor="middle" font-size="14" fill="#d4a574" letter-spacing="6">KOTONOHA</text>
+        <rect x="0" y="303" width="800" height="147" fill="#3d2817"/>
+        <g>
+          <rect x="80" y="295" width="80" height="35" fill="#1a0f06" stroke="#d4a574" stroke-width="0.5"/>
+          <rect x="78" y="250" width="84" height="50" fill="rgba(255,228,160,0.06)" stroke="rgba(212,165,116,0.4)" stroke-width="0.5"/>
+          <rect x="100" y="278" width="40" height="6" fill="#8b5a2b" rx="1"/>
+        </g>
+        <g>
+          <rect x="240" y="295" width="80" height="35" fill="#1a0f06" stroke="#d4a574" stroke-width="0.5"/>
+          <rect x="238" y="250" width="84" height="50" fill="rgba(255,228,160,0.06)" stroke="rgba(212,165,116,0.4)" stroke-width="0.5"/>
+          <rect x="277" y="262" width="6" height="30" fill="#2a4a7a" rx="1"/>
+        </g>
+        <g>
+          <rect x="360" y="295" width="80" height="35" fill="#1a0f06" stroke="#d4a574" stroke-width="0.7"/>
+          <rect x="358" y="240" width="84" height="60" fill="rgba(255,228,160,0.07)" stroke="rgba(212,165,116,0.5)" stroke-width="0.6"/>
+          <rect x="397" y="252" width="6" height="40" fill="#000" rx="1"/>
+          <circle cx="400" cy="262" r="2" fill="#e8c87e"/>
+        </g>
+        <g>
+          <rect x="480" y="295" width="80" height="35" fill="#1a0f06" stroke="#d4a574" stroke-width="0.5"/>
+          <rect x="478" y="250" width="84" height="50" fill="rgba(255,228,160,0.06)" stroke="rgba(212,165,116,0.4)" stroke-width="0.5"/>
+          <rect x="517" y="262" width="6" height="30" fill="#c89a4a" rx="1"/>
+        </g>
+        <g>
+          <rect x="640" y="295" width="80" height="35" fill="#1a0f06" stroke="#d4a574" stroke-width="0.5"/>
+          <rect x="638" y="250" width="84" height="50" fill="rgba(255,228,160,0.06)" stroke="rgba(212,165,116,0.4)" stroke-width="0.5"/>
+          <rect x="660" y="278" width="40" height="6" fill="#e8b4c8" rx="1"/>
+        </g>
+        <g transform="translate(400, 380)">
+          <ellipse cx="0" cy="20" rx="12" ry="3" fill="#000" opacity="0.4"/>
+          <rect x="-7" y="3" width="14" height="18" fill="#8b6f47" rx="3"/>
+          <circle cx="0" cy="-2" r="9" fill="#f0d8b8"/>
+          <path d="M -8 -3 Q -9 -8 -5 -10 Q 0 -12 5 -10 Q 9 -8 8 -3" fill="#3d2817"/>
+        </g>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="num">MOCK 02</div>
+      <h2>KOTONOHA 万年筆工房</h2>
+      <p>架空の万年筆店のショールームを歩いて回る。ガラスケースの万年筆に近づくと光り、クリックすると一本ずつ拡大して書き味を見られる。落ち着いた高級感のある雰囲気。</p>
+      <span class="open">開く ›</span>
+    </div>
+  </a>
+
+  <a href="mock_v3_recruit_office.html" class="card">
+    <div class="card-thumb">
+      <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="t3Sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#fff5e8"/>
+            <stop offset="1" stop-color="#fde7d3"/>
+          </linearGradient>
+        </defs>
+        <rect width="800" height="450" fill="url(#t3Sky)"/>
+        <circle cx="680" cy="60" r="22" fill="#ffd97a"/>
+        <ellipse cx="100" cy="55" rx="34" ry="9" fill="#fff" opacity="0.85"/>
+        <rect x="0" y="385" width="800" height="65" fill="#e8d8b8"/>
+        <rect x="160" y="80" width="480" height="305" fill="#fff" stroke="#3a2515" stroke-width="2"/>
+        <line x1="500" y1="80" x2="500" y2="50" stroke="#3a2515" stroke-width="2"/>
+        <path d="M 500 50 L 530 53 L 500 60 Z" fill="#d97757"/>
+        <rect x="350" y="65" width="180" height="14" fill="#fff" stroke="#3a2515" stroke-width="1" rx="2"/>
+        <text x="440" y="76" text-anchor="middle" font-size="8" font-weight="800" fill="#3a2515">TECH PARTNERS</text>
+        <!-- 4F -->
+        <rect x="160" y="83" width="480" height="72" fill="#fff5e8" stroke="#d97757" stroke-width="0.5"/>
+        <rect x="170" y="93" width="26" height="26" fill="#d97757"/>
+        <text x="183" y="111" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">4F</text>
+        <text x="207" y="108" font-size="11" font-weight="800" fill="#3a2515">事業紹介</text>
+        <rect x="220" y="125" width="40" height="20" fill="#7ec8e3"/>
+        <rect x="280" y="125" width="40" height="20" fill="#a8d5a8"/>
+        <rect x="340" y="125" width="40" height="20" fill="#c8a8e9"/>
+        <!-- 3F -->
+        <rect x="160" y="155" width="480" height="72" fill="#e8f5ee" stroke="#5a8e5a" stroke-width="0.5"/>
+        <rect x="170" y="165" width="26" height="26" fill="#5a8e5a"/>
+        <text x="183" y="183" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">3F</text>
+        <text x="207" y="180" font-size="11" font-weight="800" fill="#3a2515">福利厚生</text>
+        <rect x="220" y="195" width="60" height="14" fill="#d4a574" rx="2"/>
+        <rect x="290" y="195" width="30" height="14" fill="#fff" stroke="#999"/>
+        <ellipse cx="350" cy="200" rx="14" ry="14" fill="#7eb37e"/>
+        <!-- 2F -->
+        <rect x="160" y="227" width="480" height="72" fill="#e8eef8" stroke="#5ba7c5" stroke-width="0.5"/>
+        <rect x="170" y="237" width="26" height="26" fill="#5ba7c5"/>
+        <text x="183" y="255" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">2F</text>
+        <text x="207" y="252" font-size="11" font-weight="800" fill="#3a2515">研修・成長</text>
+        <rect x="220" y="265" width="80" height="22" fill="#5a3a25"/>
+        <rect x="222" y="267" width="6" height="18" fill="#d97757"/>
+        <rect x="230" y="267" width="6" height="18" fill="#5a8e5a"/>
+        <rect x="238" y="267" width="6" height="18" fill="#a585cb"/>
+        <rect x="246" y="267" width="6" height="18" fill="#5ba7c5"/>
+        <rect x="320" y="265" width="50" height="22" fill="#fff" stroke="#999"/>
+        <!-- 1F -->
+        <rect x="160" y="299" width="480" height="86" fill="#fdebe1" stroke="#a585cb" stroke-width="0.5"/>
+        <rect x="170" y="309" width="26" height="26" fill="#a585cb"/>
+        <text x="183" y="327" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">1F</text>
+        <text x="207" y="324" font-size="11" font-weight="800" fill="#3a2515">募集職種</text>
+        <rect x="220" y="345" width="80" height="32" fill="#8b6f47"/>
+        <rect x="320" y="335" width="60" height="50" fill="#7ec8e3" opacity="0.5" stroke="#3a2515"/>
+        <rect x="400" y="335" width="80" height="42" fill="#fff" stroke="#a87f4d"/>
+        <text x="440" y="349" text-anchor="middle" font-size="7" font-weight="800" fill="#a585cb">募集中</text>
+        <!-- プレイヤー -->
+        <g transform="translate(400, 410)">
+          <ellipse cx="0" cy="20" rx="12" ry="3" fill="#000" opacity="0.2"/>
+          <rect x="-7" y="3" width="14" height="18" fill="#d97757" rx="3"/>
+          <circle cx="0" cy="-2" r="9" fill="#ffd9b8"/>
+          <path d="M -8 -3 Q -9 -8 -5 -10 Q 0 -12 5 -10 Q 9 -8 8 -3" fill="#5a3a25"/>
+        </g>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="num">MOCK 03</div>
+      <h2>TECH PARTNERS 採用</h2>
+      <p>架空のIT会社の採用ページ。建物の四階(事業・福利厚生・研修・募集)を歩いて回り、各階の項目をさらにクリックすると詳細が三段階まで深掘りできる作り。</p>
+      <span class="open">開く ›</span>
+    </div>
+  </a>
+
+</div>
+
+<div class="foot">— DEMO PROJECT — 次世代ホームページ —</div>
+
+</body>
+</html>

@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOTONOHA | 言の葉 万年筆工房</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "游明朝", "MS P明朝", serif;
+  background: #1a0f06;
+  color: #f3e7d3;
+  overflow-x: hidden;
+  line-height: 1.8;
+}
+
+/* ===== ナビゲーション ===== */
+nav {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  padding: 18px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  background: rgba(26, 15, 6, 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(212, 165, 116, 0.15);
+}
+.logo {
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 6px;
+  color: #d4a574;
+}
+.nav-links { display: flex; gap: 30px; list-style: none; }
+.nav-links a {
+  color: #f3e7d3;
+  text-decoration: none;
+  font-size: 14px;
+  letter-spacing: 2px;
+  transition: color 0.3s;
+}
+.nav-links a:hover { color: #d4a574; }
+
+/* ===== メインヒーロー ===== */
+.hero {
+  min-height: 100vh;
+  padding: 120px 30px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at top, #2a1a0d 0%, #1a0f06 70%);
+}
+.hero-text {
+  text-align: center;
+  max-width: 800px;
+  margin-bottom: 40px;
+}
+.hero-badge {
+  display: inline-block;
+  padding: 6px 18px;
+  background: transparent;
+  border: 1px solid #d4a574;
+  color: #d4a574;
+  border-radius: 30px;
+  font-size: 11px;
+  letter-spacing: 4px;
+  margin-bottom: 30px;
+}
+.hero h1 {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 400;
+  line-height: 1.5;
+  margin-bottom: 22px;
+  color: #f3e7d3;
+  letter-spacing: 0.1em;
+}
+.hero h1 .accent { color: #d4a574; }
+.hero p {
+  font-size: 16px;
+  color: #c8b89a;
+  margin-bottom: 28px;
+  letter-spacing: 0.05em;
+}
+.hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: rgba(212, 165, 116, 0.08);
+  border: 1px solid rgba(212, 165, 116, 0.25);
+  border-radius: 30px;
+  font-size: 13px;
+  color: #c8b89a;
+}
+.hint-dot {
+  width: 8px;
+  height: 8px;
+  background: #d4a574;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+}
+
+/* ===== インタラクティブイラスト ===== */
+.illustration-frame {
+  width: 100%;
+  max-width: 1100px;
+  background: #0a0604;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(212, 165, 116, 0.1);
+  overflow: hidden;
+}
+.frame-header {
+  padding: 12px 20px;
+  background: #14100a;
+  border-bottom: 1px solid rgba(212, 165, 116, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #c8b89a;
+}
+.frame-dots { display: flex; gap: 6px; }
+.frame-dot {
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  background: #444;
+}
+.frame-dot:nth-child(1) { background: #ff6058; }
+.frame-dot:nth-child(2) { background: #ffbd2e; }
+.frame-dot:nth-child(3) { background: #28ca42; }
+.breadcrumb {
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  letter-spacing: 0.1em;
+}
+.breadcrumb span {
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.breadcrumb span:hover { color: #d4a574; }
+.breadcrumb .arrow { color: #555; }
+.continue-btn {
+  padding: 5px 16px;
+  background: #d4a574;
+  color: #1a0f06;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+  letter-spacing: 0.1em;
+}
+.continue-btn:hover { background: #e8b986; }
+
+.back-hint {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(20, 16, 10, 0.85);
+  border: 1px solid rgba(212, 165, 116, 0.25);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: #c8b89a;
+  display: none;
+  z-index: 10;
+  pointer-events: none;
+}
+.illustration-area.detail .back-hint { display: block; animation: fadeIn 0.5s; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  background: rgba(212, 165, 116, 0.15);
+  border: 1px solid rgba(212, 165, 116, 0.3);
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 11px;
+  margin: 0 2px;
+  color: #d4a574;
+}
+
+.illustration-area {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: #0a0604;
+  overflow: hidden;
+}
+
+.svg-view {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  pointer-events: none;
+}
+.svg-view.active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.hotspot {
+  cursor: pointer;
+  transition: filter 0.3s ease, transform 0.3s ease;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+.hotspot:hover {
+  filter: drop-shadow(0 0 18px rgba(255, 228, 160, 0.7)) brightness(1.1);
+  transform: translateY(-4px);
+}
+.hotspot-label {
+  font-size: 14px;
+  font-weight: 400;
+  fill: #f3e7d3;
+  pointer-events: none;
+  font-family: "Hiragino Mincho ProN", serif;
+  letter-spacing: 0.2em;
+}
+.hotspot-sublabel {
+  font-size: 10px;
+  fill: #c8b89a;
+  pointer-events: none;
+  letter-spacing: 0.3em;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 228, 160, 0.4);
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+  animation: ripple-anim 0.8s ease-out;
+}
+@keyframes ripple-anim {
+  to { transform: translate(-50%, -50%) scale(20); opacity: 0; }
+}
+
+/* ===== 通常セクション ===== */
+section.content {
+  padding: 100px 30px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.section-title {
+  font-size: 11px;
+  letter-spacing: 6px;
+  color: #d4a574;
+  margin-bottom: 14px;
+  text-align: center;
+}
+.section-heading {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 60px;
+  color: #f3e7d3;
+  letter-spacing: 0.1em;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  align-items: center;
+}
+.about-text p {
+  color: #c8b89a;
+  margin-bottom: 18px;
+  font-size: 16px;
+  line-height: 2.2;
+}
+.about-card {
+  background: #14100a;
+  padding: 40px;
+  border-radius: 8px;
+  border: 1px solid rgba(212, 165, 116, 0.2);
+}
+.about-card h3 {
+  font-size: 18px;
+  margin-bottom: 14px;
+  color: #d4a574;
+  letter-spacing: 0.2em;
+  font-weight: 400;
+}
+
+.company-info {
+  background: #14100a;
+  border-radius: 8px;
+  padding: 50px;
+  border: 1px solid rgba(212, 165, 116, 0.2);
+}
+.info-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(212, 165, 116, 0.1);
+}
+.info-row:last-child { border-bottom: none; }
+.info-label {
+  color: #d4a574;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+}
+.info-value { color: #c8b89a; }
+
+.contact-cta {
+  text-align: center;
+  padding: 80px 30px;
+  background: #14100a;
+  border-radius: 12px;
+  border: 1px solid rgba(212, 165, 116, 0.2);
+}
+.contact-cta h2 {
+  font-size: clamp(26px, 4vw, 36px);
+  font-weight: 400;
+  margin-bottom: 20px;
+  letter-spacing: 0.15em;
+}
+.contact-cta p {
+  color: #c8b89a;
+  margin-bottom: 30px;
+}
+.cta-button {
+  display: inline-block;
+  padding: 14px 40px;
+  background: transparent;
+  border: 1px solid #d4a574;
+  color: #d4a574;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  transition: all 0.3s;
+}
+.cta-button:hover {
+  background: #d4a574;
+  color: #1a0f06;
+}
+
+footer {
+  padding: 40px 50px;
+  text-align: center;
+  border-top: 1px solid rgba(212, 165, 116, 0.1);
+  color: #888;
+  font-size: 12px;
+  margin-top: 60px;
+  letter-spacing: 0.2em;
+}
+
+@media (max-width: 768px) {
+  nav { padding: 12px 20px; }
+  .nav-links { display: none; }
+  section.content { padding: 60px 20px; }
+  .about-content { grid-template-columns: 1fr; gap: 30px; }
+  .company-info { padding: 30px; }
+  .info-row { grid-template-columns: 1fr; gap: 5px; }
+  .hotspot-label { font-size: 11px; }
+  .hotspot-sublabel { font-size: 9px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">KOTONOHA</div>
+  <ul class="nav-links">
+    <li><a href="#about">工房について</a></li>
+    <li><a href="#showroom">ショールーム</a></li>
+    <li><a href="#company">店舗案内</a></li>
+    <li><a href="#contact">お問い合わせ</a></li>
+  </ul>
+</nav>
+
+<section class="hero" id="showroom">
+  <div class="hero-text">
+    <div class="hero-badge">FOUNTAIN PEN ATELIER</div>
+    <h1>一本の万年筆に、<span class="accent">言葉の重みを。</span></h1>
+    <p>ガラス棚に並ぶ五本の万年筆。気になる一本に近づくと、ケースが灯ります。クリックで手に取って、お確かめください。</p>
+    <div class="hint">
+      <span class="hint-dot"></span>
+      <span>マウスを動かすと、あなたが店内を歩きます</span>
+    </div>
+  </div>
+
+  <div class="illustration-frame">
+    <div class="frame-header">
+      <div class="frame-dots">
+        <div class="frame-dot"></div>
+        <div class="frame-dot"></div>
+        <div class="frame-dot"></div>
+      </div>
+      <div class="breadcrumb" id="breadcrumb">
+        <span data-view="main">ショールーム</span>
+      </div>
+      <div class="continue-btn">↻ 戻る</div>
+    </div>
+
+    <div class="illustration-area" id="illustrationArea">
+      <div class="back-hint">
+        画面のどこかをクリック または <span class="kbd">Esc</span> キーで戻れます
+      </div>
+
+      <!-- ===== メインビュー: ショールームの店内 ===== -->
+      <svg class="svg-view active" id="view-main" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="wallGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3d2817"/>
+            <stop offset="100%" stop-color="#2a1a0d"/>
+          </linearGradient>
+          <linearGradient id="floorGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#5a3a20"/>
+            <stop offset="100%" stop-color="#2a1a0d"/>
+          </linearGradient>
+          <linearGradient id="caseGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3a2515" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#1a0f06" stop-opacity="0.9"/>
+          </linearGradient>
+          <radialGradient id="spotGrad" cx="50%" cy="0%" r="60%">
+            <stop offset="0%" stop-color="#ffe4a0" stop-opacity="0.55"/>
+            <stop offset="60%" stop-color="#d4a574" stop-opacity="0.15"/>
+            <stop offset="100%" stop-color="#d4a574" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="ambGrad" cx="50%" cy="40%" r="80%">
+            <stop offset="0%" stop-color="#3d2817" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#0a0604" stop-opacity="0.95"/>
+          </radialGradient>
+          <linearGradient id="brassGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#e8c87e"/>
+            <stop offset="50%" stop-color="#b8964a"/>
+            <stop offset="100%" stop-color="#7a6028"/>
+          </linearGradient>
+          <linearGradient id="penWood" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#5a3a20"/>
+            <stop offset="50%" stop-color="#8b5a2b"/>
+            <stop offset="100%" stop-color="#5a3a20"/>
+          </linearGradient>
+          <linearGradient id="penBlue" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#0d1f3a"/>
+            <stop offset="50%" stop-color="#2a4a7a"/>
+            <stop offset="100%" stop-color="#0d1f3a"/>
+          </linearGradient>
+          <linearGradient id="penBlack" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#000"/>
+            <stop offset="50%" stop-color="#3a2515"/>
+            <stop offset="100%" stop-color="#000"/>
+          </linearGradient>
+          <linearGradient id="penGold" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#7a6028"/>
+            <stop offset="50%" stop-color="#e8c87e"/>
+            <stop offset="100%" stop-color="#7a6028"/>
+          </linearGradient>
+          <linearGradient id="penPink" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#a86888"/>
+            <stop offset="50%" stop-color="#e8b4c8"/>
+            <stop offset="100%" stop-color="#a86888"/>
+          </linearGradient>
+        </defs>
+
+        <!-- 全体の暗い空気感 -->
+        <rect width="1000" height="625" fill="url(#ambGrad)"/>
+
+        <!-- 天井 -->
+        <rect x="0" y="0" width="1000" height="120" fill="#1a0f06"/>
+        <rect x="0" y="115" width="1000" height="3" fill="#3d2817"/>
+
+        <!-- 天井のレールライト -->
+        <g>
+          <rect x="80" y="60" width="840" height="6" fill="#3d2817"/>
+          <rect x="80" y="60" width="840" height="2" fill="#5a3a20"/>
+        </g>
+        <!-- スポットライト本体 (5基) -->
+        <g fill="#3d2817" stroke="#1a0f06" stroke-width="0.8">
+          <ellipse cx="120" cy="78" rx="14" ry="6"/>
+          <rect x="116" y="66" width="8" height="14"/>
+          <ellipse cx="320" cy="78" rx="14" ry="6"/>
+          <rect x="316" y="66" width="8" height="14"/>
+          <ellipse cx="500" cy="78" rx="14" ry="6"/>
+          <rect x="496" y="66" width="8" height="14"/>
+          <ellipse cx="680" cy="78" rx="14" ry="6"/>
+          <rect x="676" y="66" width="8" height="14"/>
+          <ellipse cx="880" cy="78" rx="14" ry="6"/>
+          <rect x="876" y="66" width="8" height="14"/>
+        </g>
+        <!-- 電球の光点 -->
+        <g fill="#ffe4a0">
+          <circle cx="120" cy="84" r="3"/>
+          <circle cx="320" cy="84" r="3"/>
+          <circle cx="500" cy="84" r="3"/>
+          <circle cx="680" cy="84" r="3"/>
+          <circle cx="880" cy="84" r="3"/>
+        </g>
+
+        <!-- スポットライトの光の円錐 (5本) -->
+        <g>
+          <ellipse cx="120" cy="430" rx="100" ry="280" fill="url(#spotGrad)" opacity="0.85"/>
+          <ellipse cx="320" cy="430" rx="100" ry="280" fill="url(#spotGrad)" opacity="0.85"/>
+          <ellipse cx="500" cy="430" rx="100" ry="280" fill="url(#spotGrad)" opacity="0.85"/>
+          <ellipse cx="680" cy="430" rx="100" ry="280" fill="url(#spotGrad)" opacity="0.85"/>
+          <ellipse cx="880" cy="430" rx="100" ry="280" fill="url(#spotGrad)" opacity="0.85"/>
+        </g>
+
+        <!-- 後ろの壁 -->
+        <rect x="0" y="118" width="1000" height="320" fill="url(#wallGrad)"/>
+        <!-- 壁の縦パネル線 -->
+        <g stroke="#1a0f06" stroke-width="1" opacity="0.6">
+          <line x1="0" y1="118" x2="0" y2="438"/>
+          <line x1="200" y1="118" x2="200" y2="438"/>
+          <line x1="400" y1="118" x2="400" y2="438"/>
+          <line x1="600" y1="118" x2="600" y2="438"/>
+          <line x1="800" y1="118" x2="800" y2="438"/>
+          <line x1="1000" y1="118" x2="1000" y2="438"/>
+        </g>
+        <!-- 壁の中段の細い金線 -->
+        <line x1="0" y1="200" x2="1000" y2="200" stroke="#d4a574" stroke-width="0.4" opacity="0.4"/>
+        <line x1="0" y1="380" x2="1000" y2="380" stroke="#d4a574" stroke-width="0.4" opacity="0.4"/>
+
+        <!-- 壁の小さな金プレート (店名) -->
+        <g transform="translate(500, 165)">
+          <rect x="-90" y="-20" width="180" height="40" fill="none" stroke="#d4a574" stroke-width="0.6" opacity="0.7"/>
+          <text x="0" y="-2" text-anchor="middle" font-size="14" fill="#d4a574" letter-spacing="6" font-family="Hiragino Mincho ProN, serif">KOTONOHA</text>
+          <text x="0" y="14" text-anchor="middle" font-size="9" fill="#c8b89a" letter-spacing="3" font-family="Hiragino Mincho ProN, serif">— 言の葉 万年筆工房 —</text>
+        </g>
+
+        <!-- 床と床の境目 -->
+        <rect x="0" y="438" width="1000" height="187" fill="url(#floorGrad)"/>
+        <!-- 床の遠近線 (寄木の板) -->
+        <g stroke="#1a0f06" stroke-width="0.6" opacity="0.5">
+          <line x1="0" y1="460" x2="1000" y2="460"/>
+          <line x1="0" y1="490" x2="1000" y2="490"/>
+          <line x1="0" y1="525" x2="1000" y2="525"/>
+          <line x1="0" y1="565" x2="1000" y2="565"/>
+        </g>
+        <!-- 床の縦継ぎ目 -->
+        <g stroke="#3d2817" stroke-width="0.4" opacity="0.5">
+          <line x1="100" y1="438" x2="100" y2="625"/>
+          <line x1="250" y1="438" x2="250" y2="625"/>
+          <line x1="400" y1="438" x2="400" y2="625"/>
+          <line x1="550" y1="438" x2="550" y2="625"/>
+          <line x1="700" y1="438" x2="700" y2="625"/>
+          <line x1="850" y1="438" x2="850" y2="625"/>
+        </g>
+
+        <!-- ===== 万年筆 1: 森 (左端 木製軸) ===== -->
+        <g class="hotspot" data-target="mori">
+          <!-- 台座の影 -->
+          <ellipse cx="120" cy="475" rx="55" ry="6" fill="#000" opacity="0.5"/>
+          <!-- 台座 -->
+          <rect x="80" y="430" width="80" height="42" fill="url(#caseGrad)" stroke="#d4a574" stroke-width="0.4"/>
+          <rect x="80" y="430" width="80" height="3" fill="#5a3a20"/>
+          <!-- 真鍮プレート -->
+          <rect x="98" y="460" width="44" height="9" fill="url(#brassGrad)"/>
+          <text x="120" y="467" text-anchor="middle" font-size="6" fill="#1a0f06" letter-spacing="2" font-family="serif">MORI</text>
+          <!-- ガラスケース -->
+          <rect x="78" y="370" width="84" height="62" fill="rgba(255, 228, 160, 0.05)" stroke="rgba(212, 165, 116, 0.4)" stroke-width="0.5"/>
+          <line x1="78" y1="370" x2="78" y2="432" stroke="rgba(212, 165, 116, 0.4)" stroke-width="0.6"/>
+          <line x1="162" y1="370" x2="162" y2="432" stroke="rgba(212, 165, 116, 0.4)" stroke-width="0.6"/>
+          <!-- ガラスの反射 -->
+          <line x1="92" y1="375" x2="92" y2="425" stroke="#fff" stroke-width="0.6" opacity="0.3"/>
+          <!-- 万年筆 (横置き) -->
+          <g transform="translate(120, 405)">
+            <!-- ペン軸 -->
+            <rect x="-30" y="-3" width="42" height="6" fill="url(#penWood)" rx="2"/>
+            <!-- キャップ -->
+            <rect x="12" y="-4" width="22" height="8" fill="#3d2817" rx="1"/>
+            <circle cx="34" cy="0" r="1.5" fill="#d4a574"/>
+            <!-- 首軸 -->
+            <rect x="-32" y="-2" width="6" height="4" fill="#3d2817"/>
+            <!-- ニブ -->
+            <polygon points="-38,0 -32,-2 -32,2" fill="url(#brassGrad)"/>
+            <!-- ペン下の影 -->
+            <ellipse cx="0" cy="6" rx="32" ry="1.5" fill="#000" opacity="0.5"/>
+          </g>
+          <!-- ライトの当たる場所 -->
+          <ellipse cx="120" cy="395" rx="45" ry="3" fill="#ffe4a0" opacity="0.3"/>
+        </g>
+        <text x="120" y="500" text-anchor="middle" class="hotspot-label">森</text>
+        <text x="120" y="520" text-anchor="middle" class="hotspot-sublabel">M O R I</text>
+
+        <!-- ===== 万年筆 2: 海 (左寄り 樹脂ブルー) ===== -->
+        <g class="hotspot" data-target="umi">
+          <ellipse cx="320" cy="475" rx="55" ry="6" fill="#000" opacity="0.5"/>
+          <rect x="280" y="430" width="80" height="42" fill="url(#caseGrad)" stroke="#d4a574" stroke-width="0.4"/>
+          <rect x="280" y="430" width="80" height="3" fill="#5a3a20"/>
+          <rect x="298" y="460" width="44" height="9" fill="url(#brassGrad)"/>
+          <text x="320" y="467" text-anchor="middle" font-size="6" fill="#1a0f06" letter-spacing="2" font-family="serif">UMI</text>
+          <rect x="278" y="370" width="84" height="62" fill="rgba(255, 228, 160, 0.05)" stroke="rgba(212, 165, 116, 0.4)" stroke-width="0.5"/>
+          <line x1="278" y1="370" x2="278" y2="432" stroke="rgba(212, 165, 116, 0.4)" stroke-width="0.6"/>
+          <line x1="362" y1="370" x2="362" y2="432" stroke="rgba(212, 165, 116, 0.4)" stroke-width="0.6"/>
+          <line x1="292" y1="375" x2="292" y2="425" stroke="#fff" stroke-width="0.6" opacity="0.3"/>
+          <!-- 万年筆 (斜め置き 縦) -->
+          <g transform="translate(320, 405) rotate(-10)">
+            <rect x="-3" y="-25" width="6" height="40" fill="url(#penBlue)" rx="2"/>
+            <rect x="-4" y="-25" width="8" height="20" fill="#1e3a5c" rx="1"/>
+            <circle cx="0" cy="-26" r="1.5" fill="#d4a574"/>
+            <rect x="-2" y="13" width="4" height="6" fill="#1e3a5c"/>
+            <polygon points="0,22 -2,16 2,16" fill="url(#brassGrad)"/>
+          </g>
+          <ellipse cx="320" cy="408" rx="20" ry="22" fill="#ffe4a0" opacity="0.18"/>
+        </g>
+        <text x="320" y="500" text-anchor="middle" class="hotspot-label">海</text>
+        <text x="320" y="520" text-anchor="middle" class="hotspot-sublabel">U M I</text>
+
+        <!-- ===== 万年筆 3: 月 (中央 漆塗り黒) ===== -->
+        <g class="hotspot" data-target="tsuki">
+          <ellipse cx="500" cy="475" rx="55" ry="6" fill="#000" opacity="0.5"/>
+          <rect x="460" y="430" width="80" height="42" fill="url(#caseGrad)" stroke="#d4a574" stroke-width="0.6"/>
+          <rect x="460" y="430" width="80" height="3" fill="#5a3a20"/>
+          <rect x="478" y="460" width="44" height="9" fill="url(#brassGrad)"/>
+          <text x="500" y="467" text-anchor="middle" font-size="6" fill="#1a0f06" letter-spacing="2" font-family="serif">TSUKI</text>
+          <!-- 中央のケースは少し高級感 -->
+          <rect x="458" y="360" width="84" height="72" fill="rgba(255, 228, 160, 0.06)" stroke="rgba(212, 165, 116, 0.5)" stroke-width="0.6"/>
+          <line x1="458" y1="360" x2="458" y2="432" stroke="rgba(212, 165, 116, 0.5)" stroke-width="0.7"/>
+          <line x1="542" y1="360" x2="542" y2="432" stroke="rgba(212, 165, 116, 0.5)" stroke-width="0.7"/>
+          <line x1="472" y1="365" x2="472" y2="425" stroke="#fff" stroke-width="0.6" opacity="0.35"/>
+          <!-- 漆塗り万年筆 (立て置き 縦長) -->
+          <g transform="translate(500, 400)">
+            <!-- スタンド -->
+            <rect x="-12" y="20" width="24" height="6" fill="#3d2817" rx="2"/>
+            <rect x="-10" y="18" width="20" height="4" fill="#5a3a20"/>
+            <!-- 軸 -->
+            <rect x="-3.5" y="-30" width="7" height="50" fill="url(#penBlack)" rx="3"/>
+            <!-- キャップ -->
+            <rect x="-4.5" y="-30" width="9" height="22" fill="#000" rx="2"/>
+            <!-- キャップに金の蒔絵 -->
+            <circle cx="0" cy="-22" r="2.5" fill="#e8c87e" opacity="0.95"/>
+            <path d="M -2 -22 Q 0 -25 2 -22 Q 0 -19 -2 -22" fill="#3d2817"/>
+            <circle cx="0" cy="-32" r="1.8" fill="#d4a574"/>
+            <!-- ニブ -->
+            <polygon points="0,28 -3,22 3,22" fill="url(#brassGrad)"/>
+            <line x1="0" y1="22" x2="0" y2="28" stroke="#3d2817" stroke-width="0.4"/>
+          </g>
+          <ellipse cx="500" cy="395" rx="20" ry="32" fill="#ffe4a0" opacity="0.2"/>
+        </g>
+        <text x="500" y="500" text-anchor="middle" class="hotspot-label">月</text>
+        <text x="500" y="520" text-anchor="middle" class="hotspot-sublabel">T S U K I</text>
+
+        <!-- ===== 万年筆 4: 金 (右寄り 真鍮ゴールド) ===== -->
+        <g class="hotspot" data-target="kin">
+          <ellipse cx="680" cy="475" rx="55" ry="6" fill="#000" opacity="0.5"/>
+          <rect x="640" y="430" width="80" height="42" fill="url(#caseGrad)" stroke="#d4a574" stroke-width="0.4"/>
+          <rect x="640" y="430" width="80" height="3" fill="#5a3a20"/>
+          <rect x="658" y="460" width="44" height="9" fill="url(#brassGrad)"/>
+          <text x="680" y="467" text-anchor="middle" font-size="6" fill="#1a0f06" letter-spacing="2" font-family="serif">KIN</text>
+          <rect x="638" y="370" width="84" height="62" fill="rgba(255, 228, 160, 0.05)" stroke="rgba(212, 165, 116, 0.4)" stroke-width="0.5"/>
+          <line x1="638" y1="370" x2="638" y2="432" stroke="rgba(212, 165, 116, 0.4)" stroke-width="0.6"/>
+          <line x1="722" y1="370" x2="722" y2="432" stroke="rgba(212, 165, 116, 0.4)" stroke-width="0.6"/>
+          <line x1="652" y1="375" x2="652" y2="425" stroke="#fff" stroke-width="0.6" opacity="0.3"/>
+          <!-- 万年筆 (斜め置き 逆) -->
+          <g transform="translate(680, 405) rotate(15)">
+            <rect x="-3" y="-22" width="6" height="40" fill="url(#penGold)" rx="2"/>
+            <rect x="-4" y="-22" width="8" height="20" fill="#a8853a" rx="1"/>
+            <circle cx="0" cy="-23" r="1.8" fill="#fff" opacity="0.6"/>
+            <rect x="-2" y="16" width="4" height="6" fill="#7a6028"/>
+            <polygon points="0,25 -2,19 2,19" fill="#e8c87e"/>
+          </g>
+          <ellipse cx="680" cy="408" rx="22" ry="22" fill="#ffe4a0" opacity="0.25"/>
+        </g>
+        <text x="680" y="500" text-anchor="middle" class="hotspot-label">金</text>
+        <text x="680" y="520" text-anchor="middle" class="hotspot-sublabel">K I N</text>
+
+        <!-- ===== 万年筆 5: 桜 (右端 桜アクリル) ===== -->
+        <g class="hotspot" data-target="sakura">
+          <ellipse cx="880" cy="475" rx="55" ry="6" fill="#000" opacity="0.5"/>
+          <rect x="840" y="430" width="80" height="42" fill="url(#caseGrad)" stroke="#d4a574" stroke-width="0.4"/>
+          <rect x="840" y="430" width="80" height="3" fill="#5a3a20"/>
+          <rect x="858" y="460" width="44" height="9" fill="url(#brassGrad)"/>
+          <text x="880" y="467" text-anchor="middle" font-size="6" fill="#1a0f06" letter-spacing="2" font-family="serif">SAKURA</text>
+          <rect x="838" y="370" width="84" height="62" fill="rgba(255, 228, 160, 0.05)" stroke="rgba(212, 165, 116, 0.4)" stroke-width="0.5"/>
+          <line x1="838" y1="370" x2="838" y2="432" stroke="rgba(212, 165, 116, 0.4)" stroke-width="0.6"/>
+          <line x1="922" y1="370" x2="922" y2="432" stroke="rgba(212, 165, 116, 0.4)" stroke-width="0.6"/>
+          <line x1="852" y1="375" x2="852" y2="425" stroke="#fff" stroke-width="0.6" opacity="0.3"/>
+          <g transform="translate(880, 405)">
+            <rect x="-30" y="-3" width="42" height="6" fill="url(#penPink)" rx="2"/>
+            <rect x="12" y="-4" width="22" height="8" fill="#a86888" rx="1"/>
+            <circle cx="34" cy="0" r="1.5" fill="#fff" opacity="0.6"/>
+            <rect x="-32" y="-2" width="6" height="4" fill="#a86888"/>
+            <polygon points="-38,0 -32,-2 -32,2" fill="url(#brassGrad)"/>
+            <!-- 桜の花びら -->
+            <g fill="#f8d4e0" opacity="0.9">
+              <path d="M -10 -4 Q -8 -7 -6 -4 Q -8 -2 -10 -4"/>
+              <path d="M 4 -4 Q 6 -7 8 -4 Q 6 -2 4 -4"/>
+            </g>
+            <ellipse cx="0" cy="6" rx="32" ry="1.5" fill="#000" opacity="0.5"/>
+          </g>
+          <ellipse cx="880" cy="395" rx="45" ry="3" fill="#ffe4a0" opacity="0.3"/>
+        </g>
+        <text x="880" y="500" text-anchor="middle" class="hotspot-label">桜</text>
+        <text x="880" y="520" text-anchor="middle" class="hotspot-sublabel">S A K U R A</text>
+
+        <!-- 中央床に小さな織模様 -->
+        <g opacity="0.3" stroke="#d4a574" stroke-width="0.4" fill="none">
+          <circle cx="500" cy="600" r="40"/>
+          <circle cx="500" cy="600" r="28"/>
+          <circle cx="500" cy="600" r="16"/>
+        </g>
+
+        <!-- 浮遊する細かなチリ (空気感) -->
+        <g fill="#d4a574" opacity="0.4">
+          <circle cx="200" cy="200" r="0.8">
+            <animate attributeName="cy" values="200;180;200" dur="6s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="450" cy="150" r="0.6">
+            <animate attributeName="cy" values="150;130;150" dur="7s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="700" cy="220" r="0.7">
+            <animate attributeName="cy" values="220;200;220" dur="5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="850" cy="180" r="0.5">
+            <animate attributeName="cy" values="180;160;180" dur="8s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+
+        <!-- プレイヤー (あなた) -->
+        <g id="player">
+          <ellipse cx="0" cy="38" rx="20" ry="5" fill="#000" opacity="0.4"/>
+          <!-- 体 -->
+          <rect x="-10" y="10" width="20" height="28" fill="#8b6f47" rx="4"/>
+          <rect x="-10" y="10" width="20" height="6" fill="#5a3a20" rx="4 4 0 0"/>
+          <!-- 顔 -->
+          <circle cx="0" cy="0" r="13" fill="#f0d8b8"/>
+          <!-- 髪 -->
+          <path d="M -12 -3 Q -13 -10 -8 -12 Q 0 -15 8 -12 Q 13 -10 12 -3 Q 8 -8 0 -8 Q -8 -8 -12 -3 Z" fill="#3d2817"/>
+          <!-- 目 -->
+          <circle cx="-4" cy="0" r="1.5" fill="#1a0f06"/>
+          <circle cx="4" cy="0" r="1.5" fill="#1a0f06"/>
+          <!-- ほっぺ -->
+          <circle cx="-5" cy="3" r="1.2" fill="#d4a574" opacity="0.5"/>
+          <circle cx="5" cy="3" r="1.2" fill="#d4a574" opacity="0.5"/>
+          <text x="0" y="-23" text-anchor="middle" font-size="9" fill="#d4a574" font-family="Hiragino Mincho ProN, serif" letter-spacing="2">あなた</text>
+          <!-- 足元の輪 -->
+          <ellipse cx="0" cy="38" rx="22" ry="4" fill="none" stroke="#d4a574" stroke-width="1" stroke-dasharray="3 3" opacity="0.6">
+            <animate attributeName="rx" values="22;32;22" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/>
+          </ellipse>
+        </g>
+      </svg>
+
+      <!-- ===== 詳細ビュー: 森 (木製軸) ===== -->
+      <svg class="svg-view" id="view-mori" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#0a0604"/>
+        <radialGradient id="moriBg" cx="50%" cy="40%">
+          <stop offset="0%" stop-color="#3d2817" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#0a0604" stop-opacity="1"/>
+        </radialGradient>
+        <rect width="1000" height="625" fill="url(#moriBg)"/>
+
+        <text x="80" y="60" font-size="11" fill="#d4a574" letter-spacing="6">SERIES 01</text>
+        <text x="80" y="100" font-size="36" fill="#f3e7d3" font-family="Hiragino Mincho ProN, serif" letter-spacing="0.15em">森 — MORI</text>
+        <text x="80" y="125" font-size="13" fill="#c8b89a" letter-spacing="0.2em">木の温もりを掌に</text>
+
+        <!-- ペン本体 拡大 -->
+        <g transform="translate(500, 280)">
+          <!-- 影 -->
+          <ellipse cx="0" cy="80" rx="240" ry="8" fill="#000" opacity="0.6"/>
+          <!-- 軸 -->
+          <rect x="-220" y="-12" width="320" height="24" fill="url(#penWoodLg)" rx="6"/>
+          <defs>
+            <linearGradient id="penWoodLg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#a8753b"/>
+              <stop offset="40%" stop-color="#8b5a2b"/>
+              <stop offset="100%" stop-color="#5a3a20"/>
+            </linearGradient>
+            <linearGradient id="brassLg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f0d49a"/>
+              <stop offset="50%" stop-color="#c89a4a"/>
+              <stop offset="100%" stop-color="#7a6028"/>
+            </linearGradient>
+          </defs>
+          <!-- 木目 -->
+          <g stroke="#5a3a20" stroke-width="0.5" opacity="0.5" fill="none">
+            <path d="M -210 -6 Q -100 -8 0 -5 Q 80 -3 95 -6"/>
+            <path d="M -210 0 Q -100 2 0 -1 Q 80 1 95 -2"/>
+            <path d="M -210 6 Q -100 4 0 7 Q 80 9 95 6"/>
+          </g>
+          <!-- キャップ -->
+          <rect x="100" y="-14" width="120" height="28" fill="#3d2817" rx="6"/>
+          <rect x="100" y="-14" width="120" height="6" fill="#5a3a20" rx="6 6 0 0"/>
+          <rect x="100" y="-14" width="6" height="28" fill="#5a3a20"/>
+          <!-- キャップトップ -->
+          <circle cx="220" cy="0" r="8" fill="url(#brassLg)"/>
+          <text x="220" y="3" text-anchor="middle" font-size="7" fill="#3d2817" font-family="serif">K</text>
+          <!-- クリップ -->
+          <rect x="160" y="-22" width="4" height="40" fill="url(#brassLg)" rx="1"/>
+          <circle cx="162" cy="20" r="2.5" fill="#7a6028"/>
+          <!-- 首軸 -->
+          <rect x="-230" y="-8" width="14" height="16" fill="#3d2817"/>
+          <!-- ニブ -->
+          <polygon points="-260,0 -226,-10 -226,10" fill="url(#brassLg)"/>
+          <line x1="-260" y1="0" x2="-228" y2="0" stroke="#3d2817" stroke-width="1"/>
+          <circle cx="-232" cy="0" r="2" fill="#3d2817"/>
+        </g>
+
+        <!-- 文字情報 -->
+        <g font-family="Hiragino Mincho ProN, serif">
+          <text x="80" y="440" font-size="13" fill="#d4a574" letter-spacing="3">— この一本について —</text>
+          <text x="80" y="475" font-size="14" fill="#f3e7d3" letter-spacing="0.08em">国産の桜の古木を、職人が一本ずつ削り出した軸。</text>
+          <text x="80" y="498" font-size="14" fill="#f3e7d3" letter-spacing="0.08em">使い込むほどに飴色に変わり、あなたの手に馴染んでいきます。</text>
+        </g>
+
+        <!-- 仕様カード -->
+        <g transform="translate(700, 420)">
+          <rect x="0" y="0" width="220" height="160" fill="#14100a" stroke="#d4a574" stroke-width="0.6" rx="6"/>
+          <text x="20" y="30" font-size="10" fill="#d4a574" letter-spacing="3">SPECIFICATION</text>
+          <line x1="20" y1="40" x2="200" y2="40" stroke="#3d2817" stroke-width="1"/>
+          <g font-family="Hiragino Mincho ProN, serif" font-size="11" fill="#c8b89a">
+            <text x="20" y="62">軸 / 桜古木</text>
+            <text x="20" y="84">ニブ / 14金 中字</text>
+            <text x="20" y="106">充填 / 両用式</text>
+            <text x="20" y="128">価格 / 48,000円</text>
+            <text x="20" y="150">仕上げ / 蜜蝋</text>
+          </g>
+        </g>
+
+        <!-- 書き味の見本 (アニメで字が現れる) -->
+        <g transform="translate(80, 540)">
+          <text x="0" y="0" font-size="10" fill="#d4a574" letter-spacing="3">書き味の見本</text>
+          <path id="moriStroke" d="M 10 30 Q 50 10 100 30 Q 150 50 200 30 Q 250 10 300 30 Q 350 50 400 30 Q 450 10 500 30" stroke="#d4a574" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="600" stroke-dashoffset="600">
+            <animate attributeName="stroke-dashoffset" values="600;0;0;600" keyTimes="0;0.4;0.7;1" dur="6s" repeatCount="indefinite"/>
+          </path>
+        </g>
+      </svg>
+
+      <!-- ===== 詳細ビュー: 海 (樹脂ブルー) ===== -->
+      <svg class="svg-view" id="view-umi" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="umiBg" cx="50%" cy="40%">
+            <stop offset="0%" stop-color="#1e3a5c" stop-opacity="0.7"/>
+            <stop offset="100%" stop-color="#0a0604" stop-opacity="1"/>
+          </radialGradient>
+          <linearGradient id="penBlueLg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4a7ab0"/>
+            <stop offset="50%" stop-color="#2a4a7a"/>
+            <stop offset="100%" stop-color="#0d1f3a"/>
+          </linearGradient>
+        </defs>
+        <rect width="1000" height="625" fill="url(#umiBg)"/>
+
+        <text x="80" y="60" font-size="11" fill="#d4a574" letter-spacing="6">SERIES 02</text>
+        <text x="80" y="100" font-size="36" fill="#f3e7d3" font-family="Hiragino Mincho ProN, serif" letter-spacing="0.15em">海 — UMI</text>
+        <text x="80" y="125" font-size="13" fill="#c8b89a" letter-spacing="0.2em">深い藍に、波が揺らぐ</text>
+
+        <g transform="translate(500, 280)">
+          <ellipse cx="0" cy="80" rx="240" ry="8" fill="#000" opacity="0.6"/>
+          <rect x="-220" y="-12" width="320" height="24" fill="url(#penBlueLg)" rx="6"/>
+          <!-- 樹脂の波模様 -->
+          <g stroke="#7aa0d8" stroke-width="0.8" opacity="0.4" fill="none">
+            <path d="M -210 -6 Q -150 -10 -90 -4 Q -30 -8 30 -4 Q 90 -10 95 -6"/>
+            <path d="M -210 4 Q -150 8 -90 4 Q -30 8 30 2 Q 90 8 95 4"/>
+          </g>
+          <rect x="100" y="-14" width="120" height="28" fill="#1e3a5c" rx="6"/>
+          <rect x="100" y="-14" width="120" height="6" fill="#3a5a8a" rx="6 6 0 0"/>
+          <rect x="100" y="-14" width="6" height="28" fill="#3a5a8a"/>
+          <circle cx="220" cy="0" r="8" fill="url(#brassLg)"/>
+          <text x="220" y="3" text-anchor="middle" font-size="7" fill="#1e3a5c" font-family="serif">K</text>
+          <rect x="160" y="-22" width="4" height="40" fill="url(#brassLg)" rx="1"/>
+          <rect x="-230" y="-8" width="14" height="16" fill="#1e3a5c"/>
+          <polygon points="-260,0 -226,-10 -226,10" fill="url(#brassLg)"/>
+          <line x1="-260" y1="0" x2="-228" y2="0" stroke="#1e3a5c" stroke-width="1"/>
+          <circle cx="-232" cy="0" r="2" fill="#1e3a5c"/>
+        </g>
+
+        <g font-family="Hiragino Mincho ProN, serif">
+          <text x="80" y="440" font-size="13" fill="#d4a574" letter-spacing="3">— この一本について —</text>
+          <text x="80" y="475" font-size="14" fill="#f3e7d3" letter-spacing="0.08em">深い藍色の樹脂に、波のような流れ模様を閉じ込めました。</text>
+          <text x="80" y="498" font-size="14" fill="#f3e7d3" letter-spacing="0.08em">光に当てるたびに、表情を変える一本です。</text>
+        </g>
+
+        <g transform="translate(700, 420)">
+          <rect x="0" y="0" width="220" height="160" fill="#14100a" stroke="#d4a574" stroke-width="0.6" rx="6"/>
+          <text x="20" y="30" font-size="10" fill="#d4a574" letter-spacing="3">SPECIFICATION</text>
+          <line x1="20" y1="40" x2="200" y2="40" stroke="#3d2817" stroke-width="1"/>
+          <g font-family="Hiragino Mincho ProN, serif" font-size="11" fill="#c8b89a">
+            <text x="20" y="62">軸 / アクリル樹脂</text>
+            <text x="20" y="84">ニブ / 14金 細字</text>
+            <text x="20" y="106">充填 / 吸入式</text>
+            <text x="20" y="128">価格 / 36,000円</text>
+            <text x="20" y="150">仕上げ / 鏡面</text>
+          </g>
+        </g>
+
+        <g transform="translate(80, 540)">
+          <text x="0" y="0" font-size="10" fill="#d4a574" letter-spacing="3">書き味の見本</text>
+          <path d="M 10 30 Q 60 5 110 30 Q 160 55 210 30 Q 260 5 310 30 Q 360 55 410 30 Q 460 5 500 30" stroke="#7aa0d8" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-dasharray="600" stroke-dashoffset="600">
+            <animate attributeName="stroke-dashoffset" values="600;0;0;600" keyTimes="0;0.4;0.7;1" dur="7s" repeatCount="indefinite"/>
+          </path>
+        </g>
+      </svg>
+
+      <!-- ===== 詳細ビュー: 月 (漆塗り黒) ===== -->
+      <svg class="svg-view" id="view-tsuki" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="tsukiBg" cx="50%" cy="40%">
+            <stop offset="0%" stop-color="#2a1a0d" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#000" stop-opacity="1"/>
+          </radialGradient>
+          <linearGradient id="penBlackLg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3d2817"/>
+            <stop offset="20%" stop-color="#000"/>
+            <stop offset="80%" stop-color="#000"/>
+            <stop offset="100%" stop-color="#1a0f06"/>
+          </linearGradient>
+        </defs>
+        <rect width="1000" height="625" fill="url(#tsukiBg)"/>
+
+        <!-- 月のシルエット -->
+        <circle cx="850" cy="120" r="50" fill="#d4a574" opacity="0.15"/>
+        <circle cx="850" cy="120" r="35" fill="#d4a574" opacity="0.25"/>
+
+        <text x="80" y="60" font-size="11" fill="#d4a574" letter-spacing="6">SERIES 03</text>
+        <text x="80" y="100" font-size="36" fill="#f3e7d3" font-family="Hiragino Mincho ProN, serif" letter-spacing="0.15em">月 — TSUKI</text>
+        <text x="80" y="125" font-size="13" fill="#c8b89a" letter-spacing="0.2em">夜空に浮かぶ、静寂の一筆</text>
+
+        <g transform="translate(500, 280)">
+          <ellipse cx="0" cy="80" rx="240" ry="8" fill="#000" opacity="0.7"/>
+          <rect x="-220" y="-12" width="320" height="24" fill="url(#penBlackLg)" rx="6"/>
+          <!-- 漆の鏡面反射 -->
+          <rect x="-220" y="-10" width="320" height="3" fill="#d4a574" opacity="0.25" rx="2"/>
+          <!-- 蒔絵の月 -->
+          <circle cx="-50" cy="0" r="8" fill="#e8c87e" opacity="0.95"/>
+          <path d="M -54 -2 Q -50 -5 -46 -2 Q -50 1 -54 -2" fill="#1a0f06"/>
+          <rect x="100" y="-14" width="120" height="28" fill="#000" rx="6"/>
+          <rect x="100" y="-14" width="120" height="6" fill="#3d2817" rx="6 6 0 0"/>
+          <rect x="100" y="-14" width="6" height="28" fill="#3d2817"/>
+          <!-- キャップにも蒔絵 -->
+          <circle cx="160" cy="0" r="6" fill="#e8c87e"/>
+          <circle cx="220" cy="0" r="8" fill="url(#brassLg)"/>
+          <text x="220" y="3" text-anchor="middle" font-size="7" fill="#000" font-family="serif">K</text>
+          <rect x="180" y="-22" width="4" height="40" fill="url(#brassLg)" rx="1"/>
+          <rect x="-230" y="-8" width="14" height="16" fill="#000"/>
+          <polygon points="-260,0 -226,-10 -226,10" fill="url(#brassLg)"/>
+          <line x1="-260" y1="0" x2="-228" y2="0" stroke="#000" stroke-width="1"/>
+          <circle cx="-232" cy="0" r="2" fill="#000"/>
+        </g>
+
+        <g font-family="Hiragino Mincho ProN, serif">
+          <text x="80" y="440" font-size="13" fill="#d4a574" letter-spacing="3">— この一本について —</text>
+          <text x="80" y="475" font-size="14" fill="#f3e7d3" letter-spacing="0.08em">越前の漆を、十二の工程で重ね塗り。月の蒔絵は職人の手仕事です。</text>
+          <text x="80" y="498" font-size="14" fill="#f3e7d3" letter-spacing="0.08em">深い闇の艶に、金が静かに浮かびます。</text>
+        </g>
+
+        <g transform="translate(700, 420)">
+          <rect x="0" y="0" width="220" height="160" fill="#14100a" stroke="#d4a574" stroke-width="0.6" rx="6"/>
+          <text x="20" y="30" font-size="10" fill="#d4a574" letter-spacing="3">SPECIFICATION</text>
+          <line x1="20" y1="40" x2="200" y2="40" stroke="#3d2817" stroke-width="1"/>
+          <g font-family="Hiragino Mincho ProN, serif" font-size="11" fill="#c8b89a">
+            <text x="20" y="62">軸 / 越前漆塗</text>
+            <text x="20" y="84">ニブ / 18金 中字</text>
+            <text x="20" y="106">充填 / 吸入式</text>
+            <text x="20" y="128">価格 / 128,000円</text>
+            <text x="20" y="150">仕上げ / 蒔絵入</text>
+          </g>
+        </g>
+
+        <g transform="translate(80, 540)">
+          <text x="0" y="0" font-size="10" fill="#d4a574" letter-spacing="3">書き味の見本</text>
+          <path d="M 10 25 Q 80 35 150 22 Q 220 12 290 28 Q 360 38 430 22 Q 480 14 500 25" stroke="#e8c87e" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-dasharray="600" stroke-dashoffset="600">
+            <animate attributeName="stroke-dashoffset" values="600;0;0;600" keyTimes="0;0.5;0.8;1" dur="8s" repeatCount="indefinite"/>
+          </path>
+        </g>
+      </svg>
+
+      <!-- ===== 詳細ビュー: 金 (真鍮ゴールド) ===== -->
+      <svg class="svg-view" id="view-kin" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="kinBg" cx="50%" cy="40%">
+            <stop offset="0%" stop-color="#3d2817" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#0a0604" stop-opacity="1"/>
+          </radialGradient>
+          <linearGradient id="penGoldLg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f0d49a"/>
+            <stop offset="50%" stop-color="#c89a4a"/>
+            <stop offset="100%" stop-color="#7a6028"/>
+          </linearGradient>
+        </defs>
+        <rect width="1000" height="625" fill="url(#kinBg)"/>
+
+        <text x="80" y="60" font-size="11" fill="#d4a574" letter-spacing="6">SERIES 04</text>
+        <text x="80" y="100" font-size="36" fill="#f3e7d3" font-family="Hiragino Mincho ProN, serif" letter-spacing="0.15em">金 — KIN</text>
+        <text x="80" y="125" font-size="13" fill="#c8b89a" letter-spacing="0.2em">時を経るほどに、味わいが深まる</text>
+
+        <g transform="translate(500, 280)">
+          <ellipse cx="0" cy="80" rx="240" ry="8" fill="#000" opacity="0.6"/>
+          <rect x="-220" y="-12" width="320" height="24" fill="url(#penGoldLg)" rx="6"/>
+          <!-- 真鍮の輝き -->
+          <rect x="-220" y="-10" width="320" height="2" fill="#fff" opacity="0.5" rx="1"/>
+          <!-- 経年の縦の浅い線 -->
+          <g stroke="#7a6028" stroke-width="0.4" opacity="0.5">
+            <line x1="-180" y1="-10" x2="-180" y2="10"/>
+            <line x1="-100" y1="-10" x2="-100" y2="10"/>
+            <line x1="-20" y1="-10" x2="-20" y2="10"/>
+            <line x1="60" y1="-10" x2="60" y2="10"/>
+          </g>
+          <rect x="100" y="-14" width="120" height="28" fill="#a8853a" rx="6"/>
+          <rect x="100" y="-14" width="120" height="6" fill="#c89a4a" rx="6 6 0 0"/>
+          <rect x="100" y="-14" width="6" height="28" fill="#c89a4a"/>
+          <circle cx="220" cy="0" r="8" fill="#e8c87e"/>
+          <text x="220" y="3" text-anchor="middle" font-size="7" fill="#3d2817" font-family="serif">K</text>
+          <rect x="160" y="-22" width="4" height="40" fill="#7a6028" rx="1"/>
+          <rect x="-230" y="-8" width="14" height="16" fill="#a8853a"/>
+          <polygon points="-260,0 -226,-10 -226,10" fill="#3d2817"/>
+          <line x1="-260" y1="0" x2="-228" y2="0" stroke="#000" stroke-width="1"/>
+          <circle cx="-232" cy="0" r="2" fill="#3d2817"/>
+        </g>
+
+        <g font-family="Hiragino Mincho ProN, serif">
+          <text x="80" y="440" font-size="13" fill="#d4a574" letter-spacing="3">— この一本について —</text>
+          <text x="80" y="475" font-size="14" fill="#f3e7d3" letter-spacing="0.08em">無垢の真鍮を、職人が一つずつ削り、磨きました。</text>
+          <text x="80" y="498" font-size="14" fill="#f3e7d3" letter-spacing="0.08em">使い込むほどに艶が深まり、あなたの一本になっていきます。</text>
+        </g>
+
+        <g transform="translate(700, 420)">
+          <rect x="0" y="0" width="220" height="160" fill="#14100a" stroke="#d4a574" stroke-width="0.6" rx="6"/>
+          <text x="20" y="30" font-size="10" fill="#d4a574" letter-spacing="3">SPECIFICATION</text>
+          <line x1="20" y1="40" x2="200" y2="40" stroke="#3d2817" stroke-width="1"/>
+          <g font-family="Hiragino Mincho ProN, serif" font-size="11" fill="#c8b89a">
+            <text x="20" y="62">軸 / 真鍮無垢</text>
+            <text x="20" y="84">ニブ / スチール 中字</text>
+            <text x="20" y="106">充填 / カートリッジ</text>
+            <text x="20" y="128">価格 / 24,000円</text>
+            <text x="20" y="150">仕上げ / 鏡面</text>
+          </g>
+        </g>
+
+        <g transform="translate(80, 540)">
+          <text x="0" y="0" font-size="10" fill="#d4a574" letter-spacing="3">書き味の見本</text>
+          <path d="M 10 30 L 60 15 L 110 30 L 160 15 L 210 30 L 260 15 L 310 30 L 360 15 L 410 30 L 460 15 L 500 30" stroke="#e8c87e" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="600" stroke-dashoffset="600">
+            <animate attributeName="stroke-dashoffset" values="600;0;0;600" keyTimes="0;0.4;0.7;1" dur="6s" repeatCount="indefinite"/>
+          </path>
+        </g>
+      </svg>
+
+      <!-- ===== 詳細ビュー: 桜 (桜アクリル) ===== -->
+      <svg class="svg-view" id="view-sakura" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="sakuraBg" cx="50%" cy="40%">
+            <stop offset="0%" stop-color="#3d2030" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#0a0604" stop-opacity="1"/>
+          </radialGradient>
+          <linearGradient id="penPinkLg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f8d4e0"/>
+            <stop offset="50%" stop-color="#e8b4c8"/>
+            <stop offset="100%" stop-color="#a86888"/>
+          </linearGradient>
+        </defs>
+        <rect width="1000" height="625" fill="url(#sakuraBg)"/>
+
+        <!-- 桜の花びらが舞う -->
+        <g fill="#f8d4e0" opacity="0.8">
+          <g>
+            <path d="M 0 0 Q -3 -4 -1 -7 Q 2 -8 4 -5 Q 6 -1 3 2 Q 1 5 -2 3 Q -4 1 0 0">
+              <animateTransform attributeName="transform" type="translate" values="100,80; 150,140; 100,80" dur="10s" repeatCount="indefinite"/>
+              <animateTransform attributeName="transform" type="rotate" additive="sum" values="0;360" dur="15s" repeatCount="indefinite"/>
+            </path>
+          </g>
+          <path d="M 0 0 Q -3 -4 -1 -7 Q 2 -8 4 -5 Q 6 -1 3 2 Q 1 5 -2 3 Q -4 1 0 0" transform="translate(850, 200)" opacity="0.7"/>
+          <path d="M 0 0 Q -3 -4 -1 -7 Q 2 -8 4 -5 Q 6 -1 3 2 Q 1 5 -2 3 Q -4 1 0 0" transform="translate(750, 90)" opacity="0.5"/>
+          <path d="M 0 0 Q -3 -4 -1 -7 Q 2 -8 4 -5 Q 6 -1 3 2 Q 1 5 -2 3 Q -4 1 0 0" transform="translate(900, 380)" opacity="0.6"/>
+          <path d="M 0 0 Q -3 -4 -1 -7 Q 2 -8 4 -5 Q 6 -1 3 2 Q 1 5 -2 3 Q -4 1 0 0" transform="translate(50, 380)" opacity="0.5"/>
+        </g>
+
+        <text x="80" y="60" font-size="11" fill="#d4a574" letter-spacing="6">SERIES 05</text>
+        <text x="80" y="100" font-size="36" fill="#f3e7d3" font-family="Hiragino Mincho ProN, serif" letter-spacing="0.15em">桜 — SAKURA</text>
+        <text x="80" y="125" font-size="13" fill="#c8b89a" letter-spacing="0.2em">春の手紙に、添えるように</text>
+
+        <g transform="translate(500, 280)">
+          <ellipse cx="0" cy="80" rx="240" ry="8" fill="#000" opacity="0.5"/>
+          <rect x="-220" y="-12" width="320" height="24" fill="url(#penPinkLg)" rx="6"/>
+          <!-- 花びらの模様 -->
+          <g fill="#fff" opacity="0.7">
+            <path d="M -120 -4 Q -118 -7 -116 -4 Q -118 -2 -120 -4"/>
+            <path d="M -50 4 Q -48 1 -46 4 Q -48 6 -50 4"/>
+            <path d="M 30 -3 Q 32 -6 34 -3 Q 32 -1 30 -3"/>
+          </g>
+          <rect x="100" y="-14" width="120" height="28" fill="#a86888" rx="6"/>
+          <rect x="100" y="-14" width="120" height="6" fill="#c89aa8" rx="6 6 0 0"/>
+          <rect x="100" y="-14" width="6" height="28" fill="#c89aa8"/>
+          <circle cx="220" cy="0" r="8" fill="#fff" opacity="0.7"/>
+          <text x="220" y="3" text-anchor="middle" font-size="7" fill="#a86888" font-family="serif">K</text>
+          <rect x="160" y="-22" width="4" height="40" fill="url(#brassLg)" rx="1"/>
+          <rect x="-230" y="-8" width="14" height="16" fill="#a86888"/>
+          <polygon points="-260,0 -226,-10 -226,10" fill="url(#brassLg)"/>
+          <line x1="-260" y1="0" x2="-228" y2="0" stroke="#a86888" stroke-width="1"/>
+          <circle cx="-232" cy="0" r="2" fill="#a86888"/>
+        </g>
+
+        <g font-family="Hiragino Mincho ProN, serif">
+          <text x="80" y="440" font-size="13" fill="#d4a574" letter-spacing="3">— この一本について —</text>
+          <text x="80" y="475" font-size="14" fill="#f3e7d3" letter-spacing="0.08em">桜の花びらを思わせる、淡い色合いのアクリル軸。</text>
+          <text x="80" y="498" font-size="14" fill="#f3e7d3" letter-spacing="0.08em">手紙、日記、贈り物の一筆に、寄り添う一本です。</text>
+        </g>
+
+        <g transform="translate(700, 420)">
+          <rect x="0" y="0" width="220" height="160" fill="#14100a" stroke="#d4a574" stroke-width="0.6" rx="6"/>
+          <text x="20" y="30" font-size="10" fill="#d4a574" letter-spacing="3">SPECIFICATION</text>
+          <line x1="20" y1="40" x2="200" y2="40" stroke="#3d2817" stroke-width="1"/>
+          <g font-family="Hiragino Mincho ProN, serif" font-size="11" fill="#c8b89a">
+            <text x="20" y="62">軸 / アクリル樹脂</text>
+            <text x="20" y="84">ニブ / 14金 細字</text>
+            <text x="20" y="106">充填 / 両用式</text>
+            <text x="20" y="128">価格 / 38,000円</text>
+            <text x="20" y="150">仕上げ / 桜柄入</text>
+          </g>
+        </g>
+
+        <g transform="translate(80, 540)">
+          <text x="0" y="0" font-size="10" fill="#d4a574" letter-spacing="3">書き味の見本</text>
+          <path d="M 10 28 Q 50 18 90 28 Q 130 38 170 28 Q 210 18 250 28 Q 290 38 330 28 Q 370 18 410 28 Q 450 38 490 28" stroke="#e8b4c8" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-dasharray="600" stroke-dashoffset="600">
+            <animate attributeName="stroke-dashoffset" values="600;0;0;600" keyTimes="0;0.4;0.7;1" dur="7s" repeatCount="indefinite"/>
+          </path>
+        </g>
+      </svg>
+
+    </div>
+  </div>
+</section>
+
+<section class="content" id="about">
+  <div class="section-title reveal">— ABOUT US —</div>
+  <h2 class="section-heading reveal">工房について</h2>
+  <div class="about-content reveal">
+    <div class="about-text">
+      <p>言の葉は、書く道具から、書く時間そのものを贈りたいと考える小さな工房です。</p>
+      <p>削り、塗り、磨きを、職人の手で重ねてゆく。一本ができ上がるまでに、半年から二年。長い時間をかけて、一生使える一本を届けています。</p>
+      <p>ショールームでは、すべての筆記具をお試しいただけます。あなたの手に、本当に合う一本を、ゆっくり選んでください。</p>
+    </div>
+    <div class="about-card">
+      <h3>— OUR PROMISE —</h3>
+      <p style="color:#c8b89a; font-size:14px; line-height:2.0;">一本一本に、職人の手仕事を。<br>使い込むほど、味わいが深まる道具を。<br>修理・調整は、いつまでも承ります。</p>
+    </div>
+  </div>
+</section>
+
+<section class="content" id="company">
+  <div class="section-title reveal">— SHOP INFORMATION —</div>
+  <h2 class="section-heading reveal">店舗案内</h2>
+  <div class="company-info reveal">
+    <div class="info-row">
+      <div class="info-label">SHOP</div>
+      <div class="info-value">KOTONOHA / 言の葉 万年筆工房</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">PLACE</div>
+      <div class="info-value">架空県 言の葉町 和紙通り 一番地<br>(これは見本のホームページです)</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">OPEN</div>
+      <div class="info-value">十一時から、夜七時まで / 木曜定休</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">CRAFT</div>
+      <div class="info-value">削り、塗り、磨き、仕立て、調整</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">SINCE</div>
+      <div class="info-value">明治三十二年(架空)</div>
+    </div>
+  </div>
+</section>
+
+<section class="content" id="contact">
+  <div class="contact-cta reveal">
+    <h2>一本との出会いを、お手伝いします</h2>
+    <p>ご来店のご予約、書き味のご相談、お贈り物のご相談など、<br>お気軽にお問い合わせください。</p>
+    <a href="mailto:info@example.com" class="cta-button">お問い合わせ</a>
+  </div>
+</section>
+
+<footer>
+  © 2026 KOTONOHA — 言の葉 万年筆工房 (DEMO)
+</footer>
+
+<script>
+const viewLabels = {
+  main:   'ショールーム',
+  mori:   '森 — MORI',
+  umi:    '海 — UMI',
+  tsuki:  '月 — TSUKI',
+  kin:    '金 — KIN',
+  sakura: '桜 — SAKURA'
+};
+
+const breadcrumb = document.getElementById('breadcrumb');
+const illustrationArea = document.getElementById('illustrationArea');
+let currentView = 'main';
+
+function switchView(targetId) {
+  document.querySelectorAll('.svg-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + targetId).classList.add('active');
+  currentView = targetId;
+  updateBreadcrumb(targetId);
+  if (targetId === 'main') illustrationArea.classList.remove('detail');
+  else illustrationArea.classList.add('detail');
+}
+
+function updateBreadcrumb(targetId) {
+  if (targetId === 'main') {
+    breadcrumb.innerHTML = '<span data-view="main">ショールーム</span>';
+  } else {
+    breadcrumb.innerHTML =
+      '<span data-view="main">ショールーム</span>' +
+      '<span class="arrow">›</span>' +
+      '<span data-view="' + targetId + '">' + viewLabels[targetId] + '</span>';
+  }
+  breadcrumb.querySelectorAll('span[data-view]').forEach(el => {
+    el.addEventListener('click', () => switchView(el.dataset.view));
+  });
+}
+
+function setupHotspots() {
+  document.querySelectorAll('.hotspot').forEach(el => {
+    el.addEventListener('click', (e) => {
+      const target = el.dataset.target;
+      if (!target) return;
+      const rect = illustrationArea.getBoundingClientRect();
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple';
+      ripple.style.left = (e.clientX - rect.left) + 'px';
+      ripple.style.top = (e.clientY - rect.top) + 'px';
+      ripple.style.width = '20px';
+      ripple.style.height = '20px';
+      illustrationArea.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 800);
+      setTimeout(() => switchView(target), 200);
+    });
+  });
+}
+setupHotspots();
+
+document.querySelector('.continue-btn').addEventListener('click', () => switchView('main'));
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && currentView !== 'main') switchView('main');
+});
+
+illustrationArea.addEventListener('click', (e) => {
+  if (currentView === 'main') return;
+  if (!e.target.closest('.hotspot')) {
+    const rect = illustrationArea.getBoundingClientRect();
+    const ripple = document.createElement('div');
+    ripple.className = 'ripple';
+    ripple.style.left = (e.clientX - rect.left) + 'px';
+    ripple.style.top = (e.clientY - rect.top) + 'px';
+    ripple.style.width = '20px';
+    ripple.style.height = '20px';
+    ripple.style.background = 'rgba(212, 165, 116, 0.3)';
+    illustrationArea.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 800);
+    setTimeout(() => switchView('main'), 200);
+  }
+});
+
+illustrationArea.addEventListener('contextmenu', (e) => {
+  if (currentView !== 'main') {
+    e.preventDefault();
+    switchView('main');
+  }
+});
+
+updateBreadcrumb('main');
+
+// プレイヤー追従
+const player = document.getElementById('player');
+let playerX = 500, playerY = 555;
+let targetX = 500, targetY = 555;
+let walkPhase = 0;
+
+illustrationArea.addEventListener('mousemove', (e) => {
+  if (currentView !== 'main') return;
+  const rect = illustrationArea.getBoundingClientRect();
+  const x = ((e.clientX - rect.left) / rect.width) * 1000;
+  const y = ((e.clientY - rect.top) / rect.height) * 625;
+  targetX = Math.max(40, Math.min(960, x));
+  targetY = Math.max(520, Math.min(595, y));
+});
+
+function animatePlayer() {
+  if (currentView === 'main' && player) {
+    const dx = targetX - playerX;
+    const dy = targetY - playerY;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    playerX += dx * 0.12;
+    playerY += dy * 0.12;
+    let bounce = 0;
+    if (dist > 2) {
+      walkPhase += 0.3;
+      bounce = Math.sin(walkPhase) * 2;
+    }
+    player.setAttribute('transform', `translate(${playerX}, ${playerY + bounce})`);
+
+    document.querySelectorAll('#view-main .hotspot').forEach(el => {
+      const bbox = el.getBBox();
+      const cx = bbox.x + bbox.width/2;
+      const cy = bbox.y + bbox.height/2;
+      const d = Math.sqrt((cx-playerX)**2 + (cy-playerY)**2);
+      if (d < 130) {
+        el.style.filter = 'drop-shadow(0 0 18px rgba(255, 228, 160, 0.7)) brightness(1.1)';
+        el.style.transform = 'translateY(-4px)';
+      } else {
+        el.style.filter = '';
+        el.style.transform = '';
+      }
+    });
+  }
+  requestAnimationFrame(animatePlayer);
+}
+player.setAttribute('transform', `translate(${playerX}, ${playerY})`);
+animatePlayer();
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('active');
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

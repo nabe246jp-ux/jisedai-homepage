@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>次世代ホームページ — GitHub アップロード手順</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  background: #f6f7f9;
+  color: #1f2328;
+  line-height: 1.8;
+  padding: 40px 20px 80px;
+}
+.container { max-width: 880px; margin: 0 auto; }
+
+.head {
+  background: #fff;
+  border-radius: 14px;
+  padding: 36px 40px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.head h1 {
+  font-size: 28px;
+  color: #1a3a5c;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.head p { color: #555; font-size: 14px; }
+
+.step {
+  background: #fff;
+  border-radius: 14px;
+  padding: 32px 40px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 22px;
+}
+.step-num {
+  display: inline-block;
+  background: #d97757;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32px;
+  font-weight: 800;
+  margin-right: 12px;
+  font-size: 14px;
+}
+.step h2 {
+  font-size: 20px;
+  color: #1a3a5c;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+}
+.step h2 span:not(.step-num) { font-size: 20px; }
+.step .desc { margin-bottom: 18px; color: #444; font-size: 14px; }
+.step .note {
+  background: #fff8e6;
+  border-left: 4px solid #ffd97a;
+  padding: 10px 16px;
+  margin: 14px 0;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #5a4a1a;
+}
+.step .danger {
+  background: #fff0ed;
+  border-left: 4px solid #d97757;
+  padding: 10px 16px;
+  margin: 14px 0;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #7a2e1a;
+}
+
+.code {
+  background: #1a1f2e;
+  border-radius: 8px;
+  padding: 18px 20px;
+  margin: 14px 0;
+  position: relative;
+  overflow-x: auto;
+}
+.code pre {
+  color: #e3e6f0;
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #d97757;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+.copy-btn:hover { background: #c46544; }
+.copy-btn.copied { background: #28ca42; }
+
+.url-box {
+  background: #f0f4f8;
+  border-radius: 8px;
+  padding: 14px 20px;
+  margin: 14px 0;
+  font-family: monospace;
+  font-size: 13px;
+  border: 1px solid #d0d8e0;
+  word-break: break-all;
+}
+
+.input-line {
+  background: #f8f9fb;
+  border: 1px solid #d0d8e0;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin: 8px 0;
+  font-size: 13px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.input-line label { font-weight: 700; color: #555; min-width: 100px; }
+.input-line .val { color: #1a3a5c; font-family: monospace; }
+
+ul, ol { margin: 10px 0 10px 20px; }
+li { margin-bottom: 6px; font-size: 14px; }
+
+.foot {
+  text-align: center;
+  margin-top: 36px;
+  color: #888;
+  font-size: 12px;
+}
+
+a { color: #d97757; text-decoration: none; }
+a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="head">
+    <h1>次世代ホームページ — GitHub アップロード手順</h1>
+    <p>非エンジニアの方でも 順番にコピー&ペースト するだけで GitHub に置ける ように 細かく書いています。</p>
+  </div>
+
+  <div class="step">
+    <h2><span class="step-num">0</span><span>準備するもの</span></h2>
+    <ul>
+      <li>GitHub のアカウント (お持ちです)</li>
+      <li>GitHub の「Personal Access Token (PAT)」 (以前 設定したものを 使います)</li>
+      <li>Windows の PowerShell (スタートメニュー → 「PowerShell」と入力 → クリック)</li>
+    </ul>
+    <div class="note">
+      Personal Access Token をどこかに 控えていなければ、GitHub にログインして 右上の自分のアイコン → Settings → Developer settings → Personal access tokens から 新しく 発行 してください。発行 時 「repo」と「workflow」の チェック を 入れる の が ポイントです。
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="step-num">1</span><span>古い .git フォルダ を 削除する</span></h2>
+    <div class="desc">
+      ぼくが 途中まで 用意 した 古い .git フォルダが 残っているので、まず 削除します。PowerShell を 起動 して、下のコマンド を そのまま 貼り付けて Enter してください。
+    </div>
+    <div class="code">
+      <button class="copy-btn" data-copy="cd 'C:\Users\nabe2\Documents\Claude\Projects\次世代ホームページ'; if (Test-Path .git) { Remove-Item -Recurse -Force .git }">コピー</button>
+<pre>cd 'C:\Users\nabe2\Documents\Claude\Projects\次世代ホームページ'; if (Test-Path .git) { Remove-Item -Recurse -Force .git }</pre>
+    </div>
+    <div class="note">
+      .git フォルダ が 元々 無ければ 何も 起きません。エラー も 出ません。安全 な コマンド です。
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="step-num">2</span><span>git の 初期設定 (初回のみ)</span></h2>
+    <div class="desc">
+      git に 「自分は こういう 名前 と メールアドレス です」と 教えます。すでに 設定済みでも 上書き で 問題ない の で 実行 OK です。
+    </div>
+    <div class="code">
+      <button class="copy-btn" data-copy="git config --global user.name 'nabe'; git config --global user.email 'nabe246jp@gmail.com'">コピー</button>
+<pre>git config --global user.name 'nabe'; git config --global user.email 'nabe246jp@gmail.com'</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="step-num">3</span><span>git を 初期化 して、ファイルを 全部 登録 する</span></h2>
+    <div class="desc">
+      下の コマンド を そのまま 貼り付けて Enter。プロジェクト の 全ファイルを git に 登録 して、最初の コミット を 作ります。
+    </div>
+    <div class="code">
+      <button class="copy-btn" data-copy="git init -b main; git add .; git commit -m 'first commit: 次世代ホームページ 3つのモック'">コピー</button>
+<pre>git init -b main; git add .; git commit -m 'first commit: 次世代ホームページ 3つのモック'</pre>
+    </div>
+    <div class="note">
+      最後に 「[main (root-commit) ...] first commit: ...」と 出れば 成功 です。
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="step-num">4</span><span>GitHub で 空っぽ の リポジトリ を 作る</span></h2>
+    <div class="desc">
+      ブラウザで 下記の URL を 開いて、新しい リポジトリ を 作ります。
+    </div>
+    <div class="url-box">
+      <a href="https://github.com/new" target="_blank">https://github.com/new</a>
+    </div>
+    <div class="desc">入力する内容:</div>
+    <div class="input-line"><label>Repository name</label><span class="val">jisedai-homepage</span></div>
+    <div class="input-line"><label>Description</label><span class="val">次世代ホームページ プロジェクト (任意)</span></div>
+    <div class="input-line"><label>公開設定</label><span class="val">Public (公開) または Private (非公開) どちらでも OK</span></div>
+    <div class="danger">
+      重要: 下の「Initialize this repository with a README」「.gitignore」「license」の 3つの チェックは <strong>すべて 外したまま</strong>(=何も 追加 しない)で 「Create repository」を 押してください。すでに ローカル に README が ある ので、追加 すると ぶつかります。
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="step-num">5</span><span>作った リポジトリ の URL を コピー</span></h2>
+    <div class="desc">
+      リポジトリ作成 後、画面 に「Quick setup」と 書かれた 場所 が 出ます。HTTPS タブ の URL を コピー します。だいたい こんな 形 です:
+    </div>
+    <div class="url-box">
+      https://github.com/<strong>あなたのGitHubユーザー名</strong>/jisedai-homepage.git
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="step-num">6</span><span>ローカル と GitHub を 繋ぐ</span></h2>
+    <div class="desc">
+      下の コマンド の 「YOUR-USERNAME」を 自分の GitHub ユーザー名 に 書き換えて 実行 します。
+    </div>
+    <div class="code">
+      <button class="copy-btn" data-copy="git remote add origin https://github.com/YOUR-USERNAME/jisedai-homepage.git">コピー</button>
+<pre>git remote add origin https://github.com/YOUR-USERNAME/jisedai-homepage.git</pre>
+    </div>
+    <div class="note">
+      「YOUR-USERNAME」は そのまま では 動きません。必ず 自分の GitHub ID に 置き換えてください。
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="step-num">7</span><span>GitHub に アップロード する</span></h2>
+    <div class="desc">
+      下の コマンド を 実行 して、ファイル を GitHub に 送信 します。
+    </div>
+    <div class="code">
+      <button class="copy-btn" data-copy="git push -u origin main">コピー</button>
+<pre>git push -u origin main</pre>
+    </div>
+    <div class="note">
+      初回 だけ、ユーザー名 と パスワード を 聞かれます。
+      <ul style="margin-top:8px;">
+        <li>Username: <strong>GitHub ID</strong></li>
+        <li>Password: <strong>Personal Access Token</strong> (発行 して 控えていた もの。普通の パスワード では ありません)</li>
+      </ul>
+    </div>
+    <div class="desc">
+      最後 に 「main -> main」と 表示 されたら、アップロード 完了 です。
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="step-num">8</span><span>確認</span></h2>
+    <div class="desc">
+      ブラウザで 下記 URL を 開いて、ファイル が 並んで いれば 成功 です。
+    </div>
+    <div class="url-box">
+      https://github.com/<strong>あなたのGitHubユーザー名</strong>/jisedai-homepage
+    </div>
+    <div class="note">
+      ついで に GitHub Pages を 設定 すると、世界中 から ブラウザ で 直接 街バージョン を 見られる ように なります。Settings → Pages から、Source を「main」「(root)」に 設定 して 保存 すれば、数分後 に 公開 URL が 出ます。
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="step-num">★</span><span>うまく いかなかった とき</span></h2>
+    <ul>
+      <li>「git: command not found」 → Git が インストール されていません。<a href="https://git-scm.com/download/win" target="_blank">Git for Windows</a> を ダウンロード して インストール してください。</li>
+      <li>「Authentication failed」 → パスワード の 場所 に Personal Access Token を 入れて ください。GitHub の 普通の パスワード では 通りません。</li>
+      <li>「remote origin already exists」 → コマンド <code>git remote remove origin</code> を 実行 して から ステップ 6 を やり直して ください。</li>
+      <li>「nothing to commit」 → ステップ 3 で すでに コミット 済み です。ステップ 4 へ 進んで OK。</li>
+    </ul>
+  </div>
+
+  <div class="foot">
+    完了したら、また お声 かけ ください 😊 (絵文字 1つ だけ 失礼します)
+  </div>
+
+</div>
+
+<script>
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const text = btn.dataset.copy;
+    navigator.clipboard.writeText(text).then(() => {
+      const original = btn.textContent;
+      btn.textContent = 'コピーしました!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove('copied');
+      }, 1500);
+    });
+  });
+});
+</script>
+</body>
+</html>

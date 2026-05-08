@@ -1,0 +1,1901 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TECH PARTNERS RECRUIT | 採用情報</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+  background: #f5f1e8;
+  color: #2a2a2a;
+  overflow-x: hidden;
+  line-height: 1.7;
+}
+
+/* ===== ナビゲーション ===== */
+nav {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  padding: 18px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  background: rgba(245, 241, 232, 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.logo {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #2a2a2a;
+}
+.logo span { color: #d97757; font-size: 12px; letter-spacing: 4px; margin-left: 12px; font-weight: 700;}
+.nav-links { display: flex; gap: 30px; list-style: none; }
+.nav-links a {
+  color: #2a2a2a;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+.nav-links a:hover { color: #d97757; }
+
+/* ===== ヒーロー ===== */
+.hero {
+  min-height: 100vh;
+  padding: 100px 30px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.hero-text {
+  text-align: center;
+  max-width: 800px;
+  margin-bottom: 36px;
+}
+.hero-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background: #fff;
+  border: 1px solid #d97757;
+  color: #d97757;
+  border-radius: 30px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+  font-weight: 600;
+}
+.hero h1 {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 18px;
+  color: #1a1a1a;
+}
+.hero h1 .accent { color: #d97757; }
+.hero p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 22px;
+}
+.hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #fff;
+  border-radius: 30px;
+  font-size: 13px;
+  color: #666;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.hint-dot {
+  width: 8px;
+  height: 8px;
+  background: #d97757;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+}
+
+.illustration-frame {
+  width: 100%;
+  max-width: 1100px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.08), 0 4px 20px rgba(0,0,0,0.04);
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.frame-header {
+  padding: 12px 20px;
+  background: #f8f5ee;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #888;
+}
+.frame-dots { display: flex; gap: 6px; }
+.frame-dot { width: 11px; height: 11px; border-radius: 50%; }
+.frame-dot:nth-child(1) { background: #ff6058; }
+.frame-dot:nth-child(2) { background: #ffbd2e; }
+.frame-dot:nth-child(3) { background: #28ca42; }
+.breadcrumb {
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  flex-wrap: wrap;
+}
+.breadcrumb span[data-view] {
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.breadcrumb span[data-view]:hover { color: #d97757; }
+.breadcrumb .arrow { color: #ccc; }
+.continue-btn {
+  padding: 5px 14px;
+  background: #2a2a2a;
+  color: #fff;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.continue-btn:hover { background: #d97757; }
+
+.back-hint {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: #666;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: none;
+  z-index: 10;
+  pointer-events: none;
+}
+.illustration-area:not(.main-active) .back-hint { display: block; animation: fadeIn 0.5s; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 11px;
+  margin: 0 2px;
+}
+
+.illustration-area {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: linear-gradient(135deg, #fdfaf3 0%, #f5edd8 100%);
+  overflow: hidden;
+}
+.svg-view {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+  pointer-events: none;
+}
+.svg-view.active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.hotspot {
+  cursor: pointer;
+  transition: filter 0.3s ease, transform 0.3s ease;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+.hotspot:hover {
+  filter: drop-shadow(0 0 14px rgba(217, 119, 87, 0.6)) brightness(1.06);
+  transform: translateY(-3px);
+}
+.hotspot-label {
+  font-size: 14px;
+  font-weight: 700;
+  fill: #2a2a2a;
+  pointer-events: none;
+  font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+}
+.hotspot-sublabel {
+  font-size: 11px;
+  fill: #666;
+  pointer-events: none;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(217, 119, 87, 0.4);
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+  animation: ripple-anim 0.8s ease-out;
+}
+@keyframes ripple-anim {
+  to { transform: translate(-50%, -50%) scale(20); opacity: 0; }
+}
+
+/* ===== セクション ===== */
+section.content {
+  padding: 100px 30px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.section-title {
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: #d97757;
+  margin-bottom: 12px;
+  text-align: center;
+  font-weight: 700;
+}
+.section-heading {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 60px;
+  color: #1a1a1a;
+}
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.active { opacity: 1; transform: translateY(0); }
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  align-items: center;
+}
+.about-text p { color: #444; margin-bottom: 18px; font-size: 16px; }
+.about-card {
+  background: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+}
+.about-card h3 { font-size: 20px; margin-bottom: 12px; color: #d97757; }
+
+.contact-cta {
+  text-align: center;
+  padding: 80px 30px;
+  background: #fff;
+  border-radius: 30px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+}
+.contact-cta h2 { font-size: clamp(26px, 4vw, 36px); font-weight: 800; margin-bottom: 18px; }
+.contact-cta p { color: #555; margin-bottom: 28px; }
+.cta-button {
+  display: inline-block;
+  padding: 14px 36px;
+  background: #d97757;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(217, 119, 87, 0.3);
+}
+
+footer {
+  padding: 40px 50px;
+  text-align: center;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  color: #888;
+  font-size: 13px;
+  margin-top: 60px;
+}
+
+@media (max-width: 768px) {
+  nav { padding: 12px 20px; }
+  .nav-links { display: none; }
+  section.content { padding: 60px 20px; }
+  .about-content { grid-template-columns: 1fr; gap: 30px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">TECH PARTNERS<span>RECRUIT</span></div>
+  <ul class="nav-links">
+    <li><a href="#about">わたしたちについて</a></li>
+    <li><a href="#explore">採用情報を探検</a></li>
+    <li><a href="#contact">エントリー</a></li>
+  </ul>
+</nav>
+
+<section class="hero" id="explore">
+  <div class="hero-text">
+    <div class="hero-badge">RECRUIT 2026</div>
+    <h1>あなたの一歩を、<span class="accent">ここから。</span></h1>
+    <p>建物の各階を歩いて回ると、わたしたちの会社が見えてきます。<br>気になる階に入って、さらに気になる項目をクリックしてください。</p>
+    <div class="hint">
+      <span class="hint-dot"></span>
+      <span>マウスを動かすと「あなた」が歩きます。三段階まで深掘りできます</span>
+    </div>
+  </div>
+
+  <div class="illustration-frame">
+    <div class="frame-header">
+      <div class="frame-dots">
+        <div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-dot"></div>
+      </div>
+      <div class="breadcrumb" id="breadcrumb">
+        <span data-view="main">採用トップ</span>
+      </div>
+      <div class="continue-btn">↻ 戻る</div>
+    </div>
+
+    <div class="illustration-area main-active" id="illustrationArea">
+      <div class="back-hint">
+        画面のどこかをクリック または <span class="kbd">Esc</span> キーで戻れます
+      </div>
+
+      <!-- ===== メイン: 採用ビル(断面) ===== -->
+      <svg class="svg-view active" id="view-main" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fff5e8"/>
+            <stop offset="100%" stop-color="#fde7d3"/>
+          </linearGradient>
+          <linearGradient id="bldgG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fff" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="#f5f1e8" stop-opacity="0.95"/>
+          </linearGradient>
+          <linearGradient id="floor4G" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fff5e8"/>
+            <stop offset="100%" stop-color="#f5e0c8"/>
+          </linearGradient>
+          <linearGradient id="floor3G" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#e8f5ee"/>
+            <stop offset="100%" stop-color="#cfe8d8"/>
+          </linearGradient>
+          <linearGradient id="floor2G" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#e8eef8"/>
+            <stop offset="100%" stop-color="#cfd8e8"/>
+          </linearGradient>
+          <linearGradient id="floor1G" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fdebe1"/>
+            <stop offset="100%" stop-color="#f5cdb8"/>
+          </linearGradient>
+          <radialGradient id="sunG"><stop offset="0%" stop-color="#ffd97a" stop-opacity="0.6"/><stop offset="100%" stop-color="#ffd97a" stop-opacity="0"/></radialGradient>
+        </defs>
+        <rect width="1000" height="625" fill="url(#skyG)"/>
+        <!-- 太陽・雲 -->
+        <circle cx="850" cy="80" r="60" fill="url(#sunG)"/>
+        <circle cx="850" cy="80" r="22" fill="#ffd97a"/>
+        <ellipse cx="120" cy="70" rx="40" ry="11" fill="#fff" opacity="0.85"/>
+        <ellipse cx="135" cy="58" rx="28" ry="9" fill="#fff" opacity="0.85"/>
+        <ellipse cx="500" cy="60" rx="38" ry="10" fill="#fff" opacity="0.8"/>
+        <!-- 飛行船 (ゆっくり横移動) -->
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="-100,0; 1100,0" dur="60s" repeatCount="indefinite"/>
+          <ellipse cx="0" cy="100" rx="28" ry="8" fill="#fff" stroke="#d97757" stroke-width="1"/>
+          <rect x="-6" y="108" width="12" height="4" fill="#d97757"/>
+          <text x="0" y="103" text-anchor="middle" font-size="8" font-weight="700" fill="#d97757">RECRUIT</text>
+        </g>
+        <!-- 地面 -->
+        <rect x="0" y="540" width="1000" height="85" fill="#e8d8b8"/>
+        <rect x="0" y="540" width="1000" height="3" fill="#c8a878"/>
+        <!-- 道 -->
+        <ellipse cx="500" cy="600" rx="450" ry="22" fill="#d4b896" opacity="0.7"/>
+        <!-- 木 -->
+        <g>
+          <rect x="60" y="510" width="6" height="30" fill="#6b4a2a"/>
+          <circle cx="63" cy="500" r="22" fill="#8bb88b"/>
+          <circle cx="50" cy="495" r="14" fill="#9bc89b"/>
+          <circle cx="76" cy="498" r="13" fill="#7aa87a"/>
+        </g>
+        <g>
+          <rect x="930" y="510" width="6" height="30" fill="#6b4a2a"/>
+          <circle cx="933" cy="500" r="20" fill="#8bb88b"/>
+          <circle cx="945" cy="498" r="13" fill="#9bc89b"/>
+          <circle cx="921" cy="497" r="14" fill="#7aa87a"/>
+        </g>
+        <!-- ビル本体 -->
+        <rect x="160" y="100" width="680" height="440" fill="url(#bldgG)" stroke="#3a2515" stroke-width="2"/>
+        <!-- 屋上の旗 -->
+        <line x1="500" y1="100" x2="500" y2="60" stroke="#3a2515" stroke-width="2"/>
+        <path d="M 500 60 L 540 65 L 500 75 Z" fill="#d97757">
+          <animateTransform attributeName="transform" type="rotate" values="0 500 65; 4 500 65; 0 500 65" dur="3s" repeatCount="indefinite"/>
+        </path>
+        <!-- 看板 -->
+        <rect x="350" y="80" width="300" height="22" fill="#fff" stroke="#3a2515" stroke-width="1.5" rx="4"/>
+        <text x="500" y="95" text-anchor="middle" font-size="12" font-weight="800" fill="#3a2515" letter-spacing="3">TECH PARTNERS BUILDING</text>
+
+        <!-- ===== 4階: 事業紹介 (BUSINESS) ===== -->
+        <g class="hotspot" data-target="biz">
+          <rect x="160" y="105" width="680" height="105" fill="url(#floor4G)" stroke="#d97757" stroke-width="0.5"/>
+          <!-- 階数 -->
+          <rect x="170" y="115" width="36" height="36" fill="#d97757" rx="3"/>
+          <text x="188" y="138" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">4F</text>
+          <text x="220" y="130" font-size="14" font-weight="800" fill="#3a2515" letter-spacing="2">BUSINESS — 事業紹介</text>
+          <text x="220" y="148" font-size="10" fill="#666">どんな仕事をしているか</text>
+          <!-- デスク -->
+          <g transform="translate(280, 165)">
+            <rect x="0" y="20" width="55" height="6" fill="#8b6f47"/>
+            <rect x="2" y="26" width="3" height="14" fill="#5a3a25"/>
+            <rect x="50" y="26" width="3" height="14" fill="#5a3a25"/>
+            <rect x="10" y="6" width="35" height="14" fill="#3a2515" rx="1"/>
+            <rect x="12" y="8" width="31" height="10" fill="#7ec8e3"/>
+            <rect x="22" y="20" width="11" height="2" fill="#3a2515"/>
+            <!-- 人 -->
+            <circle cx="27" cy="0" r="6" fill="#ffd9b8"/>
+            <path d="M 21 -1 Q 22 -6 27 -7 Q 32 -6 33 -1 Q 28 -3 27 -3 Q 25 -3 21 -1" fill="#3a2515"/>
+            <rect x="22" y="6" width="10" height="14" fill="#5a8e5a" rx="2"/>
+          </g>
+          <g transform="translate(380, 165)">
+            <rect x="0" y="20" width="55" height="6" fill="#8b6f47"/>
+            <rect x="2" y="26" width="3" height="14" fill="#5a3a25"/>
+            <rect x="50" y="26" width="3" height="14" fill="#5a3a25"/>
+            <rect x="10" y="6" width="35" height="14" fill="#3a2515" rx="1"/>
+            <rect x="12" y="8" width="31" height="10" fill="#a8d5a8"/>
+            <circle cx="27" cy="0" r="6" fill="#ffd9b8"/>
+            <path d="M 21 -1 Q 22 -6 27 -7 Q 32 -6 33 -1" fill="#5e3a25"/>
+            <rect x="22" y="6" width="10" height="14" fill="#d97757" rx="2"/>
+          </g>
+          <g transform="translate(490, 165)">
+            <rect x="0" y="20" width="55" height="6" fill="#8b6f47"/>
+            <rect x="2" y="26" width="3" height="14" fill="#5a3a25"/>
+            <rect x="50" y="26" width="3" height="14" fill="#5a3a25"/>
+            <rect x="10" y="6" width="35" height="14" fill="#3a2515" rx="1"/>
+            <rect x="12" y="8" width="31" height="10" fill="#c8a8e9"/>
+            <circle cx="27" cy="0" r="6" fill="#ffd9b8"/>
+            <path d="M 21 -1 Q 22 -6 27 -7 Q 32 -6 33 -1" fill="#3a2515"/>
+            <rect x="22" y="6" width="10" height="14" fill="#5ba7c5" rx="2"/>
+          </g>
+          <!-- ホワイトボード -->
+          <rect x="610" y="125" width="80" height="50" fill="#fff" stroke="#999" stroke-width="1"/>
+          <line x1="620" y1="140" x2="680" y2="140" stroke="#5ba7c5" stroke-width="1.5"/>
+          <line x1="620" y1="150" x2="660" y2="150" stroke="#d97757" stroke-width="1.5"/>
+          <line x1="620" y1="160" x2="670" y2="160" stroke="#5a8e5a" stroke-width="1.5"/>
+          <!-- 観葉植物 -->
+          <rect x="752" y="180" width="14" height="18" fill="#a87f4d"/>
+          <ellipse cx="759" cy="170" rx="14" ry="14" fill="#7eb37e"/>
+          <ellipse cx="751" cy="166" rx="9" ry="9" fill="#9bc89b"/>
+        </g>
+
+        <!-- ===== 3階: 福利厚生 (BENEFITS) ===== -->
+        <g class="hotspot" data-target="benefits">
+          <rect x="160" y="210" width="680" height="105" fill="url(#floor3G)" stroke="#5a8e5a" stroke-width="0.5"/>
+          <rect x="170" y="220" width="36" height="36" fill="#5a8e5a" rx="3"/>
+          <text x="188" y="243" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">3F</text>
+          <text x="220" y="235" font-size="14" font-weight="800" fill="#3a2515" letter-spacing="2">BENEFITS — 福利厚生</text>
+          <text x="220" y="253" font-size="10" fill="#666">働きやすさを支える仕組み</text>
+          <!-- ソファ -->
+          <g transform="translate(280, 270)">
+            <rect x="0" y="10" width="80" height="20" fill="#d4a574" rx="3"/>
+            <rect x="0" y="6" width="80" height="10" fill="#e8c896" rx="3"/>
+            <rect x="-4" y="10" width="6" height="22" fill="#a87f4d" rx="2"/>
+            <rect x="78" y="10" width="6" height="22" fill="#a87f4d" rx="2"/>
+            <rect x="6" y="0" width="14" height="14" fill="#d97757" rx="2"/>
+            <rect x="60" y="0" width="14" height="14" fill="#5ba7c5" rx="2"/>
+          </g>
+          <!-- テーブル + マグカップ -->
+          <g transform="translate(390, 285)">
+            <ellipse cx="20" cy="18" rx="22" ry="3" fill="#000" opacity="0.15"/>
+            <rect x="0" y="0" width="40" height="6" fill="#8b6f47"/>
+            <rect x="2" y="6" width="3" height="14" fill="#5a3a25"/>
+            <rect x="35" y="6" width="3" height="14" fill="#5a3a25"/>
+            <ellipse cx="14" cy="0" rx="6" ry="2" fill="#fff"/>
+            <rect x="8" y="-6" width="12" height="6" fill="#fff" stroke="#5ba7c5" stroke-width="1"/>
+            <ellipse cx="28" cy="0" rx="5" ry="1.8" fill="#fff"/>
+            <rect x="23" y="-5" width="10" height="5" fill="#fff" stroke="#d97757" stroke-width="1"/>
+          </g>
+          <!-- コーヒーマシン -->
+          <g transform="translate(470, 270)">
+            <rect x="0" y="0" width="22" height="35" fill="#3a2515" rx="2"/>
+            <rect x="3" y="3" width="16" height="10" fill="#5a3a25"/>
+            <circle cx="11" cy="22" r="3" fill="#d97757"/>
+            <rect x="6" y="28" width="10" height="3" fill="#7ec8e3"/>
+          </g>
+          <!-- 観葉植物 -->
+          <rect x="540" y="290" width="14" height="18" fill="#a87f4d"/>
+          <ellipse cx="547" cy="280" rx="16" ry="14" fill="#7eb37e"/>
+          <ellipse cx="540" cy="278" rx="9" ry="9" fill="#9bc89b"/>
+          <!-- 仲良く話す2人 -->
+          <g transform="translate(630, 270)">
+            <circle cx="0" cy="0" r="8" fill="#ffd9b8"/>
+            <path d="M -7 -2 Q -6 -8 0 -9 Q 6 -8 7 -2 Q 0 -4 -7 -2" fill="#3a2515"/>
+            <rect x="-7" y="6" width="14" height="22" fill="#d97757" rx="3"/>
+            <circle cx="22" cy="0" r="8" fill="#f5d3b8"/>
+            <path d="M 15 -2 Q 16 -8 22 -9 Q 28 -8 29 -2" fill="#5a3a25"/>
+            <rect x="15" y="6" width="14" height="22" fill="#5ba7c5" rx="3"/>
+          </g>
+          <!-- 窓と日差し -->
+          <rect x="745" y="225" width="60" height="35" fill="#7ec8e3" opacity="0.6" stroke="#666" stroke-width="0.5"/>
+          <line x1="775" y1="225" x2="775" y2="260" stroke="#666" stroke-width="0.6"/>
+          <line x1="745" y1="242" x2="805" y2="242" stroke="#666" stroke-width="0.6"/>
+        </g>
+
+        <!-- ===== 2階: 研修・成長 (LEARNING) ===== -->
+        <g class="hotspot" data-target="learn">
+          <rect x="160" y="315" width="680" height="105" fill="url(#floor2G)" stroke="#5ba7c5" stroke-width="0.5"/>
+          <rect x="170" y="325" width="36" height="36" fill="#5ba7c5" rx="3"/>
+          <text x="188" y="348" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">2F</text>
+          <text x="220" y="340" font-size="14" font-weight="800" fill="#3a2515" letter-spacing="2">LEARNING — 研修・成長</text>
+          <text x="220" y="358" font-size="10" fill="#666">じっくり育つための環境</text>
+          <!-- 大きな本棚 -->
+          <g transform="translate(280, 365)">
+            <rect x="0" y="0" width="90" height="50" fill="#5a3a25"/>
+            <line x1="0" y1="15" x2="90" y2="15" stroke="#3a2515" stroke-width="1.5"/>
+            <line x1="0" y1="32" x2="90" y2="32" stroke="#3a2515" stroke-width="1.5"/>
+            <!-- 本 -->
+            <rect x="3" y="1" width="6" height="14" fill="#d97757"/>
+            <rect x="10" y="2" width="5" height="13" fill="#5ba7c5"/>
+            <rect x="16" y="0" width="6" height="15" fill="#5a8e5a"/>
+            <rect x="23" y="2" width="5" height="13" fill="#a585cb"/>
+            <rect x="29" y="1" width="7" height="14" fill="#e8a8a8"/>
+            <rect x="37" y="2" width="5" height="13" fill="#d97757"/>
+            <rect x="43" y="0" width="6" height="15" fill="#5ba7c5"/>
+            <rect x="50" y="2" width="5" height="13" fill="#5a8e5a"/>
+            <rect x="56" y="1" width="6" height="14" fill="#a585cb"/>
+            <rect x="63" y="2" width="5" height="13" fill="#e8a8a8"/>
+            <rect x="69" y="0" width="7" height="15" fill="#d97757"/>
+            <rect x="77" y="2" width="5" height="13" fill="#5ba7c5"/>
+            <rect x="83" y="1" width="5" height="14" fill="#5a8e5a"/>
+            <!-- 段2 -->
+            <rect x="3" y="17" width="6" height="14" fill="#5ba7c5"/>
+            <rect x="10" y="18" width="5" height="13" fill="#5a8e5a"/>
+            <rect x="16" y="17" width="7" height="14" fill="#d97757"/>
+            <rect x="24" y="18" width="5" height="13" fill="#a585cb"/>
+            <rect x="30" y="17" width="6" height="14" fill="#5ba7c5"/>
+            <rect x="37" y="18" width="5" height="13" fill="#e8a8a8"/>
+            <rect x="43" y="17" width="6" height="14" fill="#5a8e5a"/>
+            <rect x="50" y="18" width="5" height="13" fill="#d97757"/>
+            <rect x="56" y="17" width="7" height="14" fill="#5ba7c5"/>
+            <rect x="64" y="18" width="5" height="13" fill="#a585cb"/>
+            <rect x="70" y="17" width="6" height="14" fill="#5a8e5a"/>
+            <rect x="77" y="18" width="5" height="13" fill="#d97757"/>
+            <rect x="83" y="17" width="5" height="14" fill="#5ba7c5"/>
+            <!-- 段3 -->
+            <rect x="3" y="34" width="6" height="14" fill="#a585cb"/>
+            <rect x="10" y="35" width="5" height="13" fill="#d97757"/>
+            <rect x="16" y="34" width="7" height="14" fill="#5ba7c5"/>
+            <rect x="24" y="35" width="5" height="13" fill="#5a8e5a"/>
+            <rect x="30" y="34" width="6" height="14" fill="#e8a8a8"/>
+            <rect x="37" y="35" width="5" height="13" fill="#d97757"/>
+            <rect x="43" y="34" width="6" height="14" fill="#a585cb"/>
+            <rect x="50" y="35" width="5" height="13" fill="#5ba7c5"/>
+            <rect x="56" y="34" width="7" height="14" fill="#5a8e5a"/>
+            <rect x="64" y="35" width="5" height="13" fill="#d97757"/>
+            <rect x="70" y="34" width="6" height="14" fill="#a585cb"/>
+            <rect x="77" y="35" width="5" height="13" fill="#5ba7c5"/>
+            <rect x="83" y="34" width="5" height="14" fill="#e8a8a8"/>
+          </g>
+          <!-- 講師 -->
+          <g transform="translate(440, 380)">
+            <circle cx="0" cy="0" r="7" fill="#ffd9b8"/>
+            <path d="M -6 -1 Q -5 -7 0 -8 Q 5 -7 6 -1" fill="#3a2515"/>
+            <rect x="-6" y="6" width="12" height="20" fill="#5a3a25" rx="2"/>
+            <!-- 指す手 -->
+            <line x1="6" y1="10" x2="20" y2="6" stroke="#ffd9b8" stroke-width="2"/>
+          </g>
+          <!-- ホワイトボード -->
+          <rect x="470" y="368" width="80" height="44" fill="#fff" stroke="#666" stroke-width="1"/>
+          <text x="510" y="385" text-anchor="middle" font-size="9" font-weight="700" fill="#5ba7c5">研修</text>
+          <line x1="478" y1="392" x2="540" y2="392" stroke="#5ba7c5" stroke-width="0.8"/>
+          <line x1="478" y1="400" x2="525" y2="400" stroke="#d97757" stroke-width="0.8"/>
+          <line x1="478" y1="406" x2="535" y2="406" stroke="#5a8e5a" stroke-width="0.8"/>
+          <!-- 受講生 -->
+          <g transform="translate(580, 388)">
+            <circle cx="0" cy="0" r="6" fill="#f5d3b8"/>
+            <rect x="-5" y="5" width="10" height="14" fill="#5ba7c5" rx="2"/>
+          </g>
+          <g transform="translate(620, 388)">
+            <circle cx="0" cy="0" r="6" fill="#ffd9b8"/>
+            <rect x="-5" y="5" width="10" height="14" fill="#d97757" rx="2"/>
+          </g>
+          <g transform="translate(660, 388)">
+            <circle cx="0" cy="0" r="6" fill="#f5e0c8"/>
+            <rect x="-5" y="5" width="10" height="14" fill="#5a8e5a" rx="2"/>
+          </g>
+          <!-- 観葉植物 -->
+          <rect x="752" y="395" width="14" height="18" fill="#a87f4d"/>
+          <ellipse cx="759" cy="385" rx="14" ry="13" fill="#7eb37e"/>
+        </g>
+
+        <!-- ===== 1階: 募集職種 (POSITIONS) ===== -->
+        <g class="hotspot" data-target="jobs">
+          <rect x="160" y="420" width="680" height="120" fill="url(#floor1G)" stroke="#a585cb" stroke-width="0.5"/>
+          <rect x="170" y="430" width="36" height="36" fill="#a585cb" rx="3"/>
+          <text x="188" y="453" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">1F</text>
+          <text x="220" y="445" font-size="14" font-weight="800" fill="#3a2515" letter-spacing="2">POSITIONS — 募集職種</text>
+          <text x="220" y="463" font-size="10" fill="#666">募集中のポジションを見る</text>
+          <!-- 受付カウンター -->
+          <rect x="280" y="480" width="120" height="40" fill="#8b6f47"/>
+          <rect x="280" y="478" width="120" height="6" fill="#a87f4d"/>
+          <rect x="295" y="490" width="40" height="20" fill="#3a2515" rx="1"/>
+          <rect x="297" y="492" width="36" height="14" fill="#7ec8e3"/>
+          <!-- 受付の人 -->
+          <g transform="translate(360, 478)">
+            <circle cx="0" cy="0" r="9" fill="#ffd9b8"/>
+            <path d="M -8 -2 Q -7 -10 0 -11 Q 7 -10 8 -2" fill="#3a2515"/>
+            <rect x="-8" y="8" width="16" height="14" fill="#d97757" rx="3"/>
+          </g>
+          <!-- エントランスの観葉植物 -->
+          <rect x="430" y="498" width="18" height="22" fill="#a87f4d"/>
+          <ellipse cx="439" cy="488" rx="22" ry="20" fill="#7eb37e"/>
+          <ellipse cx="430" cy="485" rx="14" ry="12" fill="#9bc89b"/>
+          <ellipse cx="448" cy="485" rx="14" ry="12" fill="#7aa87a"/>
+          <!-- 大きなガラス扉 -->
+          <rect x="500" y="450" width="120" height="90" fill="#7ec8e3" opacity="0.45" stroke="#3a2515" stroke-width="2"/>
+          <line x1="560" y1="450" x2="560" y2="540" stroke="#3a2515" stroke-width="2"/>
+          <circle cx="555" cy="495" r="2" fill="#d4a574"/>
+          <circle cx="565" cy="495" r="2" fill="#d4a574"/>
+          <!-- 大きな掲示板 -->
+          <rect x="660" y="465" width="160" height="65" fill="#fff" stroke="#a87f4d" stroke-width="2"/>
+          <text x="740" y="484" text-anchor="middle" font-size="11" font-weight="800" fill="#a585cb">採用 募集中</text>
+          <line x1="670" y1="492" x2="810" y2="492" stroke="#ddd"/>
+          <text x="675" y="504" font-size="8" fill="#666">エンジニア</text>
+          <text x="675" y="514" font-size="8" fill="#666">デザイナー</text>
+          <text x="675" y="524" font-size="8" fill="#666">コンサルタント</text>
+          <text x="765" y="504" font-size="8" fill="#d97757">○</text>
+          <text x="765" y="514" font-size="8" fill="#d97757">○</text>
+          <text x="765" y="524" font-size="8" fill="#d97757">○</text>
+        </g>
+
+        <!-- 雲 装飾 -->
+        <g fill="#fff" opacity="0.5">
+          <ellipse cx="80" cy="180" rx="15" ry="4"/>
+          <ellipse cx="940" cy="220" rx="14" ry="4"/>
+        </g>
+
+        <!-- プレイヤー -->
+        <g id="player">
+          <ellipse cx="0" cy="36" rx="18" ry="5" fill="#000" opacity="0.18"/>
+          <rect x="-10" y="10" width="20" height="26" fill="#d97757" rx="4"/>
+          <rect x="-10" y="10" width="20" height="6" fill="#b85d3a" rx="4 4 0 0"/>
+          <circle cx="0" cy="0" r="13" fill="#ffd9b8"/>
+          <path d="M -12 -3 Q -13 -10 -8 -12 Q 0 -15 8 -12 Q 13 -10 12 -3 Q 8 -8 0 -8 Q -8 -8 -12 -3 Z" fill="#5a3a25"/>
+          <circle cx="-4" cy="0" r="1.5" fill="#3a2515"/>
+          <circle cx="4" cy="0" r="1.5" fill="#3a2515"/>
+          <circle cx="-5" cy="3" r="1.5" fill="#e8a8a8" opacity="0.6"/>
+          <circle cx="5" cy="3" r="1.5" fill="#e8a8a8" opacity="0.6"/>
+          <text x="0" y="-23" text-anchor="middle" font-size="10" font-weight="700" fill="#3a2515">あなた</text>
+          <ellipse cx="0" cy="38" rx="22" ry="4" fill="none" stroke="#d97757" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.6">
+            <animate attributeName="rx" values="22;32;22" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/>
+          </ellipse>
+        </g>
+      </svg>
+
+      <!-- ===== Lvl2: BUSINESS ===== -->
+      <svg class="svg-view" id="view-biz" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#fff5e8"/>
+        <text x="500" y="55" text-anchor="middle" font-size="13" letter-spacing="6" fill="#d97757" font-weight="700">BUSINESS — 4F</text>
+        <text x="500" y="95" text-anchor="middle" font-size="32" font-weight="800" fill="#3a2515" letter-spacing="2">事業紹介</text>
+        <text x="500" y="120" text-anchor="middle" font-size="13" fill="#666">気になる事業をクリックすると、もっと詳しく見られます</text>
+        <!-- 3つのカード -->
+        <g class="hotspot" data-target="biz-dev">
+          <rect x="80" y="170" width="270" height="380" fill="#fff" stroke="#5ba7c5" stroke-width="2" rx="10"/>
+          <rect x="80" y="170" width="270" height="60" fill="#5ba7c5" rx="10 10 0 0"/>
+          <text x="215" y="208" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" letter-spacing="2">システム開発</text>
+          <!-- イラスト -->
+          <g transform="translate(215, 290)">
+            <rect x="-50" y="-30" width="100" height="60" fill="#1e3a5c" rx="4"/>
+            <rect x="-46" y="-26" width="92" height="48" fill="#7ec8e3"/>
+            <rect x="-42" y="-22" width="50" height="3" fill="#5a8e5a"/>
+            <rect x="-42" y="-15" width="65" height="3" fill="#d97757"/>
+            <rect x="-42" y="-8" width="40" height="3" fill="#a585cb"/>
+            <rect x="-42" y="-1" width="55" height="3" fill="#5ba7c5"/>
+            <rect x="-42" y="6" width="35" height="3" fill="#5a8e5a"/>
+            <rect x="-12" y="35" width="24" height="6" fill="#3a2515"/>
+            <rect x="-22" y="40" width="44" height="3" fill="#3a2515"/>
+          </g>
+          <text x="215" y="380" text-anchor="middle" font-size="14" fill="#3a2515" font-weight="600">業務システム・Webアプリ開発</text>
+          <text x="215" y="410" text-anchor="middle" font-size="11" fill="#666">大手企業の基幹系から、新規事業の</text>
+          <text x="215" y="425" text-anchor="middle" font-size="11" fill="#666">スタートまで、幅広く手がけています。</text>
+          <rect x="135" y="490" width="160" height="36" fill="#5ba7c5" rx="18"/>
+          <text x="215" y="513" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" letter-spacing="2">詳しく見る ›</text>
+        </g>
+        <g class="hotspot" data-target="biz-data">
+          <rect x="365" y="170" width="270" height="380" fill="#fff" stroke="#a585cb" stroke-width="2" rx="10"/>
+          <rect x="365" y="170" width="270" height="60" fill="#a585cb" rx="10 10 0 0"/>
+          <text x="500" y="208" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" letter-spacing="2">データ・AI</text>
+          <g transform="translate(500, 290)">
+            <rect x="-50" y="-30" width="100" height="60" fill="#fff" stroke="#a585cb" stroke-width="1.5" rx="4"/>
+            <rect x="-44" y="20" width="6" height="4" fill="#a585cb"/>
+            <rect x="-32" y="14" width="6" height="10" fill="#a585cb"/>
+            <rect x="-20" y="6" width="6" height="18" fill="#a585cb"/>
+            <rect x="-8" y="0" width="6" height="24" fill="#d97757"/>
+            <rect x="4" y="-8" width="6" height="32" fill="#d97757"/>
+            <rect x="16" y="-14" width="6" height="38" fill="#5a8e5a"/>
+            <rect x="28" y="-20" width="6" height="44" fill="#5a8e5a"/>
+            <rect x="40" y="-24" width="6" height="48" fill="#5a8e5a"/>
+            <line x1="-46" y1="24" x2="44" y2="24" stroke="#3a2515" stroke-width="1"/>
+            <path d="M -44 -22 Q 0 -10 44 -25" stroke="#d97757" stroke-width="2" fill="none"/>
+          </g>
+          <text x="500" y="380" text-anchor="middle" font-size="14" fill="#3a2515" font-weight="600">データ分析・AI モデル構築</text>
+          <text x="500" y="410" text-anchor="middle" font-size="11" fill="#666">蓄積されたデータから、</text>
+          <text x="500" y="425" text-anchor="middle" font-size="11" fill="#666">事業の意思決定を支えています。</text>
+          <rect x="420" y="490" width="160" height="36" fill="#a585cb" rx="18"/>
+          <text x="500" y="513" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" letter-spacing="2">詳しく見る ›</text>
+        </g>
+        <g class="hotspot" data-target="biz-cloud">
+          <rect x="650" y="170" width="270" height="380" fill="#fff" stroke="#5a8e5a" stroke-width="2" rx="10"/>
+          <rect x="650" y="170" width="270" height="60" fill="#5a8e5a" rx="10 10 0 0"/>
+          <text x="785" y="208" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" letter-spacing="2">クラウド推進</text>
+          <g transform="translate(785, 290)">
+            <ellipse cx="0" cy="-10" rx="50" ry="20" fill="#7ec8e3"/>
+            <circle cx="-22" cy="-10" r="18" fill="#7ec8e3"/>
+            <circle cx="22" cy="-12" r="20" fill="#7ec8e3"/>
+            <circle cx="0" cy="-22" r="18" fill="#a3d4e8"/>
+            <line x1="0" y1="10" x2="0" y2="30" stroke="#5a8e5a" stroke-width="2" stroke-dasharray="3 2"/>
+            <rect x="-22" y="30" width="14" height="10" fill="#3a2515"/>
+            <rect x="-4" y="30" width="14" height="10" fill="#3a2515"/>
+            <rect x="14" y="30" width="14" height="10" fill="#3a2515"/>
+          </g>
+          <text x="785" y="380" text-anchor="middle" font-size="14" fill="#3a2515" font-weight="600">クラウド導入・移行支援</text>
+          <text x="785" y="410" text-anchor="middle" font-size="11" fill="#666">既存システムをクラウドへ。</text>
+          <text x="785" y="425" text-anchor="middle" font-size="11" fill="#666">運用と効率化までトータルで。</text>
+          <rect x="705" y="490" width="160" height="36" fill="#5a8e5a" rx="18"/>
+          <text x="785" y="513" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" letter-spacing="2">詳しく見る ›</text>
+        </g>
+      </svg>
+
+      <!-- ===== Lvl3: BUSINESS > システム開発 ===== -->
+      <svg class="svg-view" id="view-biz-dev" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#eaf4f8"/>
+        <text x="500" y="55" text-anchor="middle" font-size="12" letter-spacing="5" fill="#5ba7c5" font-weight="700">BUSINESS › システム開発</text>
+        <text x="500" y="95" text-anchor="middle" font-size="30" font-weight="800" fill="#3a2515" letter-spacing="2">システム開発の現場</text>
+        <!-- 業務内容 -->
+        <rect x="60" y="140" width="290" height="180" fill="#fff" stroke="#5ba7c5" stroke-width="1.5" rx="8"/>
+        <text x="80" y="170" font-size="13" font-weight="800" fill="#5ba7c5" letter-spacing="2">業務内容</text>
+        <line x1="80" y1="180" x2="320" y2="180" stroke="#eee"/>
+        <text x="80" y="206" font-size="13" fill="#3a2515" font-weight="600">・基幹系システム開発</text>
+        <text x="100" y="222" font-size="11" fill="#666">大手金融・流通の中核システム</text>
+        <text x="80" y="248" font-size="13" fill="#3a2515" font-weight="600">・Webアプリケーション</text>
+        <text x="100" y="264" font-size="11" fill="#666">新規事業向けの自社開発</text>
+        <text x="80" y="290" font-size="13" fill="#3a2515" font-weight="600">・スマホアプリ</text>
+        <text x="100" y="306" font-size="11" fill="#666">iOS / Android のネイティブ開発</text>
+        <!-- 技術スタック -->
+        <rect x="370" y="140" width="290" height="180" fill="#fff" stroke="#5ba7c5" stroke-width="1.5" rx="8"/>
+        <text x="390" y="170" font-size="13" font-weight="800" fill="#5ba7c5" letter-spacing="2">使う技術</text>
+        <line x1="390" y1="180" x2="630" y2="180" stroke="#eee"/>
+        <g font-size="11" font-weight="700">
+          <rect x="390" y="200" width="60" height="22" fill="#1e3a5c" rx="11"/>
+          <text x="420" y="215" text-anchor="middle" fill="#fff">Java</text>
+          <rect x="458" y="200" width="60" height="22" fill="#7ec8e3" rx="11"/>
+          <text x="488" y="215" text-anchor="middle" fill="#1e3a5c">Python</text>
+          <rect x="526" y="200" width="60" height="22" fill="#5ba7c5" rx="11"/>
+          <text x="556" y="215" text-anchor="middle" fill="#fff">React</text>
+          <rect x="594" y="200" width="50" height="22" fill="#a585cb" rx="11"/>
+          <text x="619" y="215" text-anchor="middle" fill="#fff">Vue</text>
+          <rect x="390" y="232" width="70" height="22" fill="#5a8e5a" rx="11"/>
+          <text x="425" y="247" text-anchor="middle" fill="#fff">Node.js</text>
+          <rect x="468" y="232" width="60" height="22" fill="#3a2515" rx="11"/>
+          <text x="498" y="247" text-anchor="middle" fill="#fff">AWS</text>
+          <rect x="536" y="232" width="60" height="22" fill="#d97757" rx="11"/>
+          <text x="566" y="247" text-anchor="middle" fill="#fff">GCP</text>
+          <rect x="604" y="232" width="40" height="22" fill="#666" rx="11"/>
+          <text x="624" y="247" text-anchor="middle" fill="#fff">Go</text>
+        </g>
+        <text x="390" y="280" font-size="12" fill="#666">時代に合わせて、新しい技術も</text>
+        <text x="390" y="296" font-size="12" fill="#666">積極的に取り入れています。</text>
+        <!-- メンバー構成 -->
+        <rect x="680" y="140" width="260" height="180" fill="#fff" stroke="#5ba7c5" stroke-width="1.5" rx="8"/>
+        <text x="700" y="170" font-size="13" font-weight="800" fill="#5ba7c5" letter-spacing="2">メンバー</text>
+        <line x1="700" y1="180" x2="920" y2="180" stroke="#eee"/>
+        <text x="700" y="206" font-size="13" fill="#3a2515" font-weight="600">部員数 : 約 80 名</text>
+        <text x="700" y="232" font-size="13" fill="#3a2515" font-weight="600">男女比 : 6 : 4</text>
+        <text x="700" y="258" font-size="13" fill="#3a2515" font-weight="600">平均年齢 : 31 歳</text>
+        <text x="700" y="284" font-size="13" fill="#3a2515" font-weight="600">中途入社 : 約 半数</text>
+        <text x="700" y="310" font-size="11" fill="#666">いろんな経歴の人がいます。</text>
+
+        <!-- 一日の流れ -->
+        <rect x="60" y="350" width="880" height="170" fill="#fff" stroke="#5ba7c5" stroke-width="1.5" rx="8"/>
+        <text x="80" y="380" font-size="13" font-weight="800" fill="#5ba7c5" letter-spacing="2">ある一日の流れ</text>
+        <line x1="80" y1="390" x2="920" y2="390" stroke="#eee"/>
+        <g>
+          <line x1="100" y1="450" x2="900" y2="450" stroke="#5ba7c5" stroke-width="2"/>
+          <g>
+            <circle cx="150" cy="450" r="8" fill="#d97757"/>
+            <text x="150" y="438" text-anchor="middle" font-size="10" fill="#3a2515" font-weight="700">9:00</text>
+            <text x="150" y="475" text-anchor="middle" font-size="10" fill="#666">朝会</text>
+            <text x="150" y="488" text-anchor="middle" font-size="9" fill="#888">今日の予定共有</text>
+          </g>
+          <g>
+            <circle cx="290" cy="450" r="8" fill="#5ba7c5"/>
+            <text x="290" y="438" text-anchor="middle" font-size="10" fill="#3a2515" font-weight="700">10:00</text>
+            <text x="290" y="475" text-anchor="middle" font-size="10" fill="#666">開発</text>
+            <text x="290" y="488" text-anchor="middle" font-size="9" fill="#888">設計とコーディング</text>
+          </g>
+          <g>
+            <circle cx="430" cy="450" r="8" fill="#5a8e5a"/>
+            <text x="430" y="438" text-anchor="middle" font-size="10" fill="#3a2515" font-weight="700">12:30</text>
+            <text x="430" y="475" text-anchor="middle" font-size="10" fill="#666">お昼</text>
+            <text x="430" y="488" text-anchor="middle" font-size="9" fill="#888">同僚と歓談</text>
+          </g>
+          <g>
+            <circle cx="570" cy="450" r="8" fill="#a585cb"/>
+            <text x="570" y="438" text-anchor="middle" font-size="10" fill="#3a2515" font-weight="700">14:00</text>
+            <text x="570" y="475" text-anchor="middle" font-size="10" fill="#666">レビュー</text>
+            <text x="570" y="488" text-anchor="middle" font-size="9" fill="#888">コードを互いに確認</text>
+          </g>
+          <g>
+            <circle cx="710" cy="450" r="8" fill="#d97757"/>
+            <text x="710" y="438" text-anchor="middle" font-size="10" fill="#3a2515" font-weight="700">16:00</text>
+            <text x="710" y="475" text-anchor="middle" font-size="10" fill="#666">設計打合せ</text>
+            <text x="710" y="488" text-anchor="middle" font-size="9" fill="#888">次のスプリント</text>
+          </g>
+          <g>
+            <circle cx="850" cy="450" r="8" fill="#5ba7c5"/>
+            <text x="850" y="438" text-anchor="middle" font-size="10" fill="#3a2515" font-weight="700">18:00</text>
+            <text x="850" y="475" text-anchor="middle" font-size="10" fill="#666">退社</text>
+            <text x="850" y="488" text-anchor="middle" font-size="9" fill="#888">残業はめったに</text>
+          </g>
+        </g>
+        <text x="500" y="570" text-anchor="middle" font-size="11" fill="#999">画面の何もない場所をクリックすると一つ前に戻ります</text>
+      </svg>
+
+      <!-- ===== Lvl3: BUSINESS > データ・AI ===== -->
+      <svg class="svg-view" id="view-biz-data" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#f5eef8"/>
+        <text x="500" y="55" text-anchor="middle" font-size="12" letter-spacing="5" fill="#a585cb" font-weight="700">BUSINESS › データ・AI</text>
+        <text x="500" y="95" text-anchor="middle" font-size="30" font-weight="800" fill="#3a2515" letter-spacing="2">データ・AI 部門の現場</text>
+
+        <rect x="60" y="140" width="290" height="180" fill="#fff" stroke="#a585cb" stroke-width="1.5" rx="8"/>
+        <text x="80" y="170" font-size="13" font-weight="800" fill="#a585cb" letter-spacing="2">業務内容</text>
+        <line x1="80" y1="180" x2="320" y2="180" stroke="#eee"/>
+        <text x="80" y="206" font-size="13" fill="#3a2515" font-weight="600">・需要予測モデル</text>
+        <text x="100" y="222" font-size="11" fill="#666">小売・流通向けの予測AI</text>
+        <text x="80" y="248" font-size="13" fill="#3a2515" font-weight="600">・自然言語処理</text>
+        <text x="100" y="264" font-size="11" fill="#666">問い合わせの自動分類</text>
+        <text x="80" y="290" font-size="13" fill="#3a2515" font-weight="600">・画像認識</text>
+        <text x="100" y="306" font-size="11" fill="#666">製造ラインの不良検知</text>
+
+        <rect x="370" y="140" width="290" height="180" fill="#fff" stroke="#a585cb" stroke-width="1.5" rx="8"/>
+        <text x="390" y="170" font-size="13" font-weight="800" fill="#a585cb" letter-spacing="2">使う技術</text>
+        <line x1="390" y1="180" x2="630" y2="180" stroke="#eee"/>
+        <g font-size="11" font-weight="700">
+          <rect x="390" y="200" width="68" height="22" fill="#a585cb" rx="11"/>
+          <text x="424" y="215" text-anchor="middle" fill="#fff">Python</text>
+          <rect x="466" y="200" width="78" height="22" fill="#d97757" rx="11"/>
+          <text x="505" y="215" text-anchor="middle" fill="#fff">PyTorch</text>
+          <rect x="552" y="200" width="80" height="22" fill="#5a8e5a" rx="11"/>
+          <text x="592" y="215" text-anchor="middle" fill="#fff">TensorFlow</text>
+          <rect x="390" y="232" width="60" height="22" fill="#1e3a5c" rx="11"/>
+          <text x="420" y="247" text-anchor="middle" fill="#fff">SQL</text>
+          <rect x="458" y="232" width="80" height="22" fill="#7ec8e3" rx="11"/>
+          <text x="498" y="247" text-anchor="middle" fill="#1e3a5c">Snowflake</text>
+          <rect x="546" y="232" width="80" height="22" fill="#666" rx="11"/>
+          <text x="586" y="247" text-anchor="middle" fill="#fff">Databricks</text>
+        </g>
+        <text x="390" y="282" font-size="12" fill="#666">最先端の論文も読んで、</text>
+        <text x="390" y="298" font-size="12" fill="#666">業務に取り入れています。</text>
+
+        <rect x="680" y="140" width="260" height="180" fill="#fff" stroke="#a585cb" stroke-width="1.5" rx="8"/>
+        <text x="700" y="170" font-size="13" font-weight="800" fill="#a585cb" letter-spacing="2">メンバー</text>
+        <line x1="700" y1="180" x2="920" y2="180" stroke="#eee"/>
+        <text x="700" y="206" font-size="13" fill="#3a2515" font-weight="600">部員数 : 約 35 名</text>
+        <text x="700" y="232" font-size="13" fill="#3a2515" font-weight="600">大学院卒 : 約 4 割</text>
+        <text x="700" y="258" font-size="13" fill="#3a2515" font-weight="600">平均年齢 : 33 歳</text>
+        <text x="700" y="284" font-size="13" fill="#3a2515" font-weight="600">研究背景 : 物理・統計など</text>
+        <text x="700" y="310" font-size="11" fill="#666">学際的な背景の人が多い部門。</text>
+
+        <!-- グラフ -->
+        <rect x="60" y="350" width="880" height="170" fill="#fff" stroke="#a585cb" stroke-width="1.5" rx="8"/>
+        <text x="80" y="380" font-size="13" font-weight="800" fill="#a585cb" letter-spacing="2">こんな成果を出しています</text>
+        <line x1="80" y1="390" x2="920" y2="390" stroke="#eee"/>
+        <g transform="translate(120, 410)">
+          <text x="0" y="0" font-size="12" fill="#3a2515" font-weight="700">需要予測の精度向上</text>
+          <rect x="0" y="10" width="300" height="20" fill="#f5eef8"/>
+          <rect x="0" y="10" width="252" height="20" fill="#a585cb"/>
+          <text x="310" y="25" font-size="13" font-weight="800" fill="#a585cb">+38%</text>
+          <text x="0" y="55" font-size="12" fill="#3a2515" font-weight="700">問い合わせ自動分類の正答率</text>
+          <rect x="0" y="65" width="300" height="20" fill="#f5eef8"/>
+          <rect x="0" y="65" width="285" height="20" fill="#a585cb"/>
+          <text x="310" y="80" font-size="13" font-weight="800" fill="#a585cb">95%</text>
+          <text x="0" y="110" font-size="12" fill="#3a2515" font-weight="700">画像不良検知の人手削減</text>
+          <rect x="0" y="120" width="300" height="20" fill="#f5eef8"/>
+          <rect x="0" y="120" width="240" height="20" fill="#a585cb"/>
+          <text x="310" y="135" font-size="13" font-weight="800" fill="#a585cb">-80%</text>
+        </g>
+        <g transform="translate(620, 410)" font-size="11" fill="#666">
+          <text x="0" y="0" font-size="12" fill="#3a2515" font-weight="700">事例の一部</text>
+          <text x="0" y="22">○ 全国チェーンの売上予測</text>
+          <text x="0" y="42">○ 製造業の検査自動化</text>
+          <text x="0" y="62">○ コールセンターの自動応答</text>
+          <text x="0" y="82">○ 医療画像の診断支援</text>
+          <text x="0" y="102">○ 物流の最適化</text>
+        </g>
+        <text x="500" y="570" text-anchor="middle" font-size="11" fill="#999">画面の何もない場所をクリックすると一つ前に戻ります</text>
+      </svg>
+
+      <!-- ===== Lvl3: BUSINESS > クラウド推進 ===== -->
+      <svg class="svg-view" id="view-biz-cloud" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#eef8ee"/>
+        <text x="500" y="55" text-anchor="middle" font-size="12" letter-spacing="5" fill="#5a8e5a" font-weight="700">BUSINESS › クラウド推進</text>
+        <text x="500" y="95" text-anchor="middle" font-size="30" font-weight="800" fill="#3a2515" letter-spacing="2">クラウド推進部門の現場</text>
+
+        <rect x="60" y="140" width="290" height="180" fill="#fff" stroke="#5a8e5a" stroke-width="1.5" rx="8"/>
+        <text x="80" y="170" font-size="13" font-weight="800" fill="#5a8e5a" letter-spacing="2">業務内容</text>
+        <line x1="80" y1="180" x2="320" y2="180" stroke="#eee"/>
+        <text x="80" y="206" font-size="13" fill="#3a2515" font-weight="600">・クラウド移行支援</text>
+        <text x="100" y="222" font-size="11" fill="#666">オンプレからクラウドへ</text>
+        <text x="80" y="248" font-size="13" fill="#3a2515" font-weight="600">・運用設計</text>
+        <text x="100" y="264" font-size="11" fill="#666">監視・自動化の組み込み</text>
+        <text x="80" y="290" font-size="13" fill="#3a2515" font-weight="600">・セキュリティ強化</text>
+        <text x="100" y="306" font-size="11" fill="#666">クラウド時代の守り方</text>
+
+        <rect x="370" y="140" width="290" height="180" fill="#fff" stroke="#5a8e5a" stroke-width="1.5" rx="8"/>
+        <text x="390" y="170" font-size="13" font-weight="800" fill="#5a8e5a" letter-spacing="2">使う技術</text>
+        <line x1="390" y1="180" x2="630" y2="180" stroke="#eee"/>
+        <g font-size="11" font-weight="700">
+          <rect x="390" y="200" width="60" height="22" fill="#3a2515" rx="11"/>
+          <text x="420" y="215" text-anchor="middle" fill="#fff">AWS</text>
+          <rect x="458" y="200" width="60" height="22" fill="#1e3a5c" rx="11"/>
+          <text x="488" y="215" text-anchor="middle" fill="#fff">Azure</text>
+          <rect x="526" y="200" width="60" height="22" fill="#d97757" rx="11"/>
+          <text x="556" y="215" text-anchor="middle" fill="#fff">GCP</text>
+          <rect x="390" y="232" width="80" height="22" fill="#5a8e5a" rx="11"/>
+          <text x="430" y="247" text-anchor="middle" fill="#fff">Terraform</text>
+          <rect x="478" y="232" width="80" height="22" fill="#7ec8e3" rx="11"/>
+          <text x="518" y="247" text-anchor="middle" fill="#1e3a5c">Kubernetes</text>
+          <rect x="566" y="232" width="64" height="22" fill="#a585cb" rx="11"/>
+          <text x="598" y="247" text-anchor="middle" fill="#fff">Docker</text>
+        </g>
+        <text x="390" y="282" font-size="12" fill="#666">三大クラウド全てを扱える</text>
+        <text x="390" y="298" font-size="12" fill="#666">珍しい部門です。</text>
+
+        <rect x="680" y="140" width="260" height="180" fill="#fff" stroke="#5a8e5a" stroke-width="1.5" rx="8"/>
+        <text x="700" y="170" font-size="13" font-weight="800" fill="#5a8e5a" letter-spacing="2">メンバー</text>
+        <line x1="700" y1="180" x2="920" y2="180" stroke="#eee"/>
+        <text x="700" y="206" font-size="13" fill="#3a2515" font-weight="600">部員数 : 約 50 名</text>
+        <text x="700" y="232" font-size="13" fill="#3a2515" font-weight="600">資格保有者 : 約 8 割</text>
+        <text x="700" y="258" font-size="13" fill="#3a2515" font-weight="600">平均年齢 : 30 歳</text>
+        <text x="700" y="284" font-size="13" fill="#3a2515" font-weight="600">リモート勤務 : 多い</text>
+        <text x="700" y="310" font-size="11" fill="#666">場所を選ばず働ける部門。</text>
+
+        <rect x="60" y="350" width="880" height="170" fill="#fff" stroke="#5a8e5a" stroke-width="1.5" rx="8"/>
+        <text x="80" y="380" font-size="13" font-weight="800" fill="#5a8e5a" letter-spacing="2">ある案件の流れ</text>
+        <line x1="80" y1="390" x2="920" y2="390" stroke="#eee"/>
+        <g transform="translate(120, 430)">
+          <g>
+            <circle cx="0" cy="20" r="22" fill="#fff" stroke="#5a8e5a" stroke-width="2"/>
+            <text x="0" y="25" text-anchor="middle" font-size="14" font-weight="800" fill="#5a8e5a">01</text>
+            <text x="0" y="60" text-anchor="middle" font-size="11" fill="#3a2515" font-weight="700">現状分析</text>
+            <text x="0" y="76" text-anchor="middle" font-size="9" fill="#666">既存の調査</text>
+          </g>
+          <line x1="22" y1="20" x2="138" y2="20" stroke="#5a8e5a" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <g transform="translate(160, 0)">
+            <circle cx="0" cy="20" r="22" fill="#fff" stroke="#5a8e5a" stroke-width="2"/>
+            <text x="0" y="25" text-anchor="middle" font-size="14" font-weight="800" fill="#5a8e5a">02</text>
+            <text x="0" y="60" text-anchor="middle" font-size="11" fill="#3a2515" font-weight="700">設計</text>
+            <text x="0" y="76" text-anchor="middle" font-size="9" fill="#666">移行計画作成</text>
+          </g>
+          <line x1="182" y1="20" x2="298" y2="20" stroke="#5a8e5a" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <g transform="translate(320, 0)">
+            <circle cx="0" cy="20" r="22" fill="#fff" stroke="#5a8e5a" stroke-width="2"/>
+            <text x="0" y="25" text-anchor="middle" font-size="14" font-weight="800" fill="#5a8e5a">03</text>
+            <text x="0" y="60" text-anchor="middle" font-size="11" fill="#3a2515" font-weight="700">構築</text>
+            <text x="0" y="76" text-anchor="middle" font-size="9" fill="#666">環境を作る</text>
+          </g>
+          <line x1="342" y1="20" x2="458" y2="20" stroke="#5a8e5a" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <g transform="translate(480, 0)">
+            <circle cx="0" cy="20" r="22" fill="#fff" stroke="#5a8e5a" stroke-width="2"/>
+            <text x="0" y="25" text-anchor="middle" font-size="14" font-weight="800" fill="#5a8e5a">04</text>
+            <text x="0" y="60" text-anchor="middle" font-size="11" fill="#3a2515" font-weight="700">移行</text>
+            <text x="0" y="76" text-anchor="middle" font-size="9" fill="#666">本番切替え</text>
+          </g>
+          <line x1="502" y1="20" x2="618" y2="20" stroke="#5a8e5a" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <g transform="translate(640, 0)">
+            <circle cx="0" cy="20" r="22" fill="#fff" stroke="#5a8e5a" stroke-width="2"/>
+            <text x="0" y="25" text-anchor="middle" font-size="14" font-weight="800" fill="#5a8e5a">05</text>
+            <text x="0" y="60" text-anchor="middle" font-size="11" fill="#3a2515" font-weight="700">運用</text>
+            <text x="0" y="76" text-anchor="middle" font-size="9" fill="#666">継続支援</text>
+          </g>
+        </g>
+        <text x="500" y="570" text-anchor="middle" font-size="11" fill="#999">画面の何もない場所をクリックすると一つ前に戻ります</text>
+      </svg>
+
+      <!-- ===== Lvl2: BENEFITS ===== -->
+      <svg class="svg-view" id="view-benefits" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#e8f5ee"/>
+        <text x="500" y="55" text-anchor="middle" font-size="13" letter-spacing="6" fill="#5a8e5a" font-weight="700">BENEFITS — 3F</text>
+        <text x="500" y="95" text-anchor="middle" font-size="32" font-weight="800" fill="#3a2515" letter-spacing="2">福利厚生</text>
+        <text x="500" y="120" text-anchor="middle" font-size="13" fill="#666">気になる項目をクリックすると、もっと詳しく見られます</text>
+
+        <g class="hotspot" data-target="benefits-health">
+          <rect x="80" y="170" width="270" height="380" fill="#fff" stroke="#5a8e5a" stroke-width="2" rx="10"/>
+          <rect x="80" y="170" width="270" height="60" fill="#5a8e5a" rx="10 10 0 0"/>
+          <text x="215" y="208" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" letter-spacing="2">健康サポート</text>
+          <g transform="translate(215, 290)">
+            <circle cx="0" cy="0" r="50" fill="#fff5e8" stroke="#5a8e5a" stroke-width="2"/>
+            <path d="M -20 -3 Q -20 -20 -3 -20 Q 0 -28 3 -20 Q 20 -20 20 -3 Q 20 12 0 25 Q -20 12 -20 -3 Z" fill="#d97757"/>
+          </g>
+          <text x="215" y="380" text-anchor="middle" font-size="14" fill="#3a2515" font-weight="600">健康診断・社員食堂・ジム</text>
+          <text x="215" y="410" text-anchor="middle" font-size="11" fill="#666">心と体の健康を、しっかり</text>
+          <text x="215" y="425" text-anchor="middle" font-size="11" fill="#666">サポートします。</text>
+          <rect x="135" y="490" width="160" height="36" fill="#5a8e5a" rx="18"/>
+          <text x="215" y="513" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" letter-spacing="2">詳しく見る ›</text>
+        </g>
+
+        <g class="hotspot" data-target="benefits-work">
+          <rect x="365" y="170" width="270" height="380" fill="#fff" stroke="#5a8e5a" stroke-width="2" rx="10"/>
+          <rect x="365" y="170" width="270" height="60" fill="#5a8e5a" rx="10 10 0 0"/>
+          <text x="500" y="208" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" letter-spacing="2">働き方</text>
+          <g transform="translate(500, 290)">
+            <circle cx="0" cy="0" r="50" fill="#fff5e8" stroke="#5a8e5a" stroke-width="2"/>
+            <circle cx="0" cy="0" r="36" fill="none" stroke="#3a2515" stroke-width="2"/>
+            <line x1="0" y1="0" x2="0" y2="-26" stroke="#3a2515" stroke-width="3"/>
+            <line x1="0" y1="0" x2="20" y2="6" stroke="#3a2515" stroke-width="3"/>
+            <circle cx="0" cy="0" r="3" fill="#3a2515"/>
+          </g>
+          <text x="500" y="380" text-anchor="middle" font-size="14" fill="#3a2515" font-weight="600">フレックス・リモート・休暇</text>
+          <text x="500" y="410" text-anchor="middle" font-size="11" fill="#666">場所と時間を、自分で選べる</text>
+          <text x="500" y="425" text-anchor="middle" font-size="11" fill="#666">柔軟な働き方です。</text>
+          <rect x="420" y="490" width="160" height="36" fill="#5a8e5a" rx="18"/>
+          <text x="500" y="513" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" letter-spacing="2">詳しく見る ›</text>
+        </g>
+
+        <g class="hotspot" data-target="benefits-grow">
+          <rect x="650" y="170" width="270" height="380" fill="#fff" stroke="#5a8e5a" stroke-width="2" rx="10"/>
+          <rect x="650" y="170" width="270" height="60" fill="#5a8e5a" rx="10 10 0 0"/>
+          <text x="785" y="208" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" letter-spacing="2">自己投資支援</text>
+          <g transform="translate(785, 290)">
+            <circle cx="0" cy="0" r="50" fill="#fff5e8" stroke="#5a8e5a" stroke-width="2"/>
+            <path d="M -16 -16 L 16 -16 L 16 16 L 0 28 L -16 16 Z" fill="#d97757"/>
+            <path d="M -16 -16 L 16 -16 L 0 -8 Z" fill="#a85a3a"/>
+            <text x="0" y="6" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">A</text>
+          </g>
+          <text x="785" y="380" text-anchor="middle" font-size="14" fill="#3a2515" font-weight="600">資格・書籍・カンファレンス</text>
+          <text x="785" y="410" text-anchor="middle" font-size="11" fill="#666">学びにかかる費用を、</text>
+          <text x="785" y="425" text-anchor="middle" font-size="11" fill="#666">会社が大きく支えます。</text>
+          <rect x="705" y="490" width="160" height="36" fill="#5a8e5a" rx="18"/>
+          <text x="785" y="513" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" letter-spacing="2">詳しく見る ›</text>
+        </g>
+      </svg>
+
+      <!-- ===== Lvl3: BENEFITS > 健康サポート ===== -->
+      <svg class="svg-view" id="view-benefits-health" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#eef8ee"/>
+        <text x="500" y="55" text-anchor="middle" font-size="12" letter-spacing="5" fill="#5a8e5a" font-weight="700">BENEFITS › 健康サポート</text>
+        <text x="500" y="95" text-anchor="middle" font-size="30" font-weight="800" fill="#3a2515" letter-spacing="2">心と体を、整える仕組み</text>
+
+        <g transform="translate(60, 140)">
+          <rect x="0" y="0" width="285" height="200" fill="#fff" stroke="#5a8e5a" stroke-width="1.5" rx="8"/>
+          <rect x="0" y="0" width="285" height="50" fill="#5a8e5a" rx="8 8 0 0"/>
+          <text x="142" y="32" text-anchor="middle" font-size="16" font-weight="800" fill="#fff" letter-spacing="2">健康診断</text>
+          <text x="20" y="80" font-size="13" fill="#3a2515" font-weight="600">年に二回 の総合健診</text>
+          <text x="20" y="105" font-size="11" fill="#666">必要に応じて精密検査も会社負担。</text>
+          <text x="20" y="135" font-size="13" fill="#3a2515" font-weight="600">ストレスチェック</text>
+          <text x="20" y="160" font-size="11" fill="#666">産業医との面談、いつでもOK。</text>
+          <text x="20" y="185" font-size="11" fill="#666">プライバシーは固く守られます。</text>
+        </g>
+
+        <g transform="translate(360, 140)">
+          <rect x="0" y="0" width="285" height="200" fill="#fff" stroke="#5a8e5a" stroke-width="1.5" rx="8"/>
+          <rect x="0" y="0" width="285" height="50" fill="#5a8e5a" rx="8 8 0 0"/>
+          <text x="142" y="32" text-anchor="middle" font-size="16" font-weight="800" fill="#fff" letter-spacing="2">社員食堂</text>
+          <text x="20" y="80" font-size="13" fill="#3a2515" font-weight="600">朝・昼・夜 営業</text>
+          <text x="20" y="105" font-size="11" fill="#666">300円から栄養バランスのとれた食事。</text>
+          <text x="20" y="135" font-size="13" fill="#3a2515" font-weight="600">栄養士のメニュー</text>
+          <text x="20" y="160" font-size="11" fill="#666">月替わりのテーマと、</text>
+          <text x="20" y="180" font-size="11" fill="#666">アレルギー対応も完備。</text>
+        </g>
+
+        <g transform="translate(660, 140)">
+          <rect x="0" y="0" width="280" height="200" fill="#fff" stroke="#5a8e5a" stroke-width="1.5" rx="8"/>
+          <rect x="0" y="0" width="280" height="50" fill="#5a8e5a" rx="8 8 0 0"/>
+          <text x="140" y="32" text-anchor="middle" font-size="16" font-weight="800" fill="#fff" letter-spacing="2">社内ジム</text>
+          <text x="20" y="80" font-size="13" fill="#3a2515" font-weight="600">24時間 利用可</text>
+          <text x="20" y="105" font-size="11" fill="#666">マシン、ヨガスタジオ、シャワー完備。</text>
+          <text x="20" y="135" font-size="13" fill="#3a2515" font-weight="600">トレーナー在籍</text>
+          <text x="20" y="160" font-size="11" fill="#666">月一回のパーソナル指導が無料。</text>
+          <text x="20" y="180" font-size="11" fill="#666">運動習慣を、無理なく身につけて。</text>
+        </g>
+
+        <!-- 利用の声 -->
+        <rect x="60" y="370" width="880" height="160" fill="#fff" stroke="#5a8e5a" stroke-width="1.5" rx="8"/>
+        <text x="80" y="400" font-size="13" font-weight="800" fill="#5a8e5a" letter-spacing="2">社員の声</text>
+        <line x1="80" y1="410" x2="920" y2="410" stroke="#eee"/>
+        <g transform="translate(110, 440)">
+          <circle cx="0" cy="20" r="22" fill="#ffd9b8"/>
+          <path d="M -18 12 Q -16 -2 0 -3 Q 16 -2 18 12" fill="#3a2515"/>
+          <text x="40" y="10" font-size="11" fill="#3a2515" font-weight="700">入社三年目 / Aさん</text>
+          <text x="40" y="30" font-size="12" fill="#3a2515">「在宅勤務の日も、ジムに寄ってから帰ります。」</text>
+          <text x="40" y="50" font-size="12" fill="#3a2515">「料金が手頃で、続けられているのが嬉しい。」</text>
+        </g>
+        <g transform="translate(540, 440)">
+          <circle cx="0" cy="20" r="22" fill="#f5d3b8"/>
+          <path d="M -18 12 Q -16 -2 0 -3 Q 16 -2 18 12" fill="#5a3a25"/>
+          <text x="40" y="10" font-size="11" fill="#3a2515" font-weight="700">入社八年目 / Bさん</text>
+          <text x="40" y="30" font-size="12" fill="#3a2515">「食堂のおかげで、忙しい日も食事を抜かない。」</text>
+          <text x="40" y="50" font-size="12" fill="#3a2515">「健康診断の結果も、毎年きちんと改善できています。」</text>
+        </g>
+        <text x="500" y="580" text-anchor="middle" font-size="11" fill="#999">画面の何もない場所をクリックすると一つ前に戻ります</text>
+      </svg>
+
+      <!-- ===== Lvl3: BENEFITS > 働き方 ===== -->
+      <svg class="svg-view" id="view-benefits-work" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#eef8ee"/>
+        <text x="500" y="55" text-anchor="middle" font-size="12" letter-spacing="5" fill="#5a8e5a" font-weight="700">BENEFITS › 働き方</text>
+        <text x="500" y="95" text-anchor="middle" font-size="30" font-weight="800" fill="#3a2515" letter-spacing="2">場所と時間を、自分で選ぶ</text>
+
+        <g transform="translate(60, 140)">
+          <rect x="0" y="0" width="285" height="200" fill="#fff" stroke="#5a8e5a" stroke-width="1.5" rx="8"/>
+          <rect x="0" y="0" width="285" height="50" fill="#5a8e5a" rx="8 8 0 0"/>
+          <text x="142" y="32" text-anchor="middle" font-size="16" font-weight="800" fill="#fff" letter-spacing="2">フレックスタイム</text>
+          <text x="20" y="80" font-size="13" fill="#3a2515" font-weight="600">コアタイム なし</text>
+          <text x="20" y="105" font-size="11" fill="#666">朝型、夜型、自分の調子に合わせて。</text>
+          <text x="20" y="135" font-size="13" fill="#3a2515" font-weight="600">月の目安 160時間</text>
+          <text x="20" y="160" font-size="11" fill="#666">日々の調整は本人の裁量です。</text>
+          <text x="20" y="180" font-size="11" fill="#666">残業時間も会社全体で抑制中。</text>
+        </g>
+
+        <g transform="translate(360, 140)">
+          <rect x="0" y="0" width="285" height="200" fill="#fff" stroke="#5a8e5a" stroke-width="1.5" rx="8"/>
+          <rect x="0" y="0" width="285" height="50" fill="#5a8e5a" rx="8 8 0 0"/>
+          <text x="142" y="32" text-anchor="middle" font-size="16" font-weight="800" fill="#fff" letter-spacing="2">リモートワーク</text>
+          <text x="20" y="80" font-size="13" fill="#3a2515" font-weight="600">基本 自由</text>
+          <text x="20" y="105" font-size="11" fill="#666">月一回のチーム集合日のみ出社。</text>
+          <text x="20" y="135" font-size="13" fill="#3a2515" font-weight="600">在宅手当あり</text>
+          <text x="20" y="160" font-size="11" fill="#666">月一万円。机、椅子、回線も。</text>
+          <text x="20" y="180" font-size="11" fill="#666">遠方在住の社員も多数います。</text>
+        </g>
+
+        <g transform="translate(660, 140)">
+          <rect x="0" y="0" width="280" height="200" fill="#fff" stroke="#5a8e5a" stroke-width="1.5" rx="8"/>
+          <rect x="0" y="0" width="280" height="50" fill="#5a8e5a" rx="8 8 0 0"/>
+          <text x="140" y="32" text-anchor="middle" font-size="16" font-weight="800" fill="#fff" letter-spacing="2">休暇制度</text>
+          <text x="20" y="80" font-size="13" fill="#3a2515" font-weight="600">有給 取得率 90%</text>
+          <text x="20" y="105" font-size="11" fill="#666">取らないと評価が下がる程です。</text>
+          <text x="20" y="135" font-size="13" fill="#3a2515" font-weight="600">特別休暇 多数</text>
+          <text x="20" y="160" font-size="11" fill="#666">誕生日休暇、リフレッシュ、</text>
+          <text x="20" y="180" font-size="11" fill="#666">ボランティア、家族の看護など。</text>
+        </g>
+
+        <!-- グラフ -->
+        <rect x="60" y="370" width="880" height="160" fill="#fff" stroke="#5a8e5a" stroke-width="1.5" rx="8"/>
+        <text x="80" y="400" font-size="13" font-weight="800" fill="#5a8e5a" letter-spacing="2">数字で見る働き方</text>
+        <line x1="80" y1="410" x2="920" y2="410" stroke="#eee"/>
+        <g transform="translate(140, 470)">
+          <text x="0" y="-22" text-anchor="middle" font-size="11" fill="#666">月の平均残業</text>
+          <text x="0" y="6" text-anchor="middle" font-size="32" font-weight="800" fill="#5a8e5a">12<tspan font-size="14">h</tspan></text>
+        </g>
+        <g transform="translate(360, 470)">
+          <text x="0" y="-22" text-anchor="middle" font-size="11" fill="#666">有給取得率</text>
+          <text x="0" y="6" text-anchor="middle" font-size="32" font-weight="800" fill="#5a8e5a">90<tspan font-size="14">%</tspan></text>
+        </g>
+        <g transform="translate(580, 470)">
+          <text x="0" y="-22" text-anchor="middle" font-size="11" fill="#666">リモート率</text>
+          <text x="0" y="6" text-anchor="middle" font-size="32" font-weight="800" fill="#5a8e5a">80<tspan font-size="14">%</tspan></text>
+        </g>
+        <g transform="translate(800, 470)">
+          <text x="0" y="-22" text-anchor="middle" font-size="11" fill="#666">育休復帰率</text>
+          <text x="0" y="6" text-anchor="middle" font-size="32" font-weight="800" fill="#5a8e5a">100<tspan font-size="14">%</tspan></text>
+        </g>
+        <text x="500" y="580" text-anchor="middle" font-size="11" fill="#999">画面の何もない場所をクリックすると一つ前に戻ります</text>
+      </svg>
+
+      <!-- ===== Lvl3: BENEFITS > 自己投資 ===== -->
+      <svg class="svg-view" id="view-benefits-grow" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#eef8ee"/>
+        <text x="500" y="55" text-anchor="middle" font-size="12" letter-spacing="5" fill="#5a8e5a" font-weight="700">BENEFITS › 自己投資支援</text>
+        <text x="500" y="95" text-anchor="middle" font-size="30" font-weight="800" fill="#3a2515" letter-spacing="2">学びにかかる費用を、会社が支える</text>
+
+        <g transform="translate(60, 140)">
+          <rect x="0" y="0" width="285" height="200" fill="#fff" stroke="#5a8e5a" stroke-width="1.5" rx="8"/>
+          <rect x="0" y="0" width="285" height="50" fill="#5a8e5a" rx="8 8 0 0"/>
+          <text x="142" y="32" text-anchor="middle" font-size="16" font-weight="800" fill="#fff" letter-spacing="2">資格取得支援</text>
+          <text x="20" y="80" font-size="13" fill="#3a2515" font-weight="600">受験料 全額</text>
+          <text x="20" y="105" font-size="11" fill="#666">合否に関わらず、何度でも。</text>
+          <text x="20" y="135" font-size="13" fill="#3a2515" font-weight="600">合格祝い金</text>
+          <text x="20" y="160" font-size="11" fill="#666">資格に応じて 三万円から十万円まで。</text>
+          <text x="20" y="180" font-size="11" fill="#666">対象資格は 200種類 以上です。</text>
+        </g>
+
+        <g transform="translate(360, 140)">
+          <rect x="0" y="0" width="285" height="200" fill="#fff" stroke="#5a8e5a" stroke-width="1.5" rx="8"/>
+          <rect x="0" y="0" width="285" height="50" fill="#5a8e5a" rx="8 8 0 0"/>
+          <text x="142" y="32" text-anchor="middle" font-size="16" font-weight="800" fill="#fff" letter-spacing="2">書籍購入</text>
+          <text x="20" y="80" font-size="13" fill="#3a2515" font-weight="600">月 一万円 まで</text>
+          <text x="20" y="105" font-size="11" fill="#666">技術書・ビジネス書・小説まで。</text>
+          <text x="20" y="135" font-size="13" fill="#3a2515" font-weight="600">社内図書館</text>
+          <text x="20" y="160" font-size="11" fill="#666">買った本は社内で共有。</text>
+          <text x="20" y="180" font-size="11" fill="#666">3,000冊 を超える蔵書があります。</text>
+        </g>
+
+        <g transform="translate(660, 140)">
+          <rect x="0" y="0" width="280" height="200" fill="#fff" stroke="#5a8e5a" stroke-width="1.5" rx="8"/>
+          <rect x="0" y="0" width="280" height="50" fill="#5a8e5a" rx="8 8 0 0"/>
+          <text x="140" y="32" text-anchor="middle" font-size="16" font-weight="800" fill="#fff" letter-spacing="2">カンファレンス</text>
+          <text x="20" y="80" font-size="13" fill="#3a2515" font-weight="600">国内・海外 OK</text>
+          <text x="20" y="105" font-size="11" fill="#666">参加費・交通費・宿泊費 全額会社持ち。</text>
+          <text x="20" y="135" font-size="13" fill="#3a2515" font-weight="600">登壇支援も</text>
+          <text x="20" y="160" font-size="11" fill="#666">準備時間も業務として認めます。</text>
+          <text x="20" y="180" font-size="11" fill="#666">毎年 30名 が登壇しています。</text>
+        </g>
+
+        <rect x="60" y="370" width="880" height="160" fill="#fff" stroke="#5a8e5a" stroke-width="1.5" rx="8"/>
+        <text x="80" y="400" font-size="13" font-weight="800" fill="#5a8e5a" letter-spacing="2">よくある使い方</text>
+        <line x1="80" y1="410" x2="920" y2="410" stroke="#eee"/>
+        <g transform="translate(110, 440)" font-size="12" fill="#3a2515">
+          <text x="0" y="0" font-weight="700">○ AWS認定で十万円ゲット</text>
+          <text x="0" y="22" font-weight="700">○ 海外カンファレンスに毎年参加</text>
+          <text x="0" y="44" font-weight="700">○ 月の書籍代を満額使い切る</text>
+        </g>
+        <g transform="translate(540, 440)" font-size="12" fill="#3a2515">
+          <text x="0" y="0" font-weight="700">○ 大学院に通学(費用補助あり)</text>
+          <text x="0" y="22" font-weight="700">○ 業務時間内の勉強会主催</text>
+          <text x="0" y="44" font-weight="700">○ 同期で読書会を運営</text>
+        </g>
+        <text x="500" y="580" text-anchor="middle" font-size="11" fill="#999">画面の何もない場所をクリックすると一つ前に戻ります</text>
+      </svg>
+
+      <!-- ===== Lvl2: LEARNING ===== -->
+      <svg class="svg-view" id="view-learn" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#e8eef8"/>
+        <text x="500" y="55" text-anchor="middle" font-size="13" letter-spacing="6" fill="#5ba7c5" font-weight="700">LEARNING — 2F</text>
+        <text x="500" y="95" text-anchor="middle" font-size="32" font-weight="800" fill="#3a2515" letter-spacing="2">研修・成長</text>
+        <text x="500" y="120" text-anchor="middle" font-size="13" fill="#666">気になる項目をクリックすると、もっと詳しく見られます</text>
+
+        <g class="hotspot" data-target="learn-newbie">
+          <rect x="80" y="170" width="270" height="380" fill="#fff" stroke="#5ba7c5" stroke-width="2" rx="10"/>
+          <rect x="80" y="170" width="270" height="60" fill="#5ba7c5" rx="10 10 0 0"/>
+          <text x="215" y="208" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" letter-spacing="2">新人研修</text>
+          <g transform="translate(215, 290)">
+            <circle cx="0" cy="0" r="50" fill="#fff5e8" stroke="#5ba7c5" stroke-width="2"/>
+            <text x="0" y="-12" text-anchor="middle" font-size="11" fill="#5ba7c5" font-weight="800">FIRST</text>
+            <text x="0" y="14" text-anchor="middle" font-size="22" font-weight="800" fill="#3a2515">3 ヶ月</text>
+          </g>
+          <text x="215" y="380" text-anchor="middle" font-size="14" fill="#3a2515" font-weight="600">ビジネス・技術・チーム</text>
+          <text x="215" y="410" text-anchor="middle" font-size="11" fill="#666">未経験者でも安心して</text>
+          <text x="215" y="425" text-anchor="middle" font-size="11" fill="#666">社会人の一歩目を踏み出せます。</text>
+          <rect x="135" y="490" width="160" height="36" fill="#5ba7c5" rx="18"/>
+          <text x="215" y="513" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" letter-spacing="2">詳しく見る ›</text>
+        </g>
+
+        <g class="hotspot" data-target="learn-tech">
+          <rect x="365" y="170" width="270" height="380" fill="#fff" stroke="#5ba7c5" stroke-width="2" rx="10"/>
+          <rect x="365" y="170" width="270" height="60" fill="#5ba7c5" rx="10 10 0 0"/>
+          <text x="500" y="208" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" letter-spacing="2">技術研修</text>
+          <g transform="translate(500, 290)">
+            <circle cx="0" cy="0" r="50" fill="#fff5e8" stroke="#5ba7c5" stroke-width="2"/>
+            <rect x="-22" y="-18" width="14" height="36" fill="#d97757" rx="2"/>
+            <rect x="-4" y="-18" width="14" height="36" fill="#5a8e5a" rx="2"/>
+            <rect x="14" y="-18" width="14" height="36" fill="#a585cb" rx="2"/>
+          </g>
+          <text x="500" y="380" text-anchor="middle" font-size="14" fill="#3a2515" font-weight="600">月一回 / 専門講師</text>
+          <text x="500" y="410" text-anchor="middle" font-size="11" fill="#666">最新技術や専門領域を、</text>
+          <text x="500" y="425" text-anchor="middle" font-size="11" fill="#666">深く学び直せる場です。</text>
+          <rect x="420" y="490" width="160" height="36" fill="#5ba7c5" rx="18"/>
+          <text x="500" y="513" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" letter-spacing="2">詳しく見る ›</text>
+        </g>
+
+        <g class="hotspot" data-target="learn-leader">
+          <rect x="650" y="170" width="270" height="380" fill="#fff" stroke="#5ba7c5" stroke-width="2" rx="10"/>
+          <rect x="650" y="170" width="270" height="60" fill="#5ba7c5" rx="10 10 0 0"/>
+          <text x="785" y="208" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" letter-spacing="2">リーダー研修</text>
+          <g transform="translate(785, 290)">
+            <circle cx="0" cy="0" r="50" fill="#fff5e8" stroke="#5ba7c5" stroke-width="2"/>
+            <path d="M -25 12 L 0 -22 L 25 12 Z" fill="#d97757"/>
+            <circle cx="0" cy="-2" r="4" fill="#fff"/>
+          </g>
+          <text x="785" y="380" text-anchor="middle" font-size="14" fill="#3a2515" font-weight="600">中堅・管理職向け</text>
+          <text x="785" y="410" text-anchor="middle" font-size="11" fill="#666">人を導く力を、</text>
+          <text x="785" y="425" text-anchor="middle" font-size="11" fill="#666">じっくり養成していきます。</text>
+          <rect x="705" y="490" width="160" height="36" fill="#5ba7c5" rx="18"/>
+          <text x="785" y="513" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" letter-spacing="2">詳しく見る ›</text>
+        </g>
+      </svg>
+
+      <!-- ===== Lvl3: LEARNING > 新人研修 ===== -->
+      <svg class="svg-view" id="view-learn-newbie" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#eaf4f8"/>
+        <text x="500" y="55" text-anchor="middle" font-size="12" letter-spacing="5" fill="#5ba7c5" font-weight="700">LEARNING › 新人研修</text>
+        <text x="500" y="95" text-anchor="middle" font-size="30" font-weight="800" fill="#3a2515" letter-spacing="2">最初の三ヶ月で、土台をつくる</text>
+
+        <!-- 三ヶ月のタイムライン -->
+        <rect x="60" y="140" width="880" height="280" fill="#fff" stroke="#5ba7c5" stroke-width="1.5" rx="8"/>
+        <text x="80" y="170" font-size="13" font-weight="800" fill="#5ba7c5" letter-spacing="2">入社後 三ヶ月のスケジュール</text>
+        <line x1="80" y1="180" x2="920" y2="180" stroke="#eee"/>
+
+        <g transform="translate(120, 210)">
+          <!-- 1ヶ月目 -->
+          <rect x="0" y="0" width="220" height="180" fill="#eaf4f8" rx="8"/>
+          <rect x="0" y="0" width="220" height="36" fill="#5ba7c5" rx="8 8 0 0"/>
+          <text x="110" y="24" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" letter-spacing="2">第一ヶ月</text>
+          <text x="20" y="64" font-size="12" fill="#3a2515" font-weight="700">○ ビジネスマナー</text>
+          <text x="20" y="86" font-size="12" fill="#3a2515" font-weight="700">○ 会社の事業を知る</text>
+          <text x="20" y="108" font-size="12" fill="#3a2515" font-weight="700">○ チームビルディング</text>
+          <text x="20" y="138" font-size="11" fill="#666">同期と一緒に学びます。</text>
+          <text x="20" y="158" font-size="11" fill="#666">講義 + 実践のバランス。</text>
+        </g>
+
+        <g transform="translate(390, 210)">
+          <rect x="0" y="0" width="220" height="180" fill="#eaf4f8" rx="8"/>
+          <rect x="0" y="0" width="220" height="36" fill="#5ba7c5" rx="8 8 0 0"/>
+          <text x="110" y="24" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" letter-spacing="2">第二ヶ月</text>
+          <text x="20" y="64" font-size="12" fill="#3a2515" font-weight="700">○ 技術の基礎</text>
+          <text x="20" y="86" font-size="12" fill="#3a2515" font-weight="700">○ 開発手法 (アジャイル)</text>
+          <text x="20" y="108" font-size="12" fill="#3a2515" font-weight="700">○ 模擬プロジェクト</text>
+          <text x="20" y="138" font-size="11" fill="#666">先輩エンジニアが講師。</text>
+          <text x="20" y="158" font-size="11" fill="#666">手を動かしながら学習。</text>
+        </g>
+
+        <g transform="translate(660, 210)">
+          <rect x="0" y="0" width="220" height="180" fill="#eaf4f8" rx="8"/>
+          <rect x="0" y="0" width="220" height="36" fill="#5ba7c5" rx="8 8 0 0"/>
+          <text x="110" y="24" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" letter-spacing="2">第三ヶ月</text>
+          <text x="20" y="64" font-size="12" fill="#3a2515" font-weight="700">○ OJT 開始</text>
+          <text x="20" y="86" font-size="12" fill="#3a2515" font-weight="700">○ メンターと面談</text>
+          <text x="20" y="108" font-size="12" fill="#3a2515" font-weight="700">○ 配属先で本格始動</text>
+          <text x="20" y="138" font-size="11" fill="#666">困ったらいつでも相談を。</text>
+          <text x="20" y="158" font-size="11" fill="#666">フォローは一年続きます。</text>
+        </g>
+
+        <!-- 安心ポイント -->
+        <rect x="60" y="440" width="880" height="100" fill="#fff" stroke="#5ba7c5" stroke-width="1.5" rx="8"/>
+        <text x="80" y="468" font-size="13" font-weight="800" fill="#5ba7c5" letter-spacing="2">未経験者向けの安心ポイント</text>
+        <line x1="80" y1="478" x2="920" y2="478" stroke="#eee"/>
+        <g transform="translate(110, 500)" font-size="12" fill="#3a2515">
+          <text x="0" y="0">○ 文系出身が 約4割</text>
+          <text x="220" y="0">○ プロのメンター(別チーム)</text>
+          <text x="460" y="0">○ 三ヶ月後の研修テスト無し</text>
+          <text x="700" y="0">○ 同期会のサポート費あり</text>
+        </g>
+        <text x="500" y="580" text-anchor="middle" font-size="11" fill="#999">画面の何もない場所をクリックすると一つ前に戻ります</text>
+      </svg>
+
+      <!-- ===== Lvl3: LEARNING > 技術研修 ===== -->
+      <svg class="svg-view" id="view-learn-tech" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#eaf4f8"/>
+        <text x="500" y="55" text-anchor="middle" font-size="12" letter-spacing="5" fill="#5ba7c5" font-weight="700">LEARNING › 技術研修</text>
+        <text x="500" y="95" text-anchor="middle" font-size="30" font-weight="800" fill="#3a2515" letter-spacing="2">月に一度、技術を磨きにくる</text>
+
+        <rect x="60" y="140" width="880" height="280" fill="#fff" stroke="#5ba7c5" stroke-width="1.5" rx="8"/>
+        <text x="80" y="170" font-size="13" font-weight="800" fill="#5ba7c5" letter-spacing="2">最近のテーマ</text>
+        <line x1="80" y1="180" x2="920" y2="180" stroke="#eee"/>
+
+        <g transform="translate(110, 210)">
+          <g>
+            <rect x="0" y="0" width="240" height="80" fill="#eaf4f8" stroke="#5ba7c5" stroke-width="1" rx="6"/>
+            <text x="20" y="28" font-size="13" font-weight="800" fill="#5ba7c5">大規模言語モデルの実装</text>
+            <text x="20" y="52" font-size="11" fill="#3a2515">講師 / 社内ベテラン + 外部</text>
+            <text x="20" y="68" font-size="11" fill="#666">全二回 / 出席は任意</text>
+          </g>
+          <g transform="translate(280, 0)">
+            <rect x="0" y="0" width="240" height="80" fill="#eaf4f8" stroke="#5ba7c5" stroke-width="1" rx="6"/>
+            <text x="20" y="28" font-size="13" font-weight="800" fill="#5ba7c5">分散システムの設計</text>
+            <text x="20" y="52" font-size="11" fill="#3a2515">講師 / 海外ゲスト</text>
+            <text x="20" y="68" font-size="11" fill="#666">全三回 / 業務時間内</text>
+          </g>
+          <g transform="translate(560, 0)">
+            <rect x="0" y="0" width="240" height="80" fill="#eaf4f8" stroke="#5ba7c5" stroke-width="1" rx="6"/>
+            <text x="20" y="28" font-size="13" font-weight="800" fill="#5ba7c5">セキュリティの最前線</text>
+            <text x="20" y="52" font-size="11" fill="#3a2515">講師 / セキュリティ部門長</text>
+            <text x="20" y="68" font-size="11" fill="#666">全一回 / 全社員対象</text>
+          </g>
+        </g>
+
+        <g transform="translate(110, 320)">
+          <g>
+            <rect x="0" y="0" width="240" height="80" fill="#eaf4f8" stroke="#5ba7c5" stroke-width="1" rx="6"/>
+            <text x="20" y="28" font-size="13" font-weight="800" fill="#5ba7c5">クラウドの最適化</text>
+            <text x="20" y="52" font-size="11" fill="#3a2515">講師 / クラウド推進部</text>
+            <text x="20" y="68" font-size="11" fill="#666">全二回 / 配信あり</text>
+          </g>
+          <g transform="translate(280, 0)">
+            <rect x="0" y="0" width="240" height="80" fill="#eaf4f8" stroke="#5ba7c5" stroke-width="1" rx="6"/>
+            <text x="20" y="28" font-size="13" font-weight="800" fill="#5ba7c5">データ可視化の基礎</text>
+            <text x="20" y="52" font-size="11" fill="#3a2515">講師 / データ分析チーム</text>
+            <text x="20" y="68" font-size="11" fill="#666">全二回 / ハンズオン</text>
+          </g>
+          <g transform="translate(560, 0)">
+            <rect x="0" y="0" width="240" height="80" fill="#eaf4f8" stroke="#5ba7c5" stroke-width="1" rx="6"/>
+            <text x="20" y="28" font-size="13" font-weight="800" fill="#5ba7c5">伝える技術 (テックライティング)</text>
+            <text x="20" y="52" font-size="11" fill="#3a2515">講師 / 技術広報担当</text>
+            <text x="20" y="68" font-size="11" fill="#666">全二回 / 業務時間内</text>
+          </g>
+        </g>
+
+        <rect x="60" y="450" width="880" height="90" fill="#fff" stroke="#5ba7c5" stroke-width="1.5" rx="8"/>
+        <text x="80" y="478" font-size="13" font-weight="800" fill="#5ba7c5" letter-spacing="2">研修後のフォロー</text>
+        <line x1="80" y1="488" x2="920" y2="488" stroke="#eee"/>
+        <g transform="translate(110, 510)" font-size="12" fill="#3a2515">
+          <text x="0" y="0">○ 録画はいつでも見返せる</text>
+          <text x="240" y="0">○ 業務に活かす相談を奨励</text>
+          <text x="480" y="0">○ 次の研修テーマも社員投票で決定</text>
+        </g>
+        <text x="500" y="580" text-anchor="middle" font-size="11" fill="#999">画面の何もない場所をクリックすると一つ前に戻ります</text>
+      </svg>
+
+      <!-- ===== Lvl3: LEARNING > リーダー研修 ===== -->
+      <svg class="svg-view" id="view-learn-leader" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#eaf4f8"/>
+        <text x="500" y="55" text-anchor="middle" font-size="12" letter-spacing="5" fill="#5ba7c5" font-weight="700">LEARNING › リーダー研修</text>
+        <text x="500" y="95" text-anchor="middle" font-size="30" font-weight="800" fill="#3a2515" letter-spacing="2">人を導く力を、じっくり養う</text>
+
+        <rect x="60" y="140" width="880" height="280" fill="#fff" stroke="#5ba7c5" stroke-width="1.5" rx="8"/>
+        <text x="80" y="170" font-size="13" font-weight="800" fill="#5ba7c5" letter-spacing="2">三段階のリーダー育成</text>
+        <line x1="80" y1="180" x2="920" y2="180" stroke="#eee"/>
+
+        <g transform="translate(120, 210)">
+          <rect x="0" y="0" width="240" height="180" fill="#eaf4f8" rx="8"/>
+          <rect x="0" y="0" width="240" height="36" fill="#5ba7c5" rx="8 8 0 0"/>
+          <text x="120" y="24" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" letter-spacing="2">入社 5年目</text>
+          <text x="20" y="64" font-size="12" font-weight="700" fill="#3a2515">テックリード入門</text>
+          <text x="20" y="86" font-size="11" fill="#666">小さなチームの牽引役。</text>
+          <text x="20" y="106" font-size="11" fill="#666">一対一の対話、設計レビュー、</text>
+          <text x="20" y="124" font-size="11" fill="#666">後輩のフィードバック。</text>
+          <text x="20" y="156" font-size="11" font-weight="700" fill="#5ba7c5">期間 / 半年</text>
+        </g>
+
+        <g transform="translate(380, 210)">
+          <rect x="0" y="0" width="240" height="180" fill="#eaf4f8" rx="8"/>
+          <rect x="0" y="0" width="240" height="36" fill="#5ba7c5" rx="8 8 0 0"/>
+          <text x="120" y="24" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" letter-spacing="2">入社 8年目</text>
+          <text x="20" y="64" font-size="12" font-weight="700" fill="#3a2515">マネージャー研修</text>
+          <text x="20" y="86" font-size="11" fill="#666">15人前後のチーム運営。</text>
+          <text x="20" y="106" font-size="11" fill="#666">採用、評価、メンバーの成長、</text>
+          <text x="20" y="124" font-size="11" fill="#666">数字の管理を学びます。</text>
+          <text x="20" y="156" font-size="11" font-weight="700" fill="#5ba7c5">期間 / 一年</text>
+        </g>
+
+        <g transform="translate(640, 210)">
+          <rect x="0" y="0" width="240" height="180" fill="#eaf4f8" rx="8"/>
+          <rect x="0" y="0" width="240" height="36" fill="#5ba7c5" rx="8 8 0 0"/>
+          <text x="120" y="24" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" letter-spacing="2">入社 12年目以降</text>
+          <text x="20" y="64" font-size="12" font-weight="700" fill="#3a2515">部門長クラス</text>
+          <text x="20" y="86" font-size="11" fill="#666">部門の戦略・予算・組織。</text>
+          <text x="20" y="106" font-size="11" fill="#666">経営との対話、外部講師、</text>
+          <text x="20" y="124" font-size="11" fill="#666">他社の経営者との交流。</text>
+          <text x="20" y="156" font-size="11" font-weight="700" fill="#5ba7c5">期間 / 二年</text>
+        </g>
+
+        <rect x="60" y="450" width="880" height="90" fill="#fff" stroke="#5ba7c5" stroke-width="1.5" rx="8"/>
+        <text x="80" y="478" font-size="13" font-weight="800" fill="#5ba7c5" letter-spacing="2">大切にしていること</text>
+        <line x1="80" y1="488" x2="920" y2="488" stroke="#eee"/>
+        <text x="110" y="514" font-size="12" fill="#3a2515" font-weight="600">技術を続けたい人にも、人を率いたい人にも、両方の道があります。</text>
+        <text x="500" y="580" text-anchor="middle" font-size="11" fill="#999">画面の何もない場所をクリックすると一つ前に戻ります</text>
+      </svg>
+
+      <!-- ===== Lvl2: POSITIONS ===== -->
+      <svg class="svg-view" id="view-jobs" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#fdebe1"/>
+        <text x="500" y="55" text-anchor="middle" font-size="13" letter-spacing="6" fill="#a585cb" font-weight="700">POSITIONS — 1F</text>
+        <text x="500" y="95" text-anchor="middle" font-size="32" font-weight="800" fill="#3a2515" letter-spacing="2">募集職種</text>
+        <text x="500" y="120" text-anchor="middle" font-size="13" fill="#666">気になる職種をクリックすると、もっと詳しく見られます</text>
+
+        <g class="hotspot" data-target="jobs-eng">
+          <rect x="80" y="170" width="270" height="380" fill="#fff" stroke="#a585cb" stroke-width="2" rx="10"/>
+          <rect x="80" y="170" width="270" height="60" fill="#a585cb" rx="10 10 0 0"/>
+          <text x="215" y="208" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" letter-spacing="2">エンジニア</text>
+          <g transform="translate(215, 290)">
+            <rect x="-50" y="-30" width="100" height="60" fill="#3a2515" rx="4"/>
+            <rect x="-46" y="-26" width="92" height="48" fill="#7ec8e3"/>
+            <text x="0" y="0" text-anchor="middle" font-size="12" fill="#fff" font-family="monospace">&lt; / &gt;</text>
+          </g>
+          <text x="215" y="380" text-anchor="middle" font-size="14" fill="#3a2515" font-weight="600">3名 募集中</text>
+          <text x="215" y="410" text-anchor="middle" font-size="11" fill="#666">未経験から、経験者まで。</text>
+          <text x="215" y="425" text-anchor="middle" font-size="11" fill="#666">いろんなレベルで募集中。</text>
+          <rect x="135" y="490" width="160" height="36" fill="#a585cb" rx="18"/>
+          <text x="215" y="513" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" letter-spacing="2">詳しく見る ›</text>
+        </g>
+
+        <g class="hotspot" data-target="jobs-design">
+          <rect x="365" y="170" width="270" height="380" fill="#fff" stroke="#a585cb" stroke-width="2" rx="10"/>
+          <rect x="365" y="170" width="270" height="60" fill="#a585cb" rx="10 10 0 0"/>
+          <text x="500" y="208" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" letter-spacing="2">デザイナー</text>
+          <g transform="translate(500, 290)">
+            <circle cx="0" cy="0" r="40" fill="#fff5e8" stroke="#a585cb" stroke-width="2"/>
+            <path d="M 0 -28 L 22 0 L 0 28 L -22 0 Z" fill="#d97757"/>
+            <circle cx="0" cy="0" r="8" fill="#fff"/>
+          </g>
+          <text x="500" y="380" text-anchor="middle" font-size="14" fill="#3a2515" font-weight="600">2名 募集中</text>
+          <text x="500" y="410" text-anchor="middle" font-size="11" fill="#666">UI / UX / グラフィック。</text>
+          <text x="500" y="425" text-anchor="middle" font-size="11" fill="#666">幅広い領域で募集中。</text>
+          <rect x="420" y="490" width="160" height="36" fill="#a585cb" rx="18"/>
+          <text x="500" y="513" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" letter-spacing="2">詳しく見る ›</text>
+        </g>
+
+        <g class="hotspot" data-target="jobs-cons">
+          <rect x="650" y="170" width="270" height="380" fill="#fff" stroke="#a585cb" stroke-width="2" rx="10"/>
+          <rect x="650" y="170" width="270" height="60" fill="#a585cb" rx="10 10 0 0"/>
+          <text x="785" y="208" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" letter-spacing="2">コンサルタント</text>
+          <g transform="translate(785, 290)">
+            <circle cx="-12" cy="-8" r="12" fill="#ffd9b8"/>
+            <path d="M -22 -10 Q -20 -22 -12 -22 Q -4 -22 -2 -10" fill="#3a2515"/>
+            <rect x="-22" y="2" width="20" height="22" fill="#5ba7c5" rx="3"/>
+            <circle cx="14" cy="-4" r="10" fill="#f5d3b8"/>
+            <path d="M 6 -6 Q 8 -16 14 -16 Q 20 -16 22 -6" fill="#5a3a25"/>
+            <rect x="6" y="6" width="16" height="20" fill="#d97757" rx="3"/>
+          </g>
+          <text x="785" y="380" text-anchor="middle" font-size="14" fill="#3a2515" font-weight="600">2名 募集中</text>
+          <text x="785" y="410" text-anchor="middle" font-size="11" fill="#666">経営課題を整理し、</text>
+          <text x="785" y="425" text-anchor="middle" font-size="11" fill="#666">解決策を共に考える役割。</text>
+          <rect x="705" y="490" width="160" height="36" fill="#a585cb" rx="18"/>
+          <text x="785" y="513" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" letter-spacing="2">詳しく見る ›</text>
+        </g>
+      </svg>
+
+      <!-- ===== Lvl3: POSITIONS > エンジニア ===== -->
+      <svg class="svg-view" id="view-jobs-eng" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#f5eef8"/>
+        <text x="500" y="55" text-anchor="middle" font-size="12" letter-spacing="5" fill="#a585cb" font-weight="700">POSITIONS › エンジニア</text>
+        <text x="500" y="95" text-anchor="middle" font-size="30" font-weight="800" fill="#3a2515" letter-spacing="2">エンジニア募集要項</text>
+
+        <rect x="60" y="140" width="430" height="380" fill="#fff" stroke="#a585cb" stroke-width="1.5" rx="8"/>
+        <text x="80" y="170" font-size="13" font-weight="800" fill="#a585cb" letter-spacing="2">仕事内容</text>
+        <line x1="80" y1="180" x2="470" y2="180" stroke="#eee"/>
+        <text x="80" y="206" font-size="14" fill="#3a2515" font-weight="700">○ システム設計から実装、運用まで</text>
+        <text x="100" y="226" font-size="12" fill="#666">基幹系・Webアプリ・スマホアプリ</text>
+        <text x="80" y="256" font-size="14" fill="#3a2515" font-weight="700">○ チーム開発</text>
+        <text x="100" y="276" font-size="12" fill="#666">アジャイル開発で、5〜10人のチーム</text>
+        <text x="80" y="306" font-size="14" fill="#3a2515" font-weight="700">○ 顧客との対話</text>
+        <text x="100" y="326" font-size="12" fill="#666">要件のすり合わせも仕事のうち</text>
+
+        <text x="80" y="370" font-size="13" font-weight="800" fill="#a585cb" letter-spacing="2">求める人物像</text>
+        <line x1="80" y1="380" x2="470" y2="380" stroke="#eee"/>
+        <text x="80" y="406" font-size="12" fill="#3a2515">○ 学び続けることが好きな人</text>
+        <text x="80" y="428" font-size="12" fill="#3a2515">○ 仲間と協力して進めたい人</text>
+        <text x="80" y="450" font-size="12" fill="#3a2515">○ 利用者の役に立ちたい人</text>
+        <text x="80" y="490" font-size="11" fill="#666">学歴・経験は問いません。</text>
+        <text x="80" y="506" font-size="11" fill="#666">気持ちと姿勢を大切に見ます。</text>
+
+        <rect x="510" y="140" width="430" height="180" fill="#fff" stroke="#a585cb" stroke-width="1.5" rx="8"/>
+        <text x="530" y="170" font-size="13" font-weight="800" fill="#a585cb" letter-spacing="2">必須スキル</text>
+        <line x1="530" y1="180" x2="920" y2="180" stroke="#eee"/>
+        <text x="530" y="206" font-size="13" fill="#3a2515" font-weight="600">プログラミング経験 (一年以上)</text>
+        <text x="550" y="226" font-size="11" fill="#666">言語は問いません</text>
+        <text x="530" y="256" font-size="13" fill="#3a2515" font-weight="600">基本的な日本語コミュニケーション</text>
+        <text x="550" y="276" font-size="11" fill="#666">読み書き、会話、議論</text>
+        <text x="530" y="306" font-size="11" fill="#888" font-style="italic">未経験者は別枠で募集中(新卒・第二新卒)</text>
+
+        <rect x="510" y="340" width="430" height="180" fill="#fff" stroke="#a585cb" stroke-width="1.5" rx="8"/>
+        <text x="530" y="370" font-size="13" font-weight="800" fill="#a585cb" letter-spacing="2">条件</text>
+        <line x1="530" y1="380" x2="920" y2="380" stroke="#eee"/>
+        <text x="530" y="406" font-size="13" fill="#3a2515" font-weight="600">年収レンジ</text>
+        <text x="650" y="406" font-size="13" fill="#3a2515">450万円 〜 900万円</text>
+        <text x="530" y="432" font-size="13" fill="#3a2515" font-weight="600">勤務地</text>
+        <text x="650" y="432" font-size="13" fill="#3a2515">本社 / 全国リモート</text>
+        <text x="530" y="458" font-size="13" fill="#3a2515" font-weight="600">勤務時間</text>
+        <text x="650" y="458" font-size="13" fill="#3a2515">フレックス (コアタイム無し)</text>
+        <text x="530" y="484" font-size="13" fill="#3a2515" font-weight="600">入社時期</text>
+        <text x="650" y="484" font-size="13" fill="#3a2515">応相談</text>
+        <text x="530" y="510" font-size="13" fill="#3a2515" font-weight="600">試用期間</text>
+        <text x="650" y="510" font-size="13" fill="#3a2515">三ヶ月 (条件は同じ)</text>
+
+        <text x="500" y="580" text-anchor="middle" font-size="11" fill="#999">画面の何もない場所をクリックすると一つ前に戻ります</text>
+      </svg>
+
+      <!-- ===== Lvl3: POSITIONS > デザイナー ===== -->
+      <svg class="svg-view" id="view-jobs-design" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#f5eef8"/>
+        <text x="500" y="55" text-anchor="middle" font-size="12" letter-spacing="5" fill="#a585cb" font-weight="700">POSITIONS › デザイナー</text>
+        <text x="500" y="95" text-anchor="middle" font-size="30" font-weight="800" fill="#3a2515" letter-spacing="2">デザイナー募集要項</text>
+
+        <rect x="60" y="140" width="430" height="380" fill="#fff" stroke="#a585cb" stroke-width="1.5" rx="8"/>
+        <text x="80" y="170" font-size="13" font-weight="800" fill="#a585cb" letter-spacing="2">仕事内容</text>
+        <line x1="80" y1="180" x2="470" y2="180" stroke="#eee"/>
+        <text x="80" y="206" font-size="14" fill="#3a2515" font-weight="700">○ プロダクトのUI設計</text>
+        <text x="100" y="226" font-size="12" fill="#666">Web・スマホ・業務画面</text>
+        <text x="80" y="256" font-size="14" fill="#3a2515" font-weight="700">○ ユーザー体験の検討</text>
+        <text x="100" y="276" font-size="12" fill="#666">調査・プロト・テスト</text>
+        <text x="80" y="306" font-size="14" fill="#3a2515" font-weight="700">○ ブランディング・広報</text>
+        <text x="100" y="326" font-size="12" fill="#666">会社の見せ方を一緒に考える</text>
+
+        <text x="80" y="370" font-size="13" font-weight="800" fill="#a585cb" letter-spacing="2">求める人物像</text>
+        <line x1="80" y1="380" x2="470" y2="380" stroke="#eee"/>
+        <text x="80" y="406" font-size="12" fill="#3a2515">○ 「なぜ」を大切に考える人</text>
+        <text x="80" y="428" font-size="12" fill="#3a2515">○ 利用者を観察し続けられる人</text>
+        <text x="80" y="450" font-size="12" fill="#3a2515">○ 人と話すのが嫌いではない人</text>
+        <text x="80" y="490" font-size="11" fill="#666">手を動かす力と、考える力、</text>
+        <text x="80" y="506" font-size="11" fill="#666">両方を大切にしています。</text>
+
+        <rect x="510" y="140" width="430" height="180" fill="#fff" stroke="#a585cb" stroke-width="1.5" rx="8"/>
+        <text x="530" y="170" font-size="13" font-weight="800" fill="#a585cb" letter-spacing="2">必須スキル</text>
+        <line x1="530" y1="180" x2="920" y2="180" stroke="#eee"/>
+        <text x="530" y="206" font-size="13" fill="#3a2515" font-weight="600">デザインの実務経験 (二年以上)</text>
+        <text x="550" y="226" font-size="11" fill="#666">業務分野は問いません</text>
+        <text x="530" y="256" font-size="13" fill="#3a2515" font-weight="600">Figma など主要ツール</text>
+        <text x="550" y="276" font-size="11" fill="#666">日々使えるレベル</text>
+        <text x="530" y="306" font-size="11" fill="#888" font-style="italic">ポートフォリオでの選考になります</text>
+
+        <rect x="510" y="340" width="430" height="180" fill="#fff" stroke="#a585cb" stroke-width="1.5" rx="8"/>
+        <text x="530" y="370" font-size="13" font-weight="800" fill="#a585cb" letter-spacing="2">条件</text>
+        <line x1="530" y1="380" x2="920" y2="380" stroke="#eee"/>
+        <text x="530" y="406" font-size="13" fill="#3a2515" font-weight="600">年収レンジ</text>
+        <text x="650" y="406" font-size="13" fill="#3a2515">480万円 〜 850万円</text>
+        <text x="530" y="432" font-size="13" fill="#3a2515" font-weight="600">勤務地</text>
+        <text x="650" y="432" font-size="13" fill="#3a2515">本社 / 全国リモート</text>
+        <text x="530" y="458" font-size="13" fill="#3a2515" font-weight="600">勤務時間</text>
+        <text x="650" y="458" font-size="13" fill="#3a2515">フレックス (コアタイム無し)</text>
+        <text x="530" y="484" font-size="13" fill="#3a2515" font-weight="600">副業</text>
+        <text x="650" y="484" font-size="13" fill="#3a2515">原則OK (相談制)</text>
+        <text x="530" y="510" font-size="13" fill="#3a2515" font-weight="600">試用期間</text>
+        <text x="650" y="510" font-size="13" fill="#3a2515">三ヶ月 (条件は同じ)</text>
+
+        <text x="500" y="580" text-anchor="middle" font-size="11" fill="#999">画面の何もない場所をクリックすると一つ前に戻ります</text>
+      </svg>
+
+      <!-- ===== Lvl3: POSITIONS > コンサル ===== -->
+      <svg class="svg-view" id="view-jobs-cons" viewBox="0 0 1000 625" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="625" fill="#f5eef8"/>
+        <text x="500" y="55" text-anchor="middle" font-size="12" letter-spacing="5" fill="#a585cb" font-weight="700">POSITIONS › コンサルタント</text>
+        <text x="500" y="95" text-anchor="middle" font-size="30" font-weight="800" fill="#3a2515" letter-spacing="2">コンサルタント募集要項</text>
+
+        <rect x="60" y="140" width="430" height="380" fill="#fff" stroke="#a585cb" stroke-width="1.5" rx="8"/>
+        <text x="80" y="170" font-size="13" font-weight="800" fill="#a585cb" letter-spacing="2">仕事内容</text>
+        <line x1="80" y1="180" x2="470" y2="180" stroke="#eee"/>
+        <text x="80" y="206" font-size="14" fill="#3a2515" font-weight="700">○ 顧客の課題ヒアリング</text>
+        <text x="100" y="226" font-size="12" fill="#666">経営層・現場、両方と話す</text>
+        <text x="80" y="256" font-size="14" fill="#3a2515" font-weight="700">○ 解決策の設計</text>
+        <text x="100" y="276" font-size="12" fill="#666">技術と業務、両面から提案</text>
+        <text x="80" y="306" font-size="14" fill="#3a2515" font-weight="700">○ プロジェクト推進</text>
+        <text x="100" y="326" font-size="12" fill="#666">エンジニア・デザイナーをまとめる</text>
+
+        <text x="80" y="370" font-size="13" font-weight="800" fill="#a585cb" letter-spacing="2">求める人物像</text>
+        <line x1="80" y1="380" x2="470" y2="380" stroke="#eee"/>
+        <text x="80" y="406" font-size="12" fill="#3a2515">○ 人の話を最後まで聞ける人</text>
+        <text x="80" y="428" font-size="12" fill="#3a2515">○ 物事を整理して伝えられる人</text>
+        <text x="80" y="450" font-size="12" fill="#3a2515">○ 技術にも興味を持てる人</text>
+        <text x="80" y="490" font-size="11" fill="#666">業界経験は問いません。</text>
+        <text x="80" y="506" font-size="11" fill="#666">学ぶ姿勢を一番見ます。</text>
+
+        <rect x="510" y="140" width="430" height="180" fill="#fff" stroke="#a585cb" stroke-width="1.5" rx="8"/>
+        <text x="530" y="170" font-size="13" font-weight="800" fill="#a585cb" letter-spacing="2">必須スキル</text>
+        <line x1="530" y1="180" x2="920" y2="180" stroke="#eee"/>
+        <text x="530" y="206" font-size="13" fill="#3a2515" font-weight="600">社会人経験 (三年以上)</text>
+        <text x="550" y="226" font-size="11" fill="#666">業界は問いません</text>
+        <text x="530" y="256" font-size="13" fill="#3a2515" font-weight="600">資料作成と発表の力</text>
+        <text x="550" y="276" font-size="11" fill="#666">プレゼン、ドキュメント</text>
+        <text x="530" y="306" font-size="11" fill="#888" font-style="italic">技術知識は入社後に学べます</text>
+
+        <rect x="510" y="340" width="430" height="180" fill="#fff" stroke="#a585cb" stroke-width="1.5" rx="8"/>
+        <text x="530" y="370" font-size="13" font-weight="800" fill="#a585cb" letter-spacing="2">条件</text>
+        <line x1="530" y1="380" x2="920" y2="380" stroke="#eee"/>
+        <text x="530" y="406" font-size="13" fill="#3a2515" font-weight="600">年収レンジ</text>
+        <text x="650" y="406" font-size="13" fill="#3a2515">550万円 〜 1,200万円</text>
+        <text x="530" y="432" font-size="13" fill="#3a2515" font-weight="600">勤務地</text>
+        <text x="650" y="432" font-size="13" fill="#3a2515">本社 / 顧客先</text>
+        <text x="530" y="458" font-size="13" fill="#3a2515" font-weight="600">出張</text>
+        <text x="650" y="458" font-size="13" fill="#3a2515">月に数回程度</text>
+        <text x="530" y="484" font-size="13" fill="#3a2515" font-weight="600">役割の幅</text>
+        <text x="650" y="484" font-size="13" fill="#3a2515">本人の希望次第</text>
+        <text x="530" y="510" font-size="13" fill="#3a2515" font-weight="600">試用期間</text>
+        <text x="650" y="510" font-size="13" fill="#3a2515">三ヶ月 (条件は同じ)</text>
+
+        <text x="500" y="580" text-anchor="middle" font-size="11" fill="#999">画面の何もない場所をクリックすると一つ前に戻ります</text>
+      </svg>
+
+    </div>
+  </div>
+</section>
+
+<section class="content" id="about">
+  <div class="section-title reveal">— ABOUT US —</div>
+  <h2 class="section-heading reveal">わたしたちについて</h2>
+  <div class="about-content reveal">
+    <div class="about-text">
+      <p>テクノロジーで、お客様の事業を次の段階へ。それが TECH PARTNERS の使命です。</p>
+      <p>少数精鋭ではなく、多様な人が集まる組織。エンジニア、デザイナー、コンサルタント、それぞれが自分の領域に責任を持ち、横で繋がって仕事をしています。</p>
+      <p>採用ページでは、わたしたちの会社の中を歩いて見ていただける形にしました。気になる場所をクリックして、ぜひ細部までご覧ください。</p>
+    </div>
+    <div class="about-card">
+      <h3>— 採用について —</h3>
+      <p style="color:#444; font-size:14px; line-height:2.0;">通年採用 / 新卒・中途とも歓迎<br>カジュアル面談も実施中<br>履歴書 / ポートフォリオで選考</p>
+    </div>
+  </div>
+</section>
+
+<section class="content" id="contact">
+  <div class="contact-cta reveal">
+    <h2>まずは、話を聞いてみませんか</h2>
+    <p>応募の前に、カジュアルな面談から始められます。<br>気になることを、気軽にお聞きください。</p>
+    <a href="mailto:recruit@example.com" class="cta-button">エントリー / 面談予約</a>
+  </div>
+</section>
+
+<footer>
+  © 2026 TECH PARTNERS RECRUIT (DEMO)
+</footer>
+
+<script>
+const viewLabels = {
+  main: '採用トップ',
+  biz: '事業紹介', 'biz-dev': 'システム開発', 'biz-data': 'データ・AI', 'biz-cloud': 'クラウド推進',
+  benefits: '福利厚生', 'benefits-health': '健康サポート', 'benefits-work': '働き方', 'benefits-grow': '自己投資支援',
+  learn: '研修・成長', 'learn-newbie': '新人研修', 'learn-tech': '技術研修', 'learn-leader': 'リーダー研修',
+  jobs: '募集職種', 'jobs-eng': 'エンジニア', 'jobs-design': 'デザイナー', 'jobs-cons': 'コンサルタント'
+};
+const viewParents = {
+  'biz-dev': 'biz', 'biz-data': 'biz', 'biz-cloud': 'biz',
+  'benefits-health': 'benefits', 'benefits-work': 'benefits', 'benefits-grow': 'benefits',
+  'learn-newbie': 'learn', 'learn-tech': 'learn', 'learn-leader': 'learn',
+  'jobs-eng': 'jobs', 'jobs-design': 'jobs', 'jobs-cons': 'jobs',
+  'biz': 'main', 'benefits': 'main', 'learn': 'main', 'jobs': 'main'
+};
+
+const breadcrumb = document.getElementById('breadcrumb');
+const illustrationArea = document.getElementById('illustrationArea');
+let currentView = 'main';
+
+function switchView(targetId) {
+  document.querySelectorAll('.svg-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + targetId).classList.add('active');
+  currentView = targetId;
+  updateBreadcrumb(targetId);
+  if (targetId === 'main') illustrationArea.classList.add('main-active');
+  else illustrationArea.classList.remove('main-active');
+}
+
+function updateBreadcrumb(targetId) {
+  const path = [];
+  let cur = targetId;
+  while (cur) { path.unshift(cur); cur = viewParents[cur] || null; }
+  let html = '';
+  path.forEach((id, i) => {
+    if (i > 0) html += '<span class="arrow">›</span>';
+    html += '<span data-view="' + id + '">' + viewLabels[id] + '</span>';
+  });
+  breadcrumb.innerHTML = html;
+  breadcrumb.querySelectorAll('span[data-view]').forEach(el => {
+    el.addEventListener('click', () => switchView(el.dataset.view));
+  });
+}
+
+function setupHotspots() {
+  document.querySelectorAll('.hotspot').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const target = el.dataset.target;
+      if (!target) return;
+      const rect = illustrationArea.getBoundingClientRect();
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple';
+      ripple.style.left = (e.clientX - rect.left) + 'px';
+      ripple.style.top = (e.clientY - rect.top) + 'px';
+      ripple.style.width = '20px';
+      ripple.style.height = '20px';
+      illustrationArea.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 800);
+      setTimeout(() => switchView(target), 200);
+    });
+  });
+}
+setupHotspots();
+
+document.querySelector('.continue-btn').addEventListener('click', () => {
+  // 一段だけ戻る
+  const parent = viewParents[currentView] || 'main';
+  switchView(parent);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && currentView !== 'main') {
+    const parent = viewParents[currentView] || 'main';
+    switchView(parent);
+  }
+});
+
+illustrationArea.addEventListener('click', (e) => {
+  if (currentView === 'main') return;
+  if (!e.target.closest('.hotspot')) {
+    const rect = illustrationArea.getBoundingClientRect();
+    const ripple = document.createElement('div');
+    ripple.className = 'ripple';
+    ripple.style.left = (e.clientX - rect.left) + 'px';
+    ripple.style.top = (e.clientY - rect.top) + 'px';
+    ripple.style.width = '20px';
+    ripple.style.height = '20px';
+    ripple.style.background = 'rgba(150, 150, 150, 0.3)';
+    illustrationArea.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 800);
+    setTimeout(() => {
+      const parent = viewParents[currentView] || 'main';
+      switchView(parent);
+    }, 200);
+  }
+});
+
+illustrationArea.addEventListener('contextmenu', (e) => {
+  if (currentView !== 'main') {
+    e.preventDefault();
+    const parent = viewParents[currentView] || 'main';
+    switchView(parent);
+  }
+});
+
+updateBreadcrumb('main');
+
+// プレイヤー追従
+const player = document.getElementById('player');
+let playerX = 500, playerY = 580;
+let targetX = 500, targetY = 580;
+let walkPhase = 0;
+
+illustrationArea.addEventListener('mousemove', (e) => {
+  if (currentView !== 'main') return;
+  const rect = illustrationArea.getBoundingClientRect();
+  const x = ((e.clientX - rect.left) / rect.width) * 1000;
+  const y = ((e.clientY - rect.top) / rect.height) * 625;
+  targetX = Math.max(40, Math.min(960, x));
+  targetY = Math.max(550, Math.min(605, y));
+});
+
+function animatePlayer() {
+  if (currentView === 'main' && player) {
+    const dx = targetX - playerX;
+    const dy = targetY - playerY;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    playerX += dx * 0.12;
+    playerY += dy * 0.12;
+    let bounce = 0;
+    if (dist > 2) {
+      walkPhase += 0.3;
+      bounce = Math.sin(walkPhase) * 2;
+    }
+    player.setAttribute('transform', `translate(${playerX}, ${playerY + bounce})`);
+
+    document.querySelectorAll('#view-main .hotspot').forEach(el => {
+      const bbox = el.getBBox();
+      const cx = bbox.x + bbox.width/2;
+      const cy = bbox.y + bbox.height/2;
+      const d = Math.sqrt((cx-playerX)**2 + (cy-playerY)**2);
+      if (d < 250) {
+        el.style.filter = 'drop-shadow(0 0 14px rgba(217, 119, 87, 0.6)) brightness(1.06)';
+        el.style.transform = 'translateY(-4px)';
+      } else {
+        el.style.filter = '';
+        el.style.transform = '';
+      }
+    });
+  }
+  requestAnimationFrame(animatePlayer);
+}
+player.setAttribute('transform', `translate(${playerX}, ${playerY})`);
+animatePlayer();
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('active');
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

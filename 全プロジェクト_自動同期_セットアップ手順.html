@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>全プロジェクト 自動同期 セットアップ手順</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  background: #f6f7f9;
+  color: #1f2328;
+  line-height: 1.85;
+  padding: 40px 20px 80px;
+}
+.container { max-width: 940px; margin: 0 auto; }
+
+.head {
+  background: #fff;
+  border-radius: 14px;
+  padding: 36px 40px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.head h1 {
+  font-size: 26px;
+  color: #1a3a5c;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.head p { color: #555; font-size: 14px; }
+
+.overview {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px 36px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 22px;
+}
+.overview h3 { font-size: 16px; color: #1a3a5c; margin-bottom: 14px; }
+.overview p { font-size: 14px; color: #444; margin-bottom: 8px; }
+
+.scope-list {
+  background: #f0f4f8;
+  border-radius: 10px;
+  padding: 16px 22px;
+  margin-top: 14px;
+  font-size: 13px;
+}
+.scope-list .label { font-weight: 700; color: #1a3a5c; margin-bottom: 6px; }
+.scope-list code {
+  background: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+}
+
+.flow {
+  display: flex;
+  gap: 12px;
+  margin: 18px 0 6px;
+  flex-wrap: wrap;
+}
+.flow .box {
+  flex: 1;
+  min-width: 130px;
+  background: #f0f4f8;
+  border-radius: 8px;
+  padding: 14px;
+  text-align: center;
+  font-size: 12px;
+  border: 1px solid #d0d8e0;
+}
+.flow .box strong { display: block; color: #1a3a5c; margin-bottom: 4px; font-size: 13px; }
+.flow .arrow { display: flex; align-items: center; justify-content: center; color: #d97757; font-size: 22px; font-weight: 700; }
+
+.section {
+  background: #fff;
+  border-radius: 14px;
+  padding: 32px 40px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 22px;
+}
+.section-tag {
+  display: inline-block;
+  background: #1a3a5c;
+  color: #fff;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+.section-tag.b { background: #d97757; }
+.section-tag.c { background: #28a745; }
+.section h2 { font-size: 22px; color: #1a3a5c; margin-bottom: 18px; }
+
+.step {
+  background: #fafbfc;
+  border-radius: 10px;
+  padding: 22px 26px;
+  margin: 18px 0;
+  border: 1px solid #e8eaed;
+}
+.step-head { display: flex; align-items: center; margin-bottom: 12px; }
+.step-num {
+  background: #d97757;
+  color: #fff;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 30px;
+  font-weight: 800;
+  margin-right: 12px;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.step h3 { font-size: 17px; color: #1a3a5c; }
+.step .desc { margin-bottom: 14px; color: #444; font-size: 14px; }
+
+.code {
+  background: #1a1f2e;
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin: 12px 0;
+  position: relative;
+  overflow-x: auto;
+}
+.code pre {
+  color: #e3e6f0;
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre;
+  word-break: normal;
+}
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #d97757;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+  z-index: 2;
+}
+.copy-btn:hover { background: #c46544; }
+.copy-btn.copied { background: #28ca42; }
+
+.note {
+  background: #fff8e6;
+  border-left: 4px solid #ffd97a;
+  padding: 10px 16px;
+  margin: 12px 0;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #5a4a1a;
+}
+.danger {
+  background: #fff0ed;
+  border-left: 4px solid #d97757;
+  padding: 10px 16px;
+  margin: 12px 0;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #7a2e1a;
+}
+.success {
+  background: #ecfdf5;
+  border-left: 4px solid #28ca42;
+  padding: 10px 16px;
+  margin: 12px 0;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #1f5f3a;
+}
+
+.case-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0 6px;
+}
+.case-tab {
+  flex: 1;
+  background: #f0f4f8;
+  border: 1px solid #d0d8e0;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  text-align: center;
+  color: #1a3a5c;
+}
+.case-tab strong { display: block; font-size: 14px; margin-bottom: 4px; }
+
+.subtitle {
+  display: inline-block;
+  background: #f0f4f8;
+  color: #1a3a5c;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  margin-top: 8px;
+}
+
+.foot {
+  text-align: center;
+  margin-top: 36px;
+  color: #888;
+  font-size: 12px;
+}
+
+a { color: #d97757; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul { margin: 8px 0 8px 20px; }
+li { margin-bottom: 4px; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="head">
+    <h1>全プロジェクト 自動同期 セットアップ手順</h1>
+    <p>Documents\Claude\Projects と Documents\Claude\Artifacts の 配下 に ある すべての GitHub プロジェクト を、保存 する だけ で 自動 で 公開 ページ に 反映 させます。</p>
+  </div>
+
+  <div class="overview">
+    <h3>でき上がる 状態</h3>
+    <div class="flow">
+      <div class="box"><strong>1. 編集</strong>どの プロジェクト で 何 を 編集しても</div>
+      <div class="arrow">→</div>
+      <div class="box"><strong>2. 自動 push</strong>30秒 以内 に GitHub へ 自動 反映</div>
+      <div class="arrow">→</div>
+      <div class="box"><strong>3. 公開 ページ</strong>1〜2分 後 に 自動 更新</div>
+    </div>
+    <div class="scope-list">
+      <div class="label">監視 対象 (この フォルダ の 中 に ある GitHub プロジェクト 全部)</div>
+      <code>C:\Users\nabe2\Documents\Claude\Projects\</code><br>
+      <code>C:\Users\nabe2\Documents\Claude\Artifacts\</code>
+    </div>
+    <p style="margin-top:14px;">A の 「共通 の 準備」 は 全 プロジェクト で 一度 だけ。B の 「プロジェクト ごと の 接続」 は その プロジェクト で 一度 だけ。あとは 自動 で 動き 続けます。</p>
+  </div>
+
+  <!-- ===== A: 共通の準備 ===== -->
+  <div class="section">
+    <span class="section-tag">A. 共通 の 準備 (生涯 一度 だけ)</span>
+    <h2>自動同期 の 仕掛け を 作る</h2>
+
+    <div class="step">
+      <div class="step-head"><span class="step-num">1</span><h3>Git が 入って いるか 確認</h3></div>
+      <div class="desc">PowerShell を 起動 (スタート メニュー で 「PowerShell」 と 入力 → クリック)。下の コマンド を 貼り付けて Enter。</div>
+      <div class="code">
+        <button class="copy-btn" data-copy="git --version">コピー</button>
+<pre>git --version</pre>
+      </div>
+      <div class="success">バージョン 番号 (例: git version 2.45.0) が 出れば OK。</div>
+      <div class="danger">「認識 されていません」 などの エラー が 出たら、まず <a href="https://git-scm.com/download/win" target="_blank">Git for Windows</a> を ダウンロード ・ インストール。設定 は 全部 デフォルト で OK。終わったら PowerShell を 一度 閉じて 開き直し、もう 一度 上 の コマンド を 試して ください。</div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-num">2</span><h3>名前 と メアド を 登録 (初回 のみ)</h3></div>
+      <div class="desc">既に 設定 済み なら 上書き で 問題 ない ので 実行 OK。</div>
+      <div class="code">
+        <button class="copy-btn" data-copy="git config --global user.name 'nabe'; git config --global user.email 'nabe246jp@gmail.com'">コピー</button>
+<pre>git config --global user.name 'nabe'; git config --global user.email 'nabe246jp@gmail.com'</pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-num">3</span><h3>自動同期 スクリプト の 置き場所 を 作る</h3></div>
+      <div class="desc">自動同期 スクリプト 専用 の フォルダ を 作ります。</div>
+      <div class="code">
+        <button class="copy-btn" data-copy="New-Item -ItemType Directory -Path 'C:\Users\nabe2\AppData\Local\auto-sync' -Force | Out-Null">コピー</button>
+<pre>New-Item -ItemType Directory -Path 'C:\Users\nabe2\AppData\Local\auto-sync' -Force | Out-Null</pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-num">4</span><h3>自動同期 スクリプト を 作成</h3></div>
+      <div class="desc">下の 長い コマンド を 一気 に コピー して、PowerShell に 貼り付けて Enter。スクリプト 本体 が 作られます。</div>
+      <div class="code">
+        <button class="copy-btn" data-copy="@'
+$ErrorActionPreference = ''Continue''
+$watchFolders = @(
+    ''C:\Users\nabe2\Documents\Claude\Projects'',
+    ''C:\Users\nabe2\Documents\Claude\Artifacts''
+)
+$logFile = ''C:\Users\nabe2\AppData\Local\auto-sync\auto-sync.log''
+function Write-Log($msg) {
+    $time = Get-Date -Format ''yyyy-MM-dd HH:mm:ss''
+    &quot;$time  $msg&quot; | Out-File -FilePath $logFile -Append -Encoding UTF8
+}
+Write-Log ''auto-sync started''
+while ($true) {
+    Start-Sleep -Seconds 30
+    foreach ($watchRoot in $watchFolders) {
+        if (-not (Test-Path $watchRoot)) { continue }
+        $repos = Get-ChildItem -Path $watchRoot -Directory -ErrorAction SilentlyContinue | Where-Object { Test-Path (Join-Path $_.FullName ''.git'') }
+        foreach ($repo in $repos) {
+            $repoPath = $repo.FullName
+            if (Test-Path (Join-Path $repoPath ''.no-auto-sync'')) { continue }
+            try {
+                Set-Location $repoPath
+                $remote = git remote get-url origin 2>$null
+                if (-not $remote) { continue }
+                $status = git status --porcelain 2>$null
+                if ($status) {
+                    Write-Log &quot;[$($repo.Name)] changes detected&quot;
+                    git add . 2>&amp;1 | Out-Null
+                    git commit -m &quot;auto-sync $(Get-Date -Format ''yyyy-MM-dd HH:mm:ss'')&quot; 2>&amp;1 | Out-Null
+                    git pull --rebase 2>&amp;1 | Out-Null
+                    $pushResult = git push 2>&amp;1
+                    Write-Log &quot;[$($repo.Name)] pushed: $pushResult&quot;
+                }
+            } catch {
+                Write-Log &quot;[$($repo.Name)] error: $_&quot;
+            }
+        }
+    }
+}
+'@ | Out-File -FilePath 'C:\Users\nabe2\AppData\Local\auto-sync\auto-sync.ps1' -Encoding UTF8">コピー</button>
+<pre>@'
+$ErrorActionPreference = 'Continue'
+$watchFolders = @(
+    'C:\Users\nabe2\Documents\Claude\Projects',
+    'C:\Users\nabe2\Documents\Claude\Artifacts'
+)
+$logFile = 'C:\Users\nabe2\AppData\Local\auto-sync\auto-sync.log'
+function Write-Log($msg) {
+    $time = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+    "$time  $msg" | Out-File -FilePath $logFile -Append -Encoding UTF8
+}
+Write-Log 'auto-sync started'
+while ($true) {
+    Start-Sleep -Seconds 30
+    foreach ($watchRoot in $watchFolders) {
+        if (-not (Test-Path $watchRoot)) { continue }
+        $repos = Get-ChildItem -Path $watchRoot -Directory -ErrorAction SilentlyContinue | Where-Object { Test-Path (Join-Path $_.FullName '.git') }
+        foreach ($repo in $repos) {
+            $repoPath = $repo.FullName
+            if (Test-Path (Join-Path $repoPath '.no-auto-sync')) { continue }
+            try {
+                Set-Location $repoPath
+                $remote = git remote get-url origin 2>$null
+                if (-not $remote) { continue }
+                $status = git status --porcelain 2>$null
+                if ($status) {
+                    Write-Log "[$($repo.Name)] changes detected"
+                    git add . 2>&amp;1 | Out-Null
+                    git commit -m "auto-sync $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')" 2>&amp;1 | Out-Null
+                    git pull --rebase 2>&amp;1 | Out-Null
+                    $pushResult = git push 2>&amp;1
+                    Write-Log "[$($repo.Name)] pushed: $pushResult"
+                }
+            } catch {
+                Write-Log "[$($repo.Name)] error: $_"
+            }
+        }
+    }
+}
+'@ | Out-File -FilePath 'C:\Users\nabe2\AppData\Local\auto-sync\auto-sync.ps1' -Encoding UTF8</pre>
+      </div>
+      <div class="success">これ で C:\Users\nabe2\AppData\Local\auto-sync\auto-sync.ps1 が 出来上がります。</div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-num">5</span><h3>テスト 起動</h3></div>
+      <div class="desc">下の コマンド で テスト 起動。新しい 黒い PowerShell ウィンドウ が 開いて、ずっと 動き 続けます。</div>
+      <div class="code">
+        <button class="copy-btn" data-copy="Start-Process powershell -ArgumentList '-ExecutionPolicy Bypass -File C:\Users\nabe2\AppData\Local\auto-sync\auto-sync.ps1'">コピー</button>
+<pre>Start-Process powershell -ArgumentList '-ExecutionPolicy Bypass -File C:\Users\nabe2\AppData\Local\auto-sync\auto-sync.ps1'</pre>
+      </div>
+      <div class="note">この 黒い ウィンドウ が 「自動同期 さん」。閉じる と 同期 が 止まります。今 は 開いた まま に して おいて ください。</div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-num">6</span><h3>パソコン 起動時 に 自動 起動</h3></div>
+      <div class="desc">起動 する たび に 自動 で 動く ように、Windows の スタートアップ に 登録 します。</div>
+      <div class="code">
+        <button class="copy-btn" data-copy="$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut([System.IO.Path]::Combine([Environment]::GetFolderPath('Startup'), 'auto-sync.lnk')); $shortcut.TargetPath = 'powershell.exe'; $shortcut.Arguments = '-WindowStyle Hidden -ExecutionPolicy Bypass -File C:\Users\nabe2\AppData\Local\auto-sync\auto-sync.ps1'; $shortcut.WorkingDirectory = 'C:\Users\nabe2\AppData\Local\auto-sync'; $shortcut.Save()">コピー</button>
+<pre>$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut([System.IO.Path]::Combine([Environment]::GetFolderPath('Startup'), 'auto-sync.lnk')); $shortcut.TargetPath = 'powershell.exe'; $shortcut.Arguments = '-WindowStyle Hidden -ExecutionPolicy Bypass -File C:\Users\nabe2\AppData\Local\auto-sync\auto-sync.ps1'; $shortcut.WorkingDirectory = 'C:\Users\nabe2\AppData\Local\auto-sync'; $shortcut.Save()</pre>
+      </div>
+      <div class="success">完了。これで パソコン を 再起動 する たび に、自動 で バックグラウンド で 動き始めます (画面 に は 何も 出ません)。</div>
+    </div>
+  </div>
+
+  <!-- ===== B: 各プロジェクトを GitHub に つなぐ ===== -->
+  <div class="section">
+    <span class="section-tag b">B. プロジェクト ごと の 接続 (その プロジェクト で 一度 だけ)</span>
+    <h2>各 フォルダ を GitHub と 結ぶ</h2>
+
+    <div class="overview" style="background:#f0f4f8;border:none;margin-bottom:18px;">
+      <p style="font-size:13px;">対象 プロジェクト ごと に 一度 だけ 行う 作業 です。終わった プロジェクト は、もう 二度と やる 必要 が ありません。<br>
+      パターン は 2つ あります。</p>
+      <div class="case-tabs">
+        <div class="case-tab"><strong>パターン A</strong>新規 プロジェクト (GitHub に まだ 何 も ない)</div>
+        <div class="case-tab"><strong>パターン B</strong>GitHub に 既に ファイル が ある (例: 次世代ホームページ)</div>
+      </div>
+    </div>
+
+    <!-- パターン A -->
+    <div class="step">
+      <div class="step-head"><span class="step-num">A</span><h3>パターン A: 新規 プロジェクト</h3></div>
+      <div class="desc">パソコン に は ファイル が ある が、GitHub に は まだ 何 も 置いて いない 場合。</div>
+
+      <div class="subtitle">A-1. GitHub に 空 の リポジトリ を 作る</div>
+      <div class="desc">ブラウザ で <a href="https://github.com/new" target="_blank">github.com/new</a> を 開き、Repository name を 入力 して 「Create repository」。<br>
+      <strong>「README」「.gitignore」「license」 の チェック は 必ず 全部 外す</strong> (空 の まま 作る)。</div>
+
+      <div class="subtitle">A-2. 接続 コマンド (4行 まとめて)</div>
+      <div class="desc">下 の コマンド の <strong>2 箇所</strong> を 自分 用 に 書き換えて から 実行。<br>
+      「[ファイルの場所]」 を プロジェクト フォルダ の 場所 に。<br>
+      「[GITHUB_URL]」 を 作った リポジトリ の URL (.git 付き) に。</div>
+      <div class="code">
+        <button class="copy-btn" data-copy="cd '[ファイルの場所]'; git init -b main; git add .; git commit -m 'first commit'; git remote add origin [GITHUB_URL]; git push -u origin main">コピー</button>
+<pre>cd '[ファイルの場所]'; git init -b main; git add .; git commit -m 'first commit'; git remote add origin [GITHUB_URL]; git push -u origin main</pre>
+      </div>
+      <div class="note">記入例:<br>
+      <code style="background:#eee;padding:2px 6px;border-radius:4px;font-size:12px;">[ファイルの場所]</code> → <code style="background:#eee;padding:2px 6px;border-radius:4px;font-size:12px;">C:\Users\nabe2\Documents\Claude\Projects\my-new-app</code><br>
+      <code style="background:#eee;padding:2px 6px;border-radius:4px;font-size:12px;">[GITHUB_URL]</code> → <code style="background:#eee;padding:2px 6px;border-radius:4px;font-size:12px;">https://github.com/nabe246jp-ux/my-new-app.git</code></div>
+      <div class="note">初回 だけ ブラウザ 認証 が 求められ ます。Authorize ボタン を 押す だけ。次回 から は 何 も 聞かれ ません。</div>
+    </div>
+
+    <!-- パターン B -->
+    <div class="step">
+      <div class="step-head"><span class="step-num">B</span><h3>パターン B: GitHub に 既に ファイル が ある</h3></div>
+      <div class="desc">GitHub に は ファイル が 上がって いる が、パソコン 側 が まだ git で 接続 されて いない 場合 (例: 次世代ホームページ)。</div>
+
+      <div class="subtitle">B-1. 接続 コマンド (5行 まとめて)</div>
+      <div class="desc">下 の コマンド の <strong>2 箇所</strong> を 書き換えて から 実行。</div>
+      <div class="code">
+        <button class="copy-btn" data-copy="cd '[ファイルの場所]'; git init -b main; git remote add origin [GITHUB_URL]; git fetch origin; git reset --soft origin/main; git add .; git commit --amend --no-edit; git push -u origin main">コピー</button>
+<pre>cd '[ファイルの場所]'; git init -b main; git remote add origin [GITHUB_URL]; git fetch origin; git reset --soft origin/main; git add .; git commit --amend --no-edit; git push -u origin main</pre>
+      </div>
+      <div class="note">「次世代ホームページ」 の 場合 の 記入例:<br>
+      <code style="background:#eee;padding:2px 6px;border-radius:4px;font-size:12px;">[ファイルの場所]</code> → <code style="background:#eee;padding:2px 6px;border-radius:4px;font-size:12px;">C:\Users\nabe2\Documents\Claude\Projects\次世代ホームページ</code><br>
+      <code style="background:#eee;padding:2px 6px;border-radius:4px;font-size:12px;">[GITHUB_URL]</code> → <code style="background:#eee;padding:2px 6px;border-radius:4px;font-size:12px;">https://github.com/nabe246jp-ux/jisedai-homepage.git</code></div>
+    </div>
+
+    <div class="step" style="background:#ecfdf5;border-color:#a8e6c4;">
+      <div class="step-head"><span class="step-num" style="background:#28a745;">!</span><h3>「次世代ホームページ」 を 今 すぐ 接続 する 場合</h3></div>
+      <div class="desc">パターン B の 記入例 を 使った コマンド を そのまま 貼って 実行 すれば、すぐ 自動同期 対象 に 入ります。</div>
+      <div class="code">
+        <button class="copy-btn" data-copy="cd 'C:\Users\nabe2\Documents\Claude\Projects\次世代ホームページ'; git init -b main; git remote add origin https://github.com/nabe246jp-ux/jisedai-homepage.git; git fetch origin; git reset --soft origin/main; git add .; git commit --amend --no-edit; git push -u origin main">コピー</button>
+<pre>cd 'C:\Users\nabe2\Documents\Claude\Projects\次世代ホームページ'; git init -b main; git remote add origin https://github.com/nabe246jp-ux/jisedai-homepage.git; git fetch origin; git reset --soft origin/main; git add .; git commit --amend --no-edit; git push -u origin main</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== C: 確認 と 止め方 ===== -->
+  <div class="section">
+    <span class="section-tag c">C. 確認 と 止め方</span>
+    <h2>動いて いるか / 止め たい とき</h2>
+
+    <div class="step">
+      <div class="step-head"><span class="step-num">1</span><h3>ログ で 動作 確認</h3></div>
+      <div class="desc">いつ どの プロジェクト が 同期 された か、ログ で 見られ ます。</div>
+      <div class="code">
+        <button class="copy-btn" data-copy="Get-Content 'C:\Users\nabe2\AppData\Local\auto-sync\auto-sync.log' -Tail 30">コピー</button>
+<pre>Get-Content 'C:\Users\nabe2\AppData\Local\auto-sync\auto-sync.log' -Tail 30</pre>
+      </div>
+      <div class="note">「[プロジェクト名] changes detected」 → 変更 が 見つかった<br>
+      「[プロジェクト名] pushed: ...」 → GitHub に 送信 完了</div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-num">2</span><h3>一時 停止</h3></div>
+      <div class="desc">タスク マネージャー (Ctrl + Shift + Esc) で 「Windows PowerShell」 を 選んで 「タスクの終了」。次に パソコン を 起動 すれば また 動き出し ます。</div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-num">3</span><h3>特定 の プロジェクト だけ 同期 を 止め たい</h3></div>
+      <div class="desc">その プロジェクト フォルダ に 「.no-auto-sync」 と いう 空 の ファイル を 作る だけ。それ が ある 限り、その プロジェクト は 同期 されません。<br>
+      コマンド 例:</div>
+      <div class="code">
+        <button class="copy-btn" data-copy="New-Item -Path '[プロジェクトフォルダ]\.no-auto-sync' -ItemType File -Force | Out-Null">コピー</button>
+<pre>New-Item -Path '[プロジェクトフォルダ]\.no-auto-sync' -ItemType File -Force | Out-Null</pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="step-num">4</span><h3>完全 に 止める (二度と 動か さない)</h3></div>
+      <div class="desc">スタートアップ から 削除 します。</div>
+      <div class="code">
+        <button class="copy-btn" data-copy="Remove-Item ([System.IO.Path]::Combine([Environment]::GetFolderPath('Startup'), 'auto-sync.lnk')) -Force">コピー</button>
+<pre>Remove-Item ([System.IO.Path]::Combine([Environment]::GetFolderPath('Startup'), 'auto-sync.lnk')) -Force</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== うまく いかない 時 ===== -->
+  <div class="section">
+    <span class="section-tag b">★</span>
+    <h2>うまく いかない 時</h2>
+    <ul>
+      <li><strong>「git: command not found」</strong> → Git for Windows が 入って いません。ステップ 1 の リンク から インストール。</li>
+      <li><strong>初回 push で 「Authentication failed」</strong> → Personal Access Token が 必要 な モード。GitHub の Settings → Developer settings → Personal access tokens で 新規 発行 (権限 「repo」)。Username に GitHub ID、Password に PAT を 入れる。</li>
+      <li><strong>同期 が 動かない</strong> → ステップ C-1 の ログ を 確認。何 も ログ が 出て いない なら、自動同期 さん が 起動 して いない 可能性。タスク マネージャー で 「Windows PowerShell」 が 動いて いるか 確認。動いて いない なら、ステップ A-5 の テスト 起動 を もう 一度 実行。</li>
+      <li><strong>ログ に 「rejected」 と 出る</strong> → ブラウザ で GitHub を 直接 編集 した 履歴 と ぶつかった 可能性。下 の コマンド で 解消:<br>
+        <code style="background:#eee;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:4px;font-size:12px;">cd '[該当 プロジェクト フォルダ]'; git pull --rebase origin main</code></li>
+      <li><strong>ログ に 「fatal: ambiguous argument 'origin/main'」</strong> → パターン B で main 以外 の ブランチ 名 (master 等) の 場合。下 の コマンド で 確認:<br>
+        <code style="background:#eee;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:4px;font-size:12px;">git branch -r</code> で remote の ブランチ 名 を 見て、 origin/main の 部分 を 置き換える。</li>
+    </ul>
+  </div>
+
+  <div class="foot">
+    全部 終わったら、以後 は ファイル を 普通 に 保存 する だけ で、全プロジェクト が 自動 で GitHub に 反映 されます。
+  </div>
+
+</div>
+
+<script>
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    let text = btn.dataset.copy || '';
+    text = text.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+    navigator.clipboard.writeText(text).then(() => {
+      const original = btn.textContent;
+      btn.textContent = 'コピーしました!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove('copied');
+      }, 1500);
+    });
+  });
+});
+</script>
+</body>
+</html>
