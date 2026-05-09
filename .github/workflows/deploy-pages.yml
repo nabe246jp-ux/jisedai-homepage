@@ -1,0 +1,83 @@
+name: Deploy GitHub Pages
+
+# このワークフローは「mainブランチにpushがあったら、自動でビルドして公開する」仕組み。
+# - 既存のv1/v2/v3モック (index.html ほか) はそのまま公開
+# - tech-partners-town-v2 (Next.js) は静的書き出ししてサブパスに配置
+#
+# 公開URL:
+#   https://nabe246jp-ux.github.io/jisedai-homepage/                      （モック一覧）
+#   https://nabe246jp-ux.github.io/jisedai-homepage/tech-partners-town-v2/ （v2の街）
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: チェックアウト
+        uses: actions/checkout@v4
+
+      - name: Node.jsをセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: tech-partners-town-v2/package-lock.json
+
+      - name: 依存パッケージをインストール
+        working-directory: tech-partners-town-v2
+        run: npm ci || npm install
+
+      - name: Next.jsを静的書き出しでビルド
+        working-directory: tech-partners-town-v2
+        env:
+          GITHUB_PAGES: "1"
+        run: npm run build
+
+      - name: デプロイ用フォルダを準備
+        run: |
+          mkdir -p _site
+          # 既存のルート直下のファイルをコピー（モック一覧・v1〜v3）
+          # node_modulesやgit関連は除外
+          rsync -av \
+            --exclude='_site' \
+            --exclude='node_modules' \
+            --exclude='.git' \
+            --exclude='.git_old' \
+            --exclude='.github' \
+            --exclude='tech-partners-town-v2' \
+            --exclude='*.ps1' \
+            ./ _site/
+          # v2のビルド成果物をサブフォルダへ
+          mkdir -p _site/tech-partners-town-v2
+          cp -r tech-partners-town-v2/out/. _site/tech-partners-town-v2/
+          # GitHub Pagesがjekyll処理しないように
+          touch _site/.nojekyll
+
+      - name: Pagesアーティファクトをアップロード
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: GitHub Pagesへデプロイ
+        id: deployment
+        uses: actions/deploy-pages@v4

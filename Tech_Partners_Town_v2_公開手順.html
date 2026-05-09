@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Partners Town v2 公開手順</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  background: linear-gradient(180deg, #0e0a0a 0%, #1a1410 50%, #0a0604 100%);
+  color: #f3e7d3;
+  line-height: 1.85;
+  min-height: 100vh;
+  padding: 60px 24px 120px;
+}
+.container { max-width: 920px; margin: 0 auto; }
+.head {
+  text-align: center;
+  margin-bottom: 50px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid rgba(212, 165, 116, 0.18);
+}
+.head .label { font-size: 11px; letter-spacing: 0.4em; color: #d4a574; margin-bottom: 18px; }
+.head h1 {
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  background: linear-gradient(180deg, #f5cf8a, #d4a574 50%, #a87a4f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 14px;
+}
+.head p { font-size: 14px; color: #c8b89a; letter-spacing: 0.05em; }
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(0,0,0,0.3);
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 32px;
+}
+.tab {
+  flex: 1;
+  padding: 14px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 8px;
+  color: #8a7a5a;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  transition: all 0.25s;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+}
+.tab.active {
+  background: linear-gradient(135deg, #d4a574, #a87a4f);
+  color: #1a1208;
+  box-shadow: 0 6px 16px rgba(212, 165, 116, 0.3);
+}
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.summary {
+  background: linear-gradient(135deg, rgba(212, 165, 116, 0.12), rgba(212, 165, 116, 0.04));
+  border: 1px solid rgba(212, 165, 116, 0.3);
+  border-radius: 14px;
+  padding: 22px 26px;
+  margin-bottom: 30px;
+}
+.summary h3 {
+  font-size: 14px;
+  color: #f5cf8a;
+  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+}
+.summary p { font-size: 13.5px; color: #d8c8a8; }
+
+.step {
+  background: linear-gradient(135deg, rgba(30, 22, 18, 0.7), rgba(20, 14, 10, 0.5));
+  border: 1px solid rgba(212, 165, 116, 0.18);
+  border-radius: 16px;
+  padding: 32px 36px;
+  margin-bottom: 24px;
+  position: relative;
+}
+.step-num {
+  position: absolute; top: -16px; left: 24px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d4a574, #a87a4f);
+  color: #1a1208;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 15px;
+  box-shadow: 0 6px 16px rgba(212, 165, 116, 0.3);
+}
+.step h2 {
+  font-size: 18px; font-weight: 600;
+  color: #f5cf8a;
+  margin-bottom: 12px; margin-top: 4px;
+  letter-spacing: 0.04em;
+}
+.step p { color: #d8c8a8; font-size: 14px; margin-bottom: 12px; }
+.step .note {
+  font-size: 12.5px; color: #a8967a;
+  background: rgba(0,0,0,0.25);
+  padding: 12px 16px;
+  border-left: 3px solid #d4a574;
+  border-radius: 4px;
+  margin: 12px 0;
+}
+.code-block {
+  background: #0a0604;
+  border: 1px solid rgba(212, 165, 116, 0.22);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin: 12px 0;
+  position: relative;
+  font-family: "SF Mono", "Consolas", "Menlo", monospace;
+  font-size: 13.5px;
+  color: #f5cf8a;
+  overflow-x: auto;
+}
+.copy-btn {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(212, 165, 116, 0.18);
+  border: 1px solid rgba(212, 165, 116, 0.4);
+  color: #f5cf8a;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.05em;
+}
+.copy-btn:hover {
+  background: rgba(212, 165, 116, 0.32);
+  border-color: rgba(212, 165, 116, 0.6);
+}
+.copy-btn.copied { background: #7a9b6e; border-color: #7a9b6e; color: #fff; }
+.warn {
+  background: rgba(217, 106, 58, 0.1);
+  border: 1px solid rgba(217, 106, 58, 0.4);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin: 12px 0;
+  font-size: 13px;
+  color: #e8a890;
+}
+.warn strong { color: #d96a3a; }
+.url-box {
+  background: rgba(122, 155, 110, 0.1);
+  border: 1px solid rgba(122, 155, 110, 0.4);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin: 12px 0;
+  font-family: "SF Mono", "Consolas", monospace;
+  font-size: 13px;
+  color: #b8e0a8;
+  word-break: break-all;
+}
+.foot {
+  text-align: center; margin-top: 50px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(212, 165, 116, 0.15);
+  font-size: 12px;
+  color: #8a7a5a;
+  letter-spacing: 0.1em;
+}
+ul { padding-left: 22px; margin: 8px 0 12px 0; }
+li { color: #d8c8a8; font-size: 13.5px; padding: 4px 0; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="head">
+  <div class="label">DEPLOY GUIDE</div>
+  <h1>Tech Partners Town v2 公開手順</h1>
+  <p>他の人にURLで見せられるように公開する手順です。<br>
+  Vercel（最速・推奨）と GitHub Pages（既存サイトと共存）の両方を案内します。</p>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('vercel', this)">A：Vercel（最速・推奨）</button>
+  <button class="tab" onclick="showTab('pages', this)">B：GitHub Pages（既存と共存）</button>
+</div>
+
+<!-- ===================== Vercel ===================== -->
+<div class="tab-panel active" id="vercel">
+
+<div class="summary">
+  <h3>このルートで得られるもの</h3>
+  <p>所要約5分。一度設定すれば、以降はGitHubに何かpushするたびに自動でビルド＆公開されます。Next.jsとの相性が最高で、Three.jsの3D表現も含めて何もいじらずに動きます。</p>
+</div>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <h2>Vercel にサインアップする</h2>
+  <p>下のサイトを開いて「Continue with GitHub」をクリックします。</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+    <pre><code>https://vercel.com/signup</code></pre>
+  </div>
+  <div class="note">既にVercelアカウントを持っている場合は、ログインして次へ進んでください。</div>
+</div>
+
+<div class="step">
+  <div class="step-num">2</div>
+  <h2>GitHubアカウントとの連携を許可する</h2>
+  <p>「Authorize Vercel」のボタンを押して、Vercelに自分のGitHubリポジトリを見る権限を与えます。<br>
+  続いて「Install Vercel」のボタンが出るので、All repositories（全リポジトリ）か、jisedai-homepage だけを選んで「Install」を押します。</p>
+  <div class="note">どちらでも今回の作業は同じです。迷ったら「jisedai-homepage」だけ選ぶ方が安全です。</div>
+</div>
+
+<div class="step">
+  <div class="step-num">3</div>
+  <h2>新しいプロジェクトを作る</h2>
+  <p>ダッシュボード右上の「Add New...」→「Project」を押します。<br>
+  リポジトリ一覧の中から「jisedai-homepage」を見つけて、その横の「Import」ボタンを押します。</p>
+</div>
+
+<div class="step">
+  <div class="step-num">4</div>
+  <h2>大事な設定：Root Directory を変える</h2>
+  <p>設定画面が出たら、「Root Directory」の項目で「Edit」を押し、下の値を入力してください。</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+    <pre><code>tech-partners-town-v2</code></pre>
+  </div>
+  <p>これでVercelは「リポジトリ全体ではなく、tech-partners-town-v2のフォルダだけがNext.jsプロジェクト」と理解します。</p>
+  <div class="warn">
+    <strong>ここを忘れるとビルドが必ず失敗します。</strong>かならずRoot Directoryを「tech-partners-town-v2」に設定してから次へ進んでください。
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">5</div>
+  <h2>プロジェクト名を設定する</h2>
+  <p>「Project Name」の項目に下の名前を入れます。</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+    <pre><code>tech-partners-town</code></pre>
+  </div>
+  <div class="note">この名前がそのままURLになります。例：tech-partners-town.vercel.app<br>
+  すでに他の人が同じ名前を使っていると、別の名前を提案されます。その時は提案に従ってください。</div>
+</div>
+
+<div class="step">
+  <div class="step-num">6</div>
+  <h2>デプロイを開始する</h2>
+  <p>その他の設定はそのままで、画面下の「Deploy」ボタンを押します。</p>
+  <p>1〜3分で「Congratulations!」の画面と一緒に町のスクリーンショットが表示されたら成功です。</p>
+</div>
+
+<div class="step">
+  <div class="step-num">7</div>
+  <h2>公開URLを取得する</h2>
+  <p>完了画面の中央に表示される下のような形式のURLが、公開URLです。</p>
+  <div class="url-box">https://tech-partners-town.vercel.app</div>
+  <p>このURLを誰かに送れば、その人もブラウザで町を見られます。</p>
+  <div class="note">スマホからも開けます。ただし3D描画なので、5年以上前の機種では動きが重い可能性があります（推測です）。</div>
+</div>
+
+<div class="step">
+  <div class="step-num">8</div>
+  <h2>これ以降のアップデート方法</h2>
+  <p>もう何もしなくて大丈夫です。Claude Codeからプロジェクトに変更を加えてGitHubに反映されると、Vercelが自動で検知してビルド・更新します。<br>
+  通常2〜3分で新バージョンが公開URLに反映されます。</p>
+</div>
+
+</div><!-- /vercel -->
+
+<!-- ===================== GitHub Pages ===================== -->
+<div class="tab-panel" id="pages">
+
+<div class="summary">
+  <h3>このルートで得られるもの</h3>
+  <p>既存のGitHub Pagesにv2を追加します。モック一覧（v1〜v3）はそのまま残り、新しくv2が追加されます。GitHub以外のサービスを使わずに完結させたい場合に。</p>
+</div>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <h2>変更をGitHubに反映する（自動同期に任せる）</h2>
+  <p>すでに30秒ごとの自動同期が動いているので、特別な操作は不要です。<br>
+  追加された「.github/workflows/deploy-pages.yml」と「next.config.mjs」の更新が自動でGitHubに上がります。<br>
+  急ぎたい場合は、Claude Code で下を実行してください。</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+    <pre><code>cd "C:\Users\nabe2\Documents\Claude\Projects\次世代ホームページ"
+git add -A
+git commit -m "v2: GitHub Pages対応とサブパス公開"
+git push</code></pre>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">2</div>
+  <h2>GitHubのリポジトリ画面を開く</h2>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+    <pre><code>https://github.com/nabe246jp-ux/jisedai-homepage</code></pre>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">3</div>
+  <h2>Pagesの公開元を「GitHub Actions」に切り替える</h2>
+  <p>リポジトリ画面の上部メニューから「Settings」をクリック。<br>
+  左サイドバーの「Pages」を選択。<br>
+  「Build and deployment」の「Source」項目を「Deploy from a branch」から「<strong>GitHub Actions</strong>」に変更。</p>
+  <div class="warn">
+    <strong>ここがポイント：</strong>これまで「mainブランチから直接配信」だった場合、新しく追加したワークフローが代わりに公開を担います。既存のv1〜v3モックもワークフロー内でコピーされるので消えません。
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">4</div>
+  <h2>初回ビルドを開始する</h2>
+  <p>リポジトリ画面の上部メニューから「Actions」タブをクリック。<br>
+  左サイドバーの「Deploy GitHub Pages」を選択。<br>
+  画面右側の「Run workflow」を押し、表示された「Run workflow」ボタンをもう一度押します。</p>
+  <div class="note">2〜5分でビルドが完了します。緑のチェックマークが付けば成功。赤い×が出たらクリックして詳細を見て、エラー文をClaudeに貼り付けてください。</div>
+</div>
+
+<div class="step">
+  <div class="step-num">5</div>
+  <h2>公開URLにアクセスする</h2>
+  <p>下の2つのURLが公開されます。</p>
+  <div class="url-box">https://nabe246jp-ux.github.io/jisedai-homepage/</div>
+  <p>↑ これまで通りのモック一覧（v2のカードが新しく追加されている）</p>
+  <div class="url-box">https://nabe246jp-ux.github.io/jisedai-homepage/tech-partners-town-v2/</div>
+  <p>↑ v2の3Dの町</p>
+  <div class="note">モック一覧の「TECH PARTNERS TOWN v2」のカードからもジャンプできます。</div>
+</div>
+
+<div class="step">
+  <div class="step-num">6</div>
+  <h2>これ以降のアップデート方法</h2>
+  <p>Vercelと同じく、GitHubに変更が反映されれば自動でビルド・公開が走ります。<br>
+  Actionsタブで進捗を確認できます。</p>
+</div>
+
+</div><!-- /pages -->
+
+<div class="foot">
+  TECH PARTNERS TOWN v2 — DEPLOY GUIDE
+</div>
+</div>
+
+<script>
+function copyCode(btn) {
+  const block = btn.parentElement;
+  const code = block.querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'コピー済み';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'コピー';
+      btn.classList.remove('copied');
+    }, 1800);
+  });
+}
+function showTab(id, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body>
+</html>

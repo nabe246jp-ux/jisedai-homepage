@@ -132,6 +132,132 @@ body {
 
 <div class="grid">
 
+  <a href="tech-partners-town-v2/" class="card">
+    <div class="card-thumb">
+      <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="v2Sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#0e1a3a"/>
+            <stop offset="0.6" stop-color="#3a1f3a"/>
+            <stop offset="1" stop-color="#5a3a48"/>
+          </linearGradient>
+          <radialGradient id="v2Glow" cx="50%" cy="55%" r="40%">
+            <stop offset="0" stop-color="#f5cf8a" stop-opacity="0.5"/>
+            <stop offset="1" stop-color="#f5cf8a" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="v2Tower" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#5a4a55"/>
+            <stop offset="1" stop-color="#2a2532"/>
+          </linearGradient>
+          <linearGradient id="v2Bldg1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#5a4060"/>
+            <stop offset="1" stop-color="#2a1a30"/>
+          </linearGradient>
+          <linearGradient id="v2Bldg2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#605040"/>
+            <stop offset="1" stop-color="#2a1f15"/>
+          </linearGradient>
+        </defs>
+        <rect width="800" height="450" fill="url(#v2Sky)"/>
+        <!-- 星 -->
+        <g fill="#fff" opacity="0.7">
+          <circle cx="80" cy="60" r="1"/>
+          <circle cx="180" cy="40" r="0.8"/>
+          <circle cx="280" cy="70" r="1.2"/>
+          <circle cx="500" cy="50" r="0.9"/>
+          <circle cx="620" cy="80" r="1"/>
+          <circle cx="720" cy="40" r="0.7"/>
+          <circle cx="380" cy="30" r="1.1"/>
+          <circle cx="140" cy="100" r="0.6"/>
+        </g>
+        <!-- 背景の発光 -->
+        <ellipse cx="400" cy="280" rx="380" ry="160" fill="url(#v2Glow)"/>
+        <!-- 地面 -->
+        <ellipse cx="400" cy="430" rx="500" ry="60" fill="#0a0a12"/>
+        <ellipse cx="400" cy="380" rx="280" ry="40" fill="#1a1a25"/>
+        <!-- 左の建物 -->
+        <rect x="120" y="240" width="110" height="160" fill="url(#v2Bldg1)" stroke="#1a1820" stroke-width="1"/>
+        <g fill="#f5cf8a" opacity="0.85">
+          <rect x="135" y="255" width="14" height="14"/><rect x="155" y="255" width="14" height="14"/><rect x="175" y="255" width="14" height="14"/><rect x="195" y="255" width="14" height="14"/>
+          <rect x="135" y="275" width="14" height="14"/><rect x="155" y="275" width="14" height="14" fill="#0a0a10"/><rect x="175" y="275" width="14" height="14"/><rect x="195" y="275" width="14" height="14"/>
+          <rect x="135" y="295" width="14" height="14"/><rect x="155" y="295" width="14" height="14"/><rect x="175" y="295" width="14" height="14" fill="#0a0a10"/><rect x="195" y="295" width="14" height="14"/>
+          <rect x="135" y="315" width="14" height="14"/><rect x="155" y="315" width="14" height="14"/><rect x="175" y="315" width="14" height="14"/><rect x="195" y="315" width="14" height="14"/>
+          <rect x="135" y="335" width="14" height="14" fill="#0a0a10"/><rect x="155" y="335" width="14" height="14"/><rect x="175" y="335" width="14" height="14"/><rect x="195" y="335" width="14" height="14"/>
+        </g>
+        <!-- 右の建物 -->
+        <rect x="570" y="220" width="110" height="180" fill="url(#v2Bldg2)" stroke="#1a1820" stroke-width="1"/>
+        <g fill="#f5cf8a" opacity="0.85">
+          <rect x="585" y="235" width="14" height="14"/><rect x="605" y="235" width="14" height="14"/><rect x="625" y="235" width="14" height="14" fill="#0a0a10"/><rect x="645" y="235" width="14" height="14"/>
+          <rect x="585" y="255" width="14" height="14"/><rect x="605" y="255" width="14" height="14"/><rect x="625" y="255" width="14" height="14"/><rect x="645" y="255" width="14" height="14"/>
+          <rect x="585" y="275" width="14" height="14" fill="#0a0a10"/><rect x="605" y="275" width="14" height="14"/><rect x="625" y="275" width="14" height="14"/><rect x="645" y="275" width="14" height="14"/>
+          <rect x="585" y="295" width="14" height="14"/><rect x="605" y="295" width="14" height="14" fill="#0a0a10"/><rect x="625" y="295" width="14" height="14"/><rect x="645" y="295" width="14" height="14"/>
+          <rect x="585" y="315" width="14" height="14"/><rect x="605" y="315" width="14" height="14"/><rect x="625" y="315" width="14" height="14"/><rect x="645" y="315" width="14" height="14"/>
+          <rect x="585" y="335" width="14" height="14"/><rect x="605" y="335" width="14" height="14"/><rect x="625" y="335" width="14" height="14"/><rect x="645" y="335" width="14" height="14" fill="#0a0a10"/>
+        </g>
+        <!-- 中央の時計台 -->
+        <g>
+          <!-- 基壇 -->
+          <ellipse cx="400" cy="395" rx="60" ry="10" fill="#0a0608" opacity="0.6"/>
+          <rect x="365" y="370" width="70" height="25" fill="#2a2630"/>
+          <!-- 塔本体 -->
+          <rect x="380" y="240" width="40" height="135" fill="url(#v2Tower)"/>
+          <!-- 装飾リング -->
+          <rect x="378" y="240" width="44" height="4" fill="#d4a574"/>
+          <rect x="378" y="370" width="44" height="4" fill="#d4a574"/>
+          <!-- 時計室 -->
+          <rect x="370" y="180" width="60" height="60" fill="#4a3528"/>
+          <rect x="370" y="178" width="60" height="3" fill="#d4a574"/>
+          <rect x="370" y="237" width="60" height="3" fill="#d4a574"/>
+          <!-- 文字盤 -->
+          <circle cx="400" cy="210" r="22" fill="#fef3df" stroke="#d4a574" stroke-width="2"/>
+          <circle cx="400" cy="210" r="22" fill="url(#v2Glow)" opacity="0.6"/>
+          <!-- ローマ数字風目盛 -->
+          <g stroke="#1a1208" stroke-width="1.5">
+            <line x1="400" y1="192" x2="400" y2="196"/>
+            <line x1="418" y1="210" x2="414" y2="210"/>
+            <line x1="400" y1="228" x2="400" y2="224"/>
+            <line x1="382" y1="210" x2="386" y2="210"/>
+          </g>
+          <!-- 針 -->
+          <line x1="400" y1="210" x2="400" y2="198" stroke="#1a1208" stroke-width="2.2" stroke-linecap="round"/>
+          <line x1="400" y1="210" x2="412" y2="210" stroke="#1a1208" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="400" y1="210" x2="395" y2="220" stroke="#d96a3a" stroke-width="1" stroke-linecap="round"/>
+          <circle cx="400" cy="210" r="1.8" fill="#1a1208"/>
+          <!-- 屋根 -->
+          <polygon points="370,178 430,178 400,140" fill="#3a2a55"/>
+          <rect x="368" y="176" width="64" height="3" fill="#d4a574"/>
+          <!-- スパイア -->
+          <line x1="400" y1="140" x2="400" y2="115" stroke="#d4a574" stroke-width="2"/>
+          <circle cx="400" cy="125" r="3.5" fill="#d4a574"/>
+        </g>
+        <!-- 街灯 -->
+        <g>
+          <line x1="280" y1="380" x2="280" y2="340" stroke="#1a1820" stroke-width="2"/>
+          <circle cx="280" cy="335" r="5" fill="#f5cf8a"/>
+          <circle cx="280" cy="335" r="10" fill="#f5cf8a" opacity="0.3"/>
+          <line x1="520" y1="380" x2="520" y2="340" stroke="#1a1820" stroke-width="2"/>
+          <circle cx="520" cy="335" r="5" fill="#f5cf8a"/>
+          <circle cx="520" cy="335" r="10" fill="#f5cf8a" opacity="0.3"/>
+        </g>
+        <!-- 蛍/星のような粒子 -->
+        <g fill="#fef3a0" opacity="0.85">
+          <circle cx="200" cy="180" r="1.5"/>
+          <circle cx="350" cy="120" r="1"/>
+          <circle cx="450" cy="100" r="1.2"/>
+          <circle cx="600" cy="150" r="1"/>
+          <circle cx="700" cy="200" r="1.3"/>
+          <circle cx="100" cy="200" r="1"/>
+        </g>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="num">MOCK 04 — NEW</div>
+      <h2>TECH PARTNERS TOWN v2</h2>
+      <p>3Dで作り直した自律型ホームページ。中央の時計台が秒まで時を刻み、月が変われば季節装飾が舞う。数字は息づくように更新。妖精ボットが町を案内する。</p>
+      <span class="open">開く ›</span>
+    </div>
+  </a>
+
   <a href="mock_v1_techpartners_town.html" class="card">
     <div class="card-thumb">
       <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice">

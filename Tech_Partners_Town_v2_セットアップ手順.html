@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Partners Town v2 セットアップ手順</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  background: linear-gradient(180deg, #0e0a0a 0%, #1a1410 50%, #0a0604 100%);
+  color: #f3e7d3;
+  line-height: 1.85;
+  min-height: 100vh;
+  padding: 60px 24px 120px;
+}
+
+.container {
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.head {
+  text-align: center;
+  margin-bottom: 60px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(212, 165, 116, 0.18);
+}
+.head .label {
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: #d4a574;
+  margin-bottom: 18px;
+}
+.head h1 {
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  background: linear-gradient(180deg, #f5cf8a, #d4a574 50%, #a87a4f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 14px;
+}
+.head p {
+  font-size: 14px;
+  color: #c8b89a;
+  letter-spacing: 0.05em;
+}
+
+.step {
+  background: linear-gradient(135deg, rgba(30, 22, 18, 0.7), rgba(20, 14, 10, 0.5));
+  border: 1px solid rgba(212, 165, 116, 0.18);
+  border-radius: 16px;
+  padding: 32px 36px;
+  margin-bottom: 28px;
+  position: relative;
+}
+
+.step-num {
+  position: absolute;
+  top: -16px;
+  left: 24px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d4a574, #a87a4f);
+  color: #1a1208;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: 0 6px 16px rgba(212, 165, 116, 0.3);
+}
+
+.step h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f5cf8a;
+  margin-bottom: 12px;
+  margin-top: 4px;
+  letter-spacing: 0.04em;
+}
+
+.step p {
+  color: #d8c8a8;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+
+.step .note {
+  font-size: 12.5px;
+  color: #a8967a;
+  background: rgba(0,0,0,0.25);
+  padding: 12px 16px;
+  border-left: 3px solid #d4a574;
+  border-radius: 4px;
+  margin: 14px 0;
+}
+
+.code-block {
+  background: #0a0604;
+  border: 1px solid rgba(212, 165, 116, 0.22);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin: 14px 0;
+  position: relative;
+  font-family: "SF Mono", "Consolas", "Menlo", monospace;
+  font-size: 13.5px;
+  color: #f5cf8a;
+  overflow-x: auto;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(212, 165, 116, 0.18);
+  border: 1px solid rgba(212, 165, 116, 0.4);
+  color: #f5cf8a;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  letter-spacing: 0.05em;
+}
+.copy-btn:hover {
+  background: rgba(212, 165, 116, 0.32);
+  border-color: rgba(212, 165, 116, 0.6);
+}
+.copy-btn.copied {
+  background: #7a9b6e;
+  border-color: #7a9b6e;
+  color: #fff;
+}
+
+.feature-list {
+  background: rgba(0,0,0,0.2);
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin: 14px 0;
+}
+.feature-list .item {
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(212, 165, 116, 0.15);
+  font-size: 13.5px;
+  color: #d8c8a8;
+}
+.feature-list .item:last-child {
+  border-bottom: none;
+}
+.feature-list .item strong {
+  color: #f5cf8a;
+  font-weight: 600;
+}
+
+.warn {
+  background: rgba(217, 106, 58, 0.1);
+  border: 1px solid rgba(217, 106, 58, 0.4);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin: 14px 0;
+  font-size: 13px;
+  color: #e8a890;
+}
+.warn strong {
+  color: #d96a3a;
+}
+
+.foot {
+  text-align: center;
+  margin-top: 60px;
+  padding-top: 30px;
+  border-top: 1px solid rgba(212, 165, 116, 0.15);
+  font-size: 12px;
+  color: #8a7a5a;
+  letter-spacing: 0.1em;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="head">
+  <div class="label">SETUP GUIDE</div>
+  <h1>Tech Partners Town v2 立ち上げ手順</h1>
+  <p>Next.js + Three.js を使った自律型ホームページのセットアップ。<br>
+  非エンジニアでも順番に進めれば必ず動きます。</p>
+</div>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <h2>Claude Code を起動して、プロジェクトフォルダに移動する</h2>
+  <p>スタートメニューから「Claude Code」を起動して、下のコマンドをコピーして貼り付けて実行してください。</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+    <pre><code>cd "C:\Users\nabe2\Documents\Claude\Projects\次世代ホームページ\tech-partners-town-v2"</code></pre>
+  </div>
+  <div class="note">
+    補足: cd は「change directory」の略で、作業フォルダを変える命令です。
+    成功するとプロンプトの表示にフォルダ名が出ます。
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">2</div>
+  <h2>必要なライブラリをインストールする（初回のみ・約2〜5分）</h2>
+  <p>Next.js や Three.js などの部品をまとめて取り寄せます。</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+    <pre><code>npm install</code></pre>
+  </div>
+  <div class="note">
+    補足: 大量の進捗表示が流れますが、エラーで止まらなければ正常です。<br>
+    最後に「added xxx packages」と出れば成功。
+  </div>
+  <div class="warn">
+    <strong>トラブル時:</strong> 「npm: command not found」と出た場合は、Node.js（バージョン18以上）がインストールされていません。
+    https://nodejs.org/ja から LTS 版をダウンロード・インストールしてください。
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">3</div>
+  <h2>開発サーバを起動する</h2>
+  <p>町を実際に立ち上げます。</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+    <pre><code>npm run dev</code></pre>
+  </div>
+  <div class="note">
+    補足: 「Ready」「Local: http://localhost:3000」と表示されたら準備完了。
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">4</div>
+  <h2>ブラウザで町を開く</h2>
+  <p>普段使っているブラウザで下のアドレスにアクセスします。</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+    <pre><code>http://localhost:3000</code></pre>
+  </div>
+  <p>初回は10〜20秒ほど読み込みがかかります。「BUILDING THE TOWN…」と表示されたあと、町が現れます。</p>
+</div>
+
+<div class="step">
+  <div class="step-num">5</div>
+  <h2>町でできること（操作ガイド）</h2>
+  <div class="feature-list">
+    <div class="item"><strong>マウスを動かす</strong> — カメラがゆっくり追従し、町を見渡せます</div>
+    <div class="item"><strong>左下の時刻パネル</strong> — 実時刻が秒単位で進む。季節と時間帯のラベルも表示</div>
+    <div class="item"><strong>右上のKPIボード</strong> — 売上・利益・社員数・訪問者・稼働中AIが25秒ごとに更新。「UPDATE」を押すと即更新＋ビルが光る</div>
+    <div class="item"><strong>左下のデモ操作</strong> — 「＋3時間」で空が変わる、「＋1ヶ月」で季節装飾が変わるのを即確認</div>
+    <div class="item"><strong>右下の妖精ルミナ</strong> — クリックして話しかけると、テンション高めに答えます</div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">6</div>
+  <h2>サーバを止めるとき</h2>
+  <p>Claude Code のターミナル上で、下のキーを同時押し。</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+    <pre><code>Ctrl + C</code></pre>
+  </div>
+  <p>もう一度立ち上げるときは、ステップ1（cd）→ ステップ3（npm run dev）でOK。npm install は最初の1回だけです。</p>
+</div>
+
+<div class="step">
+  <div class="step-num">7</div>
+  <h2>もし動かなかったら</h2>
+  <div class="feature-list">
+    <div class="item"><strong>真っ白なまま</strong> — F12キー（またはCtrl+Shift+I）で開発者ツールを開き、Console タブのエラー文を Claude に貼り付けて相談</div>
+    <div class="item"><strong>「Module not found」のエラー</strong> — npm install が失敗した可能性。再度実行</div>
+    <div class="item"><strong>カクつく</strong> — ブラウザを Chrome か Edge にしてみる。それでも重い場合は伝えてください、軽量化版を作ります</div>
+  </div>
+</div>
+
+<div class="foot">
+  TECH PARTNERS TOWN v2 — AUTONOMOUS DEMO
+</div>
+
+</div>
+
+<script>
+function copyCode(btn) {
+  const block = btn.parentElement;
+  const code = block.querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'コピー済み';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'コピー';
+      btn.classList.remove('copied');
+    }, 1800);
+  });
+}
+</script>
+</body>
+</html>
