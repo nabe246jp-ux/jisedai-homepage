@@ -1,7 +1,5 @@
 "use client";
 
-import { useRef } from "react";
-import * as THREE from "three";
 import Ground from "./Ground";
 import Buildings from "./Buildings";
 import Trees from "./Trees";
@@ -16,20 +14,14 @@ import Roads from "./Roads";
  * 太陽は南中近く、空気感は爽やかな初夏のイメージ。
  */
 export default function Town() {
-  const sunRef = useRef<THREE.DirectionalLight>(null!);
-  const ambientRef = useRef<THREE.AmbientLight>(null!);
-  const hemiRef = useRef<THREE.HemisphereLight>(null!);
-  const fillRef = useRef<THREE.DirectionalLight>(null!);
-
   return (
     <group>
-      <ambientLight ref={ambientRef} intensity={1.1} color="#fce8c8" />
-      <hemisphereLight ref={hemiRef} args={["#fff4d8", "#5a8a5a", 0.85]} />
+      <ambientLight intensity={1.1} color="#fce8c8" />
+      <hemisphereLight args={["#cfe6f5", "#5a8a5a", 0.9]} />
       <directionalLight
-        ref={sunRef}
-        position={[8, 18, -8]}
-        intensity={2.2}
-        color="#ffe6b8"
+        position={[8, 22, -6]}
+        intensity={2.4}
+        color="#fff5d8"
         castShadow
         shadow-mapSize={[2048, 2048]}
         shadow-camera-near={0.5}
@@ -41,10 +33,9 @@ export default function Town() {
         shadow-bias={-0.0003}
       />
       <directionalLight
-        ref={fillRef}
         position={[-12, 10, 14]}
-        intensity={0.45}
-        color="#aacfee"
+        intensity={0.5}
+        color="#a4d4f5"
       />
 
       <Ground />
