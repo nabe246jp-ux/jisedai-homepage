@@ -49,6 +49,105 @@
     z-index:5;
   }
 
+  /* ===== 動きのレイヤ ===== */
+  .fx-layer{
+    position:absolute; inset:0; pointer-events:none;
+    z-index:6;
+  }
+
+  /* 噴水の水（中央に重ねる） */
+  .fountain-fx{
+    position:absolute;
+    left:46.5%; top:55%;
+    width:7%; height:6%;
+    pointer-events:none;
+    transform:translate(-50%,-50%);
+  }
+  .fountain-fx svg{width:100%; height:100%; overflow:visible;}
+  .water-spray{
+    transform-origin:center bottom;
+    animation:spray 1.6s infinite ease-in-out;
+  }
+  .water-drop{
+    animation:drop 1.6s infinite ease-in;
+  }
+  .water-drop.b{animation-delay:-0.3s;}
+  .water-drop.c{animation-delay:-0.6s;}
+  .water-drop.d{animation-delay:-0.9s;}
+  .water-ring{
+    transform-origin:center;
+    animation:ring 2s infinite ease-out;
+    opacity:0;
+  }
+  .water-ring.b{animation-delay:-1s;}
+  @keyframes spray{
+    0%,100%{transform:scaleY(0.85) scaleX(1.05);}
+    50%{transform:scaleY(1.1) scaleX(0.95);}
+  }
+  @keyframes drop{
+    0%{transform:translateY(-6px) scale(0.8); opacity:0;}
+    20%{opacity:1;}
+    80%{opacity:1;}
+    100%{transform:translateY(20px) scale(0.6); opacity:0;}
+  }
+  @keyframes ring{
+    0%{transform:scale(0.4); opacity:0.7;}
+    100%{transform:scale(1.4); opacity:0;}
+  }
+
+  /* 街灯のゆらぎ（複数のグロー点） */
+  .lamp-fx{
+    position:absolute;
+    width:80px; height:80px;
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(255,217,130,0.35) 0%, rgba(255,217,130,0.18) 35%, transparent 70%);
+    mix-blend-mode:screen;
+    animation:lampFlicker 4s infinite ease-in-out;
+  }
+  .lamp-fx.b{animation-duration:5s; animation-delay:-1.5s;}
+  .lamp-fx.c{animation-duration:6s; animation-delay:-2.5s;}
+  .lamp-fx.d{animation-duration:4.5s; animation-delay:-0.8s;}
+  .lamp-fx.s{width:60px; height:60px;}
+  .lamp-fx.l{width:110px; height:110px;}
+  @keyframes lampFlicker{
+    0%,100%{opacity:0.7; transform:translate(-50%,-50%) scale(1);}
+    35%{opacity:0.92; transform:translate(-50%,-50%) scale(1.06);}
+    50%{opacity:0.5; transform:translate(-50%,-50%) scale(0.94);}
+    65%{opacity:0.95; transform:translate(-50%,-50%) scale(1.08);}
+    80%{opacity:0.78; transform:translate(-50%,-50%) scale(1);}
+  }
+
+  /* 桜の花びら（落下） */
+  .petals{
+    position:absolute; inset:0;
+    pointer-events:none; overflow:hidden;
+    z-index:7;
+  }
+  .petal{
+    position:absolute;
+    top:-20px;
+    width:10px; height:10px;
+    background:radial-gradient(ellipse 60% 100% at 50% 30%, #ffd5e3 0%, #f5a8c3 60%, #e293b3 100%);
+    border-radius:0 100% 0 100%;
+    opacity:0.85;
+    box-shadow:0 0 6px rgba(255,180,210,0.45);
+    animation:petalFall linear infinite;
+  }
+  @keyframes petalFall{
+    0%{
+      transform:translate(0,-40px) rotate(0deg);
+      opacity:0;
+    }
+    10%{opacity:0.85;}
+    90%{opacity:0.7;}
+    100%{
+      transform:translate(var(--dx, 100px), 110vh) rotate(720deg);
+      opacity:0;
+    }
+  }
+
   /* ===== 建物クリック領域（透明オーバーレイ） ===== */
   .hotspot{
     position:absolute; cursor:pointer; z-index:10;
