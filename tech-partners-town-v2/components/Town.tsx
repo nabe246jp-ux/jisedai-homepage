@@ -29,8 +29,8 @@ export default function Town() {
     const time = getTimePalette(now);
 
     if (sunRef.current) {
-      sunRef.current.color.lerp(new THREE.Color(season.sun), 0.05);
-      sunRef.current.intensity += (time.sunIntensity - sunRef.current.intensity) * 0.05;
+      sunRef.current.color.lerp(new THREE.Color("#ffe6b8"), 0.05);
+      sunRef.current.intensity += (time.sunIntensity * 1.1 - sunRef.current.intensity) * 0.05;
       const h = now.getHours() + now.getMinutes() / 60;
       const ang = ((h - 6) / 12) * Math.PI;
       const r = 25;
@@ -39,31 +39,31 @@ export default function Town() {
       sunRef.current.position.z = -8;
     }
     if (ambientRef.current) {
-      ambientRef.current.color.lerp(new THREE.Color(season.ambient), 0.05);
+      ambientRef.current.color.lerp(new THREE.Color("#fce8c8"), 0.05);
       ambientRef.current.intensity +=
-        (time.ambientIntensity - ambientRef.current.intensity) * 0.05;
+        (time.ambientIntensity * 1.05 - ambientRef.current.intensity) * 0.05;
     }
     if (hemiRef.current) {
       hemiRef.current.color.lerp(new THREE.Color(season.skyBottom), 0.05);
-      hemiRef.current.groundColor.lerp(new THREE.Color(season.ground), 0.05);
+      hemiRef.current.groundColor.lerp(new THREE.Color("#5a8a5a"), 0.05);
       const targetHemi = 0.55 + time.ambientIntensity * 0.4;
       hemiRef.current.intensity += (targetHemi - hemiRef.current.intensity) * 0.05;
     }
     if (fillRef.current) {
-      const target = time.ambientIntensity * 0.45;
+      const target = time.ambientIntensity * 0.4;
       fillRef.current.intensity += (target - fillRef.current.intensity) * 0.05;
     }
   });
 
   return (
     <group>
-      <ambientLight ref={ambientRef} intensity={1.0} color="#dde8ee" />
-      <hemisphereLight ref={hemiRef} args={["#cfe6ff", "#5a4a3a", 0.85]} />
+      <ambientLight ref={ambientRef} intensity={1.1} color="#fce8c8" />
+      <hemisphereLight ref={hemiRef} args={["#fff4d8", "#5a8a5a", 0.85]} />
       <directionalLight
         ref={sunRef}
         position={[8, 18, -8]}
-        intensity={2.0}
-        color="#fff4d8"
+        intensity={2.2}
+        color="#ffe6b8"
         castShadow
         shadow-mapSize={[2048, 2048]}
         shadow-camera-near={0.5}
@@ -77,8 +77,8 @@ export default function Town() {
       <directionalLight
         ref={fillRef}
         position={[-12, 10, 14]}
-        intensity={0.5}
-        color="#a4d4f5"
+        intensity={0.45}
+        color="#aacfee"
       />
 
       <Ground />
