@@ -59,40 +59,47 @@
   .fountain-fx{
     position:absolute;
     left:46.5%; top:55%;
-    width:7%; height:6%;
+    width:11%; height:10%;
     pointer-events:none;
     transform:translate(-50%,-50%);
+    filter:drop-shadow(0 0 8px rgba(168,236,232,0.5));
   }
   .fountain-fx svg{width:100%; height:100%; overflow:visible;}
   .water-spray{
     transform-origin:center bottom;
-    animation:spray 1.6s infinite ease-in-out;
+    animation:spray 1.4s infinite ease-in-out;
   }
+  .water-spray.tall{animation-duration:1.8s; animation-delay:-0.3s;}
   .water-drop{
     animation:drop 1.6s infinite ease-in;
   }
-  .water-drop.b{animation-delay:-0.3s;}
-  .water-drop.c{animation-delay:-0.6s;}
-  .water-drop.d{animation-delay:-0.9s;}
+  .water-drop.b{animation-delay:-0.2s;}
+  .water-drop.c{animation-delay:-0.4s;}
+  .water-drop.d{animation-delay:-0.6s;}
+  .water-drop.e{animation-delay:-0.8s;}
+  .water-drop.f{animation-delay:-1.0s;}
+  .water-drop.g{animation-delay:-1.2s;}
+  .water-drop.h{animation-delay:-1.4s;}
   .water-ring{
     transform-origin:center;
-    animation:ring 2s infinite ease-out;
+    animation:ring 2.2s infinite ease-out;
     opacity:0;
   }
-  .water-ring.b{animation-delay:-1s;}
+  .water-ring.b{animation-delay:-0.7s;}
+  .water-ring.c{animation-delay:-1.4s;}
   @keyframes spray{
-    0%,100%{transform:scaleY(0.85) scaleX(1.05);}
-    50%{transform:scaleY(1.1) scaleX(0.95);}
+    0%,100%{transform:scaleY(0.9) scaleX(1.05);}
+    50%{transform:scaleY(1.2) scaleX(0.92);}
   }
   @keyframes drop{
-    0%{transform:translateY(-6px) scale(0.8); opacity:0;}
-    20%{opacity:1;}
-    80%{opacity:1;}
-    100%{transform:translateY(20px) scale(0.6); opacity:0;}
+    0%{transform:translate(0,-6px) scale(0.6); opacity:0;}
+    15%{opacity:1; transform:translate(var(--dx,0px),-12px) scale(1);}
+    85%{opacity:1;}
+    100%{transform:translate(calc(var(--dx,0px) * 1.8), 36px) scale(0.5); opacity:0;}
   }
   @keyframes ring{
-    0%{transform:scale(0.4); opacity:0.7;}
-    100%{transform:scale(1.4); opacity:0;}
+    0%{transform:scale(0.3); opacity:0.85;}
+    100%{transform:scale(1.6); opacity:0;}
   }
 
   /* 街灯のゆらぎ（複数のグロー点） */
@@ -320,20 +327,32 @@
     <div class="fx-layer">
       <!-- 噴水の水 -->
       <div class="fountain-fx">
-        <svg viewBox="-50 -60 100 100" xmlns="http://www.w3.org/2000/svg">
-          <!-- 水しぶきの輪 -->
-          <ellipse class="water-ring" cx="0" cy="20" rx="22" ry="6" fill="none" stroke="#a3f0ed" stroke-width="2"/>
-          <ellipse class="water-ring b" cx="0" cy="20" rx="22" ry="6" fill="none" stroke="#a3f0ed" stroke-width="2"/>
-          <!-- 噴き上がる水柱 -->
+        <svg viewBox="-50 -80 100 120" xmlns="http://www.w3.org/2000/svg">
+          <!-- 水しぶきの輪（複数で連続的に広がる） -->
+          <ellipse class="water-ring" cx="0" cy="28" rx="28" ry="8" fill="none" stroke="#a3f0ed" stroke-width="2"/>
+          <ellipse class="water-ring b" cx="0" cy="28" rx="28" ry="8" fill="none" stroke="#a3f0ed" stroke-width="2"/>
+          <ellipse class="water-ring c" cx="0" cy="28" rx="28" ry="8" fill="none" stroke="#d8f8f5" stroke-width="1.5"/>
+          <!-- 噴き上がる水柱（外側・内側の二層） -->
           <g class="water-spray">
-            <path d="M-3 0 Q0 -34 3 0 Z" fill="#a3f0ed" opacity="0.75"/>
-            <path d="M-1 -8 Q0 -28 1 -8 Z" fill="#d8f8f5" opacity="0.9"/>
+            <path d="M-5 5 Q0 -56 5 5 Z" fill="#a3f0ed" opacity="0.65"/>
           </g>
-          <!-- 水滴 -->
-          <circle class="water-drop" cx="-8" cy="-10" r="2" fill="#a3f0ed"/>
-          <circle class="water-drop b" cx="8" cy="-12" r="2" fill="#a3f0ed"/>
-          <circle class="water-drop c" cx="-4" cy="-15" r="1.5" fill="#d8f8f5"/>
-          <circle class="water-drop d" cx="6" cy="-9" r="1.5" fill="#d8f8f5"/>
+          <g class="water-spray tall">
+            <path d="M-2.5 0 Q0 -68 2.5 0 Z" fill="#d8f8f5" opacity="0.92"/>
+          </g>
+          <!-- 中央の白い吹き上げ -->
+          <ellipse cx="0" cy="-58" rx="3" ry="6" fill="#ffffff" opacity="0.9">
+            <animate attributeName="ry" values="4;8;4" dur="1.4s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.7;1;0.7" dur="1.4s" repeatCount="indefinite"/>
+          </ellipse>
+          <!-- 飛び散る水滴（左右に放射状） -->
+          <circle class="water-drop"   cx="-10" cy="-30" r="2.2" fill="#a3f0ed" style="--dx:-14px;"/>
+          <circle class="water-drop b" cx="10"  cy="-30" r="2.2" fill="#a3f0ed" style="--dx:14px;"/>
+          <circle class="water-drop c" cx="-6"  cy="-40" r="1.8" fill="#d8f8f5" style="--dx:-10px;"/>
+          <circle class="water-drop d" cx="6"   cy="-40" r="1.8" fill="#d8f8f5" style="--dx:10px;"/>
+          <circle class="water-drop e" cx="-14" cy="-22" r="1.5" fill="#a3f0ed" style="--dx:-18px;"/>
+          <circle class="water-drop f" cx="14"  cy="-22" r="1.5" fill="#a3f0ed" style="--dx:18px;"/>
+          <circle class="water-drop g" cx="-3"  cy="-50" r="1.5" fill="#ffffff" style="--dx:-4px;"/>
+          <circle class="water-drop h" cx="3"   cy="-50" r="1.5" fill="#ffffff" style="--dx:4px;"/>
         </svg>
       </div>
 
