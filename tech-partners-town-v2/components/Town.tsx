@@ -5,7 +5,6 @@ import { useRef } from "react";
 import * as THREE from "three";
 import Ground from "./Ground";
 import Buildings from "./Buildings";
-import StreetLamps from "./StreetLamps";
 import Trees from "./Trees";
 import SeasonalParticles from "./SeasonalParticles";
 import Crowd from "./Crowd";
@@ -85,7 +84,6 @@ export default function Town() {
       <Roads />
       <Buildings />
       <JapaneseTown />
-      <StreetLamps />
       <Trees />
       <Crowd />
       <Clouds />
