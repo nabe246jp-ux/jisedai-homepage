@@ -38,8 +38,6 @@ export default function JapaneseTown() {
       <SkyBridge from={[14, 4.5, -16]} to={[18, 5.0, 8]} />
       <SkyBridge from={[-15, 4.0, -14]} to={[-18, 4.5, 10]} />
 
-      {/* 大量の吊り看板（カラフルな箱看板） */}
-      <BoxSigns />
     </group>
   );
 }
