@@ -54,7 +54,7 @@ export default function Fountain({
     dropletRefs.current.forEach((m, i) => {
       if (!m) return;
       const phase = (t * 1.2 + droplets[i].offset) % 1;
-      m.position.y = 1.45 - phase * 0.65; // 上の皿から池へ
+      m.position.y = 1.73 - phase * 0.65; // 上の皿から池へ
       const mat = m.material as THREE.MeshStandardMaterial;
       mat.opacity = phase < 0.85 ? 0.85 : 0.0;
     });
@@ -274,7 +274,7 @@ export default function Fountain({
       {/* ライトアップ（水面のすぐ上） */}
       <pointLight
         ref={lightRef}
-        position={[0, 0.6, 0]}
+        position={[0, 0.88, 0]}
         color="#aacfee"
         intensity={0.8}
         distance={5}
