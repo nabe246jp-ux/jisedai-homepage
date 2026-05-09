@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { Suspense, useEffect } from "react";
-import KPIBoard from "@/components/KPIBoard";
 import MascotBot from "@/components/MascotBot";
 import CustomCursor from "@/components/CustomCursor";
 import Loader from "@/components/Loader";
