@@ -543,27 +543,75 @@ function makeWindowGlassTexture(): THREE.CanvasTexture {
 }
 
 function makeLabelTexture(label: string): THREE.CanvasTexture {
+  const W = 1536;
+  const H = 448;
   const cnv = document.createElement("canvas");
-  cnv.width = 1024;
-  cnv.height = 256;
+  cnv.width = W;
+  cnv.height = H;
   const ctx = cnv.getContext("2d")!;
-  ctx.clearRect(0, 0, 1024, 256);
-  // 古い銘板風（黒地に金）
-  ctx.fillStyle = "rgba(28, 22, 14, 0.95)";
-  ctx.fillRect(40, 48, 944, 160);
+  ctx.clearRect(0, 0, W, H);
+
+  // 後光（金のソフトグロー）
+  const glow = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, W * 0.45);
+  glow.addColorStop(0, "rgba(245, 207, 138, 0.35)");
+  glow.addColorStop(1, "rgba(245, 207, 138, 0)");
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, W, H);
+
+  // 銘板の黒地
+  const padX = 60;
+  const padY = 60;
+  ctx.fillStyle = "rgba(20, 14, 8, 0.97)";
+  roundRect(ctx, padX, padY, W - padX * 2, H - padY * 2, 18);
+  ctx.fill();
+
+  // 内側の金の二重枠
   ctx.strokeStyle = "rgba(212, 165, 116, 0.98)";
-  ctx.lineWidth = 6;
-  ctx.strokeRect(56, 64, 912, 128);
-  ctx.fillStyle = "#f5cf8a";
-  ctx.font = "bold 96px 'Hiragino Mincho ProN', 'Cinzel', serif";
+  ctx.lineWidth = 8;
+  roundRect(ctx, padX + 18, padY + 18, W - (padX + 18) * 2, H - (padY + 18) * 2, 12);
+  ctx.stroke();
+  ctx.lineWidth = 2;
+  roundRect(ctx, padX + 30, padY + 30, W - (padX + 30) * 2, H - (padY + 30) * 2, 8);
+  ctx.stroke();
+
+  // テキスト本体（金のグロー付き）
+  ctx.shadowColor = "rgba(245, 207, 138, 0.95)";
+  ctx.shadowBlur = 22;
+  ctx.fillStyle = "#ffe9b8";
+  ctx.font = "900 200px 'Hiragino Mincho ProN', 'Yu Mincho', 'Cinzel', serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  // 軽いシャドウで読みやすく
-  ctx.shadowColor = "rgba(0,0,0,0.6)";
-  ctx.shadowBlur = 6;
-  ctx.fillText(label, 512, 128);
+  ctx.fillText(label, W / 2, H / 2 + 8);
+  ctx.shadowBlur = 0;
+
+  // テキストのアウトラインで輪郭を強調
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "rgba(40, 24, 8, 0.85)";
+  ctx.strokeText(label, W / 2, H / 2 + 8);
+
   const tex = new THREE.CanvasTexture(cnv);
   tex.colorSpace = THREE.SRGBColorSpace;
-  tex.anisotropy = 8;
+  tex.anisotropy = 16;
   return tex;
+}
+
+function roundRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number
+) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
 }
