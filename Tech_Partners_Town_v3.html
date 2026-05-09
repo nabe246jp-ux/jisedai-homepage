@@ -506,58 +506,6 @@
     else if(h>=10 && h<16) p='— DAYTIME —';
     else if(h>=16 && h<19) p='— SUNSET —';
     $period.textContent = p;
-    updateAtmosphere(h, d.getMinutes());
-  }
-
-  // ===== 時間帯による背景色の変化 =====
-  function updateAtmosphere(h, m){
-    const img = document.querySelector('.bg');
-    const ov  = document.getElementById('timeOverlay');
-    const ovS = document.getElementById('timeOverlaySoft');
-    const body = document.body;
-    body.classList.remove('morning','daytime','sunset','dusk','night');
-
-    if(h>=5 && h<8){
-      // 朝焼け：オレンジ・ピンク
-      body.classList.add('morning');
-      img.style.filter = 'brightness(1.2) saturate(1.05) hue-rotate(-8deg) contrast(0.95)';
-      ov.style.background  = 'linear-gradient(180deg, rgba(255,170,120,0.55) 0%, rgba(255,210,170,0.35) 60%, rgba(255,230,200,0.25) 100%)';
-      ovS.style.background = 'linear-gradient(180deg, rgba(255,200,150,0.6) 0%, rgba(255,235,200,0.3) 100%)';
-      ov.style.opacity = '1'; ovS.style.opacity = '1';
-    } else if(h>=8 && h<10){
-      // 朝：明るい黄金
-      body.classList.add('morning');
-      img.style.filter = 'brightness(1.4) saturate(0.95) hue-rotate(-5deg) contrast(0.9)';
-      ov.style.background  = 'linear-gradient(180deg, rgba(255,220,160,0.45) 0%, rgba(255,235,200,0.25) 100%)';
-      ovS.style.background = 'linear-gradient(180deg, rgba(255,240,200,0.7) 0%, rgba(255,250,220,0.4) 100%)';
-      ov.style.opacity = '1'; ovS.style.opacity = '1';
-    } else if(h>=10 && h<16){
-      // 昼：青空
-      body.classList.add('daytime');
-      img.style.filter = 'brightness(1.55) saturate(0.85) hue-rotate(-3deg) contrast(0.85)';
-      ov.style.background  = 'linear-gradient(180deg, rgba(150,200,255,0.4) 0%, rgba(220,235,255,0.2) 100%)';
-      ovS.style.background = 'linear-gradient(180deg, rgba(200,225,255,0.8) 0%, rgba(240,248,255,0.5) 100%)';
-      ov.style.opacity = '1'; ovS.style.opacity = '1';
-    } else if(h>=16 && h<18){
-      // 夕方：オレンジ
-      body.classList.add('sunset');
-      img.style.filter = 'brightness(1.15) saturate(1.2) hue-rotate(8deg) contrast(0.95)';
-      ov.style.background  = 'linear-gradient(180deg, rgba(255,140,80,0.5) 0%, rgba(255,180,140,0.3) 60%, rgba(180,100,140,0.25) 100%)';
-      ovS.style.background = 'linear-gradient(180deg, rgba(255,180,130,0.6) 0%, rgba(220,140,170,0.4) 100%)';
-      ov.style.opacity = '1'; ovS.style.opacity = '1';
-    } else if(h>=18 && h<19){
-      // 夕暮れ：紫がかる
-      body.classList.add('dusk');
-      img.style.filter = 'brightness(1.0) saturate(1.1) hue-rotate(0deg)';
-      ov.style.background  = 'linear-gradient(180deg, rgba(255,120,90,0.35) 0%, rgba(180,100,150,0.3) 50%, rgba(80,60,150,0.25) 100%)';
-      ovS.style.background = 'linear-gradient(180deg, rgba(220,130,150,0.5) 0%, rgba(120,90,180,0.4) 100%)';
-      ov.style.opacity = '1'; ovS.style.opacity = '1';
-    } else {
-      // 夜（19-5）：元の絵そのまま
-      body.classList.add('night');
-      img.style.filter = 'brightness(1.0) saturate(1.0)';
-      ov.style.opacity = '0'; ovS.style.opacity = '0';
-    }
   }
 
   function updateKpi(){
