@@ -93,13 +93,15 @@ export default function Fountain({
         <ringGeometry args={[1.6, 1.95, 8]} />
         <meshStandardMaterial color="#cfc6b2" metalness={0.15} roughness={0.5} />
       </mesh>
+      {/* === ここから上は石段の上にのる本体。すべて y を 0.28 引き上げ === */}
+
       {/* 池の底 */}
-      <mesh position={[0, 0.03, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 8]} receiveShadow>
+      <mesh position={[0, 0.31, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 8]} receiveShadow>
         <circleGeometry args={[1.7, 8]} />
         <meshStandardMaterial color="#2a3a4a" metalness={0.3} roughness={0.55} />
       </mesh>
       {/* 水面 */}
-      <mesh ref={surfaceRef} position={[0, 0.18, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 8]}>
+      <mesh ref={surfaceRef} position={[0, 0.46, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 8]}>
         <circleGeometry args={[1.65, 8]} />
         <meshStandardMaterial
           color="#5fa4d4"
@@ -113,33 +115,33 @@ export default function Fountain({
       </mesh>
 
       {/* 中央の柱の基壇 */}
-      <mesh position={[0, 0.32, 0]} castShadow>
+      <mesh position={[0, 0.60, 0]} castShadow>
         <cylinderGeometry args={[0.55, 0.65, 0.25, 8]} />
         <meshStandardMaterial color="#e8dcc4" metalness={0.15} roughness={0.55} />
       </mesh>
       {/* 中央の柱 */}
-      <mesh position={[0, 0.85, 0]} castShadow>
+      <mesh position={[0, 1.13, 0]} castShadow>
         <cylinderGeometry args={[0.22, 0.32, 0.85, 16]} />
         <meshStandardMaterial color="#e0d4bc" metalness={0.2} roughness={0.4} />
       </mesh>
       {/* 柱の装飾リング */}
-      <mesh position={[0, 1.1, 0]} castShadow>
+      <mesh position={[0, 1.38, 0]} castShadow>
         <torusGeometry args={[0.27, 0.04, 12, 32]} />
         <meshStandardMaterial color="#d4a574" metalness={0.9} roughness={0.2} />
       </mesh>
 
       {/* 下の皿（大きめ・水を受ける） */}
-      <mesh position={[0, 1.35, 0]} castShadow>
+      <mesh position={[0, 1.63, 0]} castShadow>
         <cylinderGeometry args={[0.85, 0.55, 0.12, 24]} />
         <meshStandardMaterial color="#e8dcc4" metalness={0.2} roughness={0.4} />
       </mesh>
       {/* 下の皿の縁の溝 */}
-      <mesh position={[0, 1.42, 0]}>
+      <mesh position={[0, 1.70, 0]}>
         <torusGeometry args={[0.83, 0.04, 8, 32]} />
         <meshStandardMaterial color="#d4a574" metalness={0.85} roughness={0.25} />
       </mesh>
       {/* 下の皿の中の水面 */}
-      <mesh position={[0, 1.42, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh position={[0, 1.70, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <circleGeometry args={[0.78, 32]} />
         <meshStandardMaterial
           color="#7cc4ec"
@@ -153,18 +155,18 @@ export default function Fountain({
       </mesh>
 
       {/* 中段の細い柱 */}
-      <mesh position={[0, 1.58, 0]} castShadow>
+      <mesh position={[0, 1.86, 0]} castShadow>
         <cylinderGeometry args={[0.12, 0.18, 0.4, 12]} />
         <meshStandardMaterial color="#e0d4bc" metalness={0.2} roughness={0.4} />
       </mesh>
 
       {/* 上の皿（小さめ） */}
-      <mesh position={[0, 1.85, 0]} castShadow>
+      <mesh position={[0, 2.13, 0]} castShadow>
         <cylinderGeometry args={[0.5, 0.32, 0.1, 20]} />
         <meshStandardMaterial color="#e8dcc4" metalness={0.2} roughness={0.4} />
       </mesh>
       {/* 上の皿の中の水面 */}
-      <mesh position={[0, 1.91, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh position={[0, 2.19, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <circleGeometry args={[0.46, 24]} />
         <meshStandardMaterial
           color="#9cd4ec"
@@ -178,51 +180,52 @@ export default function Fountain({
       </mesh>
 
       {/* 上の皿の柱（噴出口） */}
-      <mesh position={[0, 2.06, 0]} castShadow>
+      <mesh position={[0, 2.34, 0]} castShadow>
         <cylinderGeometry args={[0.06, 0.1, 0.3, 12]} />
         <meshStandardMaterial color="#d4a574" metalness={0.9} roughness={0.2} />
       </mesh>
 
-      {/* 中央の噴き上がる水（円錐・高め） */}
-      <mesh ref={sprayRef} position={[0, 3.5, 0]}>
-        <coneGeometry args={[0.22, 2.6, 18, 1, true]} />
+      {/* 中央の噴き上がる水（円錐・大幅に高く） */}
+      <mesh ref={sprayRef} position={[0, 5.5, 0]}>
+        <coneGeometry args={[0.28, 5.5, 20, 1, true]} />
         <meshStandardMaterial
           color="#cfe6f5"
           transparent
           opacity={0.5}
           emissive="#aacfee"
-          emissiveIntensity={0.7}
+          emissiveIntensity={0.75}
           metalness={0.2}
           roughness={0.05}
           side={THREE.DoubleSide}
         />
       </mesh>
-      {/* 噴水の頂点のしずく球（高めに） */}
-      <mesh position={[0, 5.0, 0]}>
-        <sphereGeometry args={[0.18, 16, 16]} />
+      {/* 噴水の頂点のしずく球（さらに高く） */}
+      <mesh position={[0, 8.4, 0]}>
+        <sphereGeometry args={[0.22, 16, 16]} />
         <meshStandardMaterial
           color="#cfe6f5"
           transparent
-          opacity={0.9}
+          opacity={0.95}
           emissive="#aacfee"
-          emissiveIntensity={0.8}
+          emissiveIntensity={0.95}
           metalness={0.4}
           roughness={0.05}
         />
       </mesh>
-      {/* 周辺に飛び散る小さなしずく（広がりを出す） */}
-      {Array.from({ length: 8 }).map((_, i) => {
-        const a = (i / 8) * Math.PI * 2;
-        const r = 0.4;
+      {/* 周辺に飛び散る小さなしずく（広がりを出す・上のほうに散らす） */}
+      {Array.from({ length: 12 }).map((_, i) => {
+        const a = (i / 12) * Math.PI * 2;
+        const r = 0.55 + (i % 3) * 0.18;
+        const y = 6.4 + (i % 4) * 0.55;
         return (
-          <mesh key={`spritz-${i}`} position={[Math.cos(a) * r, 4.4, Math.sin(a) * r]}>
-            <sphereGeometry args={[0.07, 8, 8]} />
+          <mesh key={`spritz-${i}`} position={[Math.cos(a) * r, y, Math.sin(a) * r]}>
+            <sphereGeometry args={[0.08, 8, 8]} />
             <meshStandardMaterial
               color="#cfe6f5"
               transparent
-              opacity={0.7}
+              opacity={0.75}
               emissive="#aacfee"
-              emissiveIntensity={0.6}
+              emissiveIntensity={0.7}
               metalness={0.4}
               roughness={0.05}
             />
@@ -231,7 +234,7 @@ export default function Fountain({
       })}
 
       {/* 上の皿の周りに飛沫リング（うっすら） */}
-      <mesh ref={upperWaterRef} position={[0, 1.92, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh ref={upperWaterRef} position={[0, 2.20, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[0.45, 0.55, 24]} />
         <meshStandardMaterial
           color="#aacfee"
@@ -253,7 +256,7 @@ export default function Fountain({
             ref={(m) => {
               if (m) dropletRefs.current[i] = m;
             }}
-            position={[x, 1.45, z]}
+            position={[x, 1.73, z]}
           >
             <sphereGeometry args={[0.04, 8, 8]} />
             <meshStandardMaterial
