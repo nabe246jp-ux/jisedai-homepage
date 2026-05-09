@@ -39,7 +39,6 @@ export default function Home() {
       </Suspense>
 
       <HeaderBar />
-      <DigitalClock />
       <MascotBot />
       <DemoControls />
 
