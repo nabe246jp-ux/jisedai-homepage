@@ -532,25 +532,7 @@
     clearTimeout(showHint._t);
     showHint._t = setTimeout(()=>$h.classList.remove('show'), 1400);
   }
-  document.getElementById('btnHour').onclick = ()=>{
-    state.virtualDate = new Date(state.virtualDate.getTime() + 3600*1000);
-    updateClock(); showHint('+1時間 進めました');
-  };
-  document.getElementById('btnDay').onclick = ()=>{
-    state.virtualDate = new Date(state.virtualDate.getTime() + 24*3600*1000);
-    updateClock(); randomizeKpi(); showHint('+1日 進めました');
-  };
-  document.getElementById('btnWeek').onclick = ()=>{
-    state.virtualDate = new Date(state.virtualDate.getTime() + 7*24*3600*1000);
-    updateClock(); randomizeKpi(); showHint('+1週 進めました');
-  };
-  document.getElementById('btnRand').onclick = ()=>{ randomizeKpi(); showHint('KPIを更新しました'); };
-  document.getElementById('btnReset').onclick = ()=>{
-    const d = new Date(); d.setHours(20,30,0,0);
-    state.virtualDate = d;
-    state.kpis = {...baseKpi};
-    updateClock(); updateKpi(); showHint('リセットしました');
-  };
+  // DEMO CONTROLS は非表示にしました（ボタン用のJSも省略）
 
   const details = {
     training: {
