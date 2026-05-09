@@ -319,10 +319,10 @@ function Building({
         {/* 屋根の天窓（ドーマー） */}
         <Dormer position={[0, h + 0.45, d / 2 + 0.05]} accent={shutterColor} />
 
-        {/* 銘板（建物正面） */}
-        <mesh position={[0, h + 0.28, d / 2 + 0.22]}>
-          <planeGeometry args={[2.4, 0.6]} />
-          <meshBasicMaterial map={makeLabelTexture(label)} transparent />
+        {/* 銘板（建物正面・大きめ） */}
+        <mesh position={[0, h + 0.55, d / 2 + 0.23]}>
+          <planeGeometry args={[3.8, 1.1]} />
+          <meshBasicMaterial map={makeLabelTexture(label)} transparent toneMapped={false} />
         </mesh>
       </group>
 
