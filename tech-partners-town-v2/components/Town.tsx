@@ -1,6 +1,5 @@
 "use client";
 
-import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import * as THREE from "three";
 import Ground from "./Ground";
@@ -11,48 +10,16 @@ import Crowd from "./Crowd";
 import Clouds from "./Clouds";
 import JapaneseTown from "./JapaneseTown";
 import Roads from "./Roads";
-import { useStore } from "@/lib/store";
-import { getInterpolatedSeason } from "@/lib/seasons";
-import { getTimePalette } from "@/lib/timeOfDay";
 
+/**
+ * 常に日中の明るい街。空は青空に固定。
+ * 太陽は南中近く、空気感は爽やかな初夏のイメージ。
+ */
 export default function Town() {
   const sunRef = useRef<THREE.DirectionalLight>(null!);
   const ambientRef = useRef<THREE.AmbientLight>(null!);
   const hemiRef = useRef<THREE.HemisphereLight>(null!);
   const fillRef = useRef<THREE.DirectionalLight>(null!);
-  const virtualDate = useStore((s) => s.virtualDate);
-
-  useFrame(() => {
-    const now = virtualDate ?? new Date();
-    const season = getInterpolatedSeason(now);
-    const time = getTimePalette(now);
-
-    if (sunRef.current) {
-      sunRef.current.color.lerp(new THREE.Color("#ffe6b8"), 0.05);
-      sunRef.current.intensity += (time.sunIntensity * 1.1 - sunRef.current.intensity) * 0.05;
-      const h = now.getHours() + now.getMinutes() / 60;
-      const ang = ((h - 6) / 12) * Math.PI;
-      const r = 25;
-      sunRef.current.position.x = -Math.cos(ang) * r;
-      sunRef.current.position.y = Math.max(2, Math.sin(ang) * r);
-      sunRef.current.position.z = -8;
-    }
-    if (ambientRef.current) {
-      ambientRef.current.color.lerp(new THREE.Color("#fce8c8"), 0.05);
-      ambientRef.current.intensity +=
-        (time.ambientIntensity * 1.05 - ambientRef.current.intensity) * 0.05;
-    }
-    if (hemiRef.current) {
-      hemiRef.current.color.lerp(new THREE.Color(season.skyBottom), 0.05);
-      hemiRef.current.groundColor.lerp(new THREE.Color("#5a8a5a"), 0.05);
-      const targetHemi = 0.55 + time.ambientIntensity * 0.4;
-      hemiRef.current.intensity += (targetHemi - hemiRef.current.intensity) * 0.05;
-    }
-    if (fillRef.current) {
-      const target = time.ambientIntensity * 0.4;
-      fillRef.current.intensity += (target - fillRef.current.intensity) * 0.05;
-    }
-  });
 
   return (
     <group>
