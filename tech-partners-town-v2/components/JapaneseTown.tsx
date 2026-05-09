@@ -5,6 +5,7 @@ import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useStore } from "@/lib/store";
 import { getTimePalette } from "@/lib/timeOfDay";
+import TowerClock from "./TowerClock";
 
 /**
  * 参考画像（ジブリ／新海誠 風 アジア幻想都市）に寄せた街並み。
@@ -26,6 +27,9 @@ export default function JapaneseTown() {
       <DomeTower position={[18, 0, 8]} radius={2.0} height={11.0} />
       <DomeTower position={[-18, 0, 10]} radius={1.6} height={9.0} />
       <DomeTower position={[0, 0, -22]} radius={1.7} height={10.0} domeColor="#5a8a78" />
+
+      {/* 中央奥の塔のデジタル時計盤 */}
+      <TowerClock position={[0, 6.0, -20.25]} width={3.0} height={1.2} />
 
       {/* 多層の密集タウンハウス */}
       <Townhouses />

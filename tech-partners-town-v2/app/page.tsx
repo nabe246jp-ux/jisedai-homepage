@@ -8,7 +8,6 @@ import Loader from "@/components/Loader";
 import HeaderBar from "@/components/HeaderBar";
 import DemoControls from "@/components/DemoControls";
 import BuildingDetail from "@/components/BuildingDetail";
-import DigitalClock from "@/components/DigitalClock";
 import { useStore } from "@/lib/store";
 
 const Scene = dynamic(() => import("@/components/Scene"), {
