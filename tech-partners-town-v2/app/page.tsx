@@ -41,7 +41,6 @@ export default function Home() {
 
       <HeaderBar />
       <DigitalClock />
-      <KPIBoard />
       <MascotBot />
       <DemoControls />
 
