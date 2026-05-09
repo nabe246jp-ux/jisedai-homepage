@@ -609,10 +609,10 @@
       // 終わったら消す
       setTimeout(()=>p.remove(), (duration+1)*1000);
     }
-    // 初期に何枚か散らす
-    for(let i=0;i<14;i++) spawn();
-    // 一定間隔で追加
-    setInterval(spawn, 700);
+    // 初期に少しだけ散らす
+    for(let i=0;i<5;i++) spawn();
+    // ゆっくりめの間隔で追加
+    setInterval(spawn, 1800);
   })();
 </script>
 
