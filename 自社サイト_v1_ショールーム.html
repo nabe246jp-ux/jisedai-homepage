@@ -554,12 +554,12 @@ function buildBooths(){
     g.addEventListener('mouseenter',()=>{
       g.querySelector('.booth-glow').setAttribute('opacity','0.85');
       g.querySelector('.booth-hover-arrow').setAttribute('opacity','1');
-      g.style.transform = `translate(${b.x}px,${b.y - 4}px)`;
+      g.setAttribute('transform',`translate(${b.x},${b.y - 4})`);
     });
     g.addEventListener('mouseleave',()=>{
       g.querySelector('.booth-glow').setAttribute('opacity','0');
       g.querySelector('.booth-hover-arrow').setAttribute('opacity','0');
-      g.style.transform = `translate(${b.x}px,${b.y}px)`;
+      g.setAttribute('transform',`translate(${b.x},${b.y})`);
     });
     g.addEventListener('click',(e)=>{e.stopPropagation();selectSection(b.key)});
     boothsG.appendChild(g);
@@ -869,4 +869,3 @@ setTimeout(()=>{
 
 </script>
 </body>
-</html>
