@@ -120,7 +120,7 @@ function Building({
 }: BuildingProps) {
   const buildingKey = bkey;
   const groupRef = useRef<THREE.Group>(null!);
-  const winMatRef = useRef<THREE.MeshStandardMaterial>(null!);
+  const winMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
   const beaconRef = useRef<THREE.PointLight>(null!);
   const haloRef = useRef<THREE.Mesh>(null!);
 
