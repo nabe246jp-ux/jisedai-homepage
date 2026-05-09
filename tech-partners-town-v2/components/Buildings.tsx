@@ -290,12 +290,6 @@ function Building({
           ));
         })}
 
-        {/* 軒（屋根の根本のせり出し） */}
-        <mesh position={[0, h + 0.32, 0]} castShadow>
-          <boxGeometry args={[w + 0.2, 0.12, d + 0.2]} />
-          <meshStandardMaterial color="#c9b88f" roughness={0.7} />
-        </mesh>
-
         {/* 屋根（ピラミッド型のヒップド・ルーフ） */}
         <mesh
           position={[0, h + 0.4 + roofH / 2, 0]}
@@ -316,11 +310,8 @@ function Building({
           <meshStandardMaterial color="#3a3a3a" roughness={0.8} />
         </mesh>
 
-        {/* 屋根の天窓（ドーマー） */}
-        <Dormer position={[0, h + 0.45, d / 2 + 0.05]} accent={shutterColor} />
-
-        {/* 銘板（建物正面・大きめ） */}
-        <mesh position={[0, h + 0.55, d / 2 + 0.23]}>
+        {/* 銘板（建物正面・屋根より手前にしっかりせり出す） */}
+        <mesh position={[0, h + 0.55, d / 2 + 0.6]}>
           <planeGeometry args={[3.8, 1.1]} />
           <meshBasicMaterial map={makeLabelTexture(label)} transparent toneMapped={false} />
         </mesh>
