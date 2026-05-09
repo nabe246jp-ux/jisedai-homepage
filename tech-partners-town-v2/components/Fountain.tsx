@@ -66,13 +66,31 @@ export default function Fountain({
 
   return (
     <group position={position}>
+      {/* 周囲の石段（3段） — 外側ほど低く広く */}
+      <mesh position={[0, 0.04, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow castShadow>
+        <ringGeometry args={[2.6, 3.4, 32]} />
+        <meshStandardMaterial color="#bfb6a0" metalness={0.1} roughness={0.65} />
+      </mesh>
+      <mesh position={[0, 0.08, 0]} castShadow>
+        <cylinderGeometry args={[2.6, 2.6, 0.08, 32]} />
+        <meshStandardMaterial color="#cfc6b2" metalness={0.1} roughness={0.55} />
+      </mesh>
+      <mesh position={[0, 0.13, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <ringGeometry args={[2.15, 2.6, 32]} />
+        <meshStandardMaterial color="#cfc6b2" metalness={0.1} roughness={0.55} />
+      </mesh>
+      <mesh position={[0, 0.16, 0]} castShadow>
+        <cylinderGeometry args={[2.15, 2.15, 0.06, 32]} />
+        <meshStandardMaterial color="#d4ccb0" metalness={0.1} roughness={0.5} />
+      </mesh>
+
       {/* 池の外側の石枠（八角形） */}
-      <mesh position={[0, 0.18, 0]} castShadow>
+      <mesh position={[0, 0.32, 0]} castShadow>
         <torusGeometry args={[1.85, 0.18, 14, 8]} />
         <meshStandardMaterial color="#e0d4bc" metalness={0.15} roughness={0.55} />
       </mesh>
       {/* 池の縁（座れる幅広の縁） */}
-      <mesh position={[0, 0.13, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 8]} castShadow>
+      <mesh position={[0, 0.27, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 8]} castShadow>
         <ringGeometry args={[1.6, 1.95, 8]} />
         <meshStandardMaterial color="#cfc6b2" metalness={0.15} roughness={0.5} />
       </mesh>
