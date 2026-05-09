@@ -10,8 +10,9 @@ type Props = { position?: [number, number, number] };
 
 /**
  * 街の中心にそびえる時計台。
- * - 4面に時計盤
- * - 時針・分針・秒針が実時刻に合わせて滑らかに回る
+ * - 4面に時計盤（アナログ）
+ * - 4面に LED風の デジタル時刻表示（HH:MM:SS）
+ * - 時針・分針・秒針が滑らかに回る
  * - 文字盤の発光は時間帯に応じて強さが変わる
  */
 export default function ClockTower({ position = [0, 0, 0] }: Props) {
@@ -25,6 +26,17 @@ export default function ClockTower({ position = [0, 0, 0] }: Props) {
 
   // 文字盤テクスチャ（共通で1枚を使い回す）
   const dialTexture = useMemo(() => makeClockFace(512), []);
+
+  // デジタル表示用 Canvas（毎フレーム書き換え、4面で共有）
+  const digital = useMemo(() => {
+    const cnv = document.createElement("canvas");
+    cnv.width = 512;
+    cnv.height = 128;
+    const ctx = cnv.getContext("2d")!;
+    const tex = new THREE.CanvasTexture(cnv);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return { cnv, ctx, tex, lastDrawn: "" };
+  }, []);
 
   // 4面の方向（北・東・南・西）
   const faceDirs = useMemo(
@@ -45,7 +57,6 @@ export default function ClockTower({ position = [0, 0, 0] }: Props) {
     const m = now.getMinutes() + s / 60;
     const h = (now.getHours() % 12) + m / 60;
 
-    // 12時=0rad、時計回り
     const hourAng = -(h / 12) * Math.PI * 2;
     const minAng = -(m / 60) * Math.PI * 2;
     const secAng = -(s / 60) * Math.PI * 2;
@@ -54,7 +65,6 @@ export default function ClockTower({ position = [0, 0, 0] }: Props) {
     minuteRefs.current.forEach((r) => r && (r.rotation.z = minAng));
     secondRefs.current.forEach((r) => r && (r.rotation.z = secAng));
 
-    // 発光強度を時間帯で
     const tp = getTimePalette(now);
     faceMatRefs.current.forEach((mat) => {
       if (!mat) return;
@@ -65,7 +75,17 @@ export default function ClockTower({ position = [0, 0, 0] }: Props) {
       glowRef.current.intensity += (target - glowRef.current.intensity) * 0.06;
     }
 
-    // 全体に微小な揺らぎ（風で揺れる雰囲気）
+    // デジタル表示の更新（秒が変わったときだけ描画）
+    const HH = pad2(now.getHours());
+    const MM = pad2(now.getMinutes());
+    const SS = pad2(now.getSeconds());
+    const text = `${HH}:${MM}:${SS}`;
+    if (text !== digital.lastDrawn) {
+      drawDigital(digital.ctx, text);
+      digital.tex.needsUpdate = true;
+      digital.lastDrawn = text;
+    }
+
     if (groupRef.current) {
       groupRef.current.rotation.z = Math.sin(performance.now() * 0.0006) * 0.0025;
     }
@@ -78,19 +98,17 @@ export default function ClockTower({ position = [0, 0, 0] }: Props) {
         <cylinderGeometry args={[1.6, 1.9, 1.0, 32]} />
         <meshStandardMaterial color="#2e2a32" roughness={0.5} metalness={0.15} />
       </mesh>
-      {/* 装飾リング */}
       <mesh position={[0, 1.05, 0]} castShadow>
         <torusGeometry args={[1.65, 0.06, 16, 64]} />
         <meshStandardMaterial color="#a87a4f" metalness={0.85} roughness={0.25} />
       </mesh>
 
-      {/* 塔本体（石柱） */}
+      {/* 塔本体 */}
       <mesh position={[0, 3.0, 0]} castShadow receiveShadow>
         <cylinderGeometry args={[1.0, 1.15, 4.0, 24]} />
         <meshStandardMaterial color="#3a3540" roughness={0.6} metalness={0.1} />
       </mesh>
 
-      {/* 縦の溝（柱の凹凸表現として薄い板を貼る） */}
       {Array.from({ length: 8 }).map((_, i) => {
         const ang = (i / 8) * Math.PI * 2;
         return (
@@ -105,29 +123,28 @@ export default function ClockTower({ position = [0, 0, 0] }: Props) {
         );
       })}
 
-      {/* 時計室（4面に文字盤） */}
+      {/* 時計室 */}
       <group position={[0, 5.6, 0]}>
         <mesh castShadow receiveShadow>
-          <boxGeometry args={[1.7, 1.7, 1.7]} />
+          <boxGeometry args={[1.7, 1.9, 1.7]} />
           <meshStandardMaterial color="#4a3528" roughness={0.45} metalness={0.2} />
         </mesh>
 
-        {/* 上下のブラスのモール */}
-        <mesh position={[0, 0.92, 0]} castShadow>
+        <mesh position={[0, 1.02, 0]} castShadow>
           <boxGeometry args={[1.85, 0.08, 1.85]} />
           <meshStandardMaterial color="#d4a574" metalness={0.92} roughness={0.18} />
         </mesh>
-        <mesh position={[0, -0.92, 0]} castShadow>
+        <mesh position={[0, -1.02, 0]} castShadow>
           <boxGeometry args={[1.85, 0.08, 1.85]} />
           <meshStandardMaterial color="#d4a574" metalness={0.92} roughness={0.18} />
         </mesh>
 
-        {/* 4面の文字盤 */}
+        {/* 4面のアナログ文字盤 + 下のデジタルパネル */}
         {faceDirs.map((d, i) => (
           <group key={i} position={d.offset} rotation={d.rot}>
             {/* 文字盤本体 */}
-            <mesh>
-              <circleGeometry args={[0.7, 64]} />
+            <mesh position={[0, 0.15, 0]}>
+              <circleGeometry args={[0.62, 64]} />
               <meshStandardMaterial
                 ref={(r) => {
                   if (r) faceMatRefs.current[i] = r;
@@ -142,29 +159,27 @@ export default function ClockTower({ position = [0, 0, 0] }: Props) {
                 toneMapped={true}
               />
             </mesh>
-            {/* 文字盤外周のブラスリング */}
-            <mesh position={[0, 0, 0.005]}>
-              <ringGeometry args={[0.7, 0.78, 64]} />
+            <mesh position={[0, 0.15, 0.005]}>
+              <ringGeometry args={[0.62, 0.7, 64]} />
               <meshStandardMaterial color="#d4a574" metalness={0.92} roughness={0.18} />
             </mesh>
-            {/* 中心の軸キャップ */}
-            <mesh position={[0, 0, 0.04]} rotation={[Math.PI / 2, 0, 0]}>
+            <mesh position={[0, 0.15, 0.04]} rotation={[Math.PI / 2, 0, 0]}>
               <cylinderGeometry args={[0.045, 0.045, 0.02, 16]} />
               <meshStandardMaterial color="#1a1820" metalness={0.85} roughness={0.2} />
             </mesh>
 
-            {/* 時針（pivot group + 子要素を上にオフセットして根本回転を実現） */}
+            {/* 時針 */}
             <group
-              position={[0, 0, 0.03]}
+              position={[0, 0.15, 0.03]}
               ref={(r) => {
                 if (r) hourRefs.current[i] = r;
               }}
             >
-              <mesh position={[0, 0.18, 0]}>
-                <boxGeometry args={[0.045, 0.36, 0.012]} />
+              <mesh position={[0, 0.16, 0]}>
+                <boxGeometry args={[0.045, 0.32, 0.012]} />
                 <meshStandardMaterial color="#1a1820" metalness={0.7} roughness={0.3} />
               </mesh>
-              <mesh position={[0, 0.36, 0]}>
+              <mesh position={[0, 0.32, 0]}>
                 <coneGeometry args={[0.035, 0.05, 8]} />
                 <meshStandardMaterial color="#1a1820" metalness={0.7} roughness={0.3} />
               </mesh>
@@ -172,66 +187,84 @@ export default function ClockTower({ position = [0, 0, 0] }: Props) {
 
             {/* 分針 */}
             <group
-              position={[0, 0, 0.04]}
+              position={[0, 0.15, 0.04]}
               ref={(r) => {
                 if (r) minuteRefs.current[i] = r;
               }}
             >
-              <mesh position={[0, 0.275, 0]}>
-                <boxGeometry args={[0.025, 0.55, 0.012]} />
+              <mesh position={[0, 0.245, 0]}>
+                <boxGeometry args={[0.025, 0.49, 0.012]} />
                 <meshStandardMaterial color="#1a1820" metalness={0.7} roughness={0.3} />
               </mesh>
-              <mesh position={[0, 0.55, 0]}>
+              <mesh position={[0, 0.49, 0]}>
                 <coneGeometry args={[0.022, 0.045, 8]} />
                 <meshStandardMaterial color="#1a1820" metalness={0.7} roughness={0.3} />
               </mesh>
             </group>
 
-            {/* 秒針（赤） */}
+            {/* 秒針 */}
             <group
-              position={[0, 0, 0.05]}
+              position={[0, 0.15, 0.05]}
               ref={(r) => {
                 if (r) secondRefs.current[i] = r;
               }}
             >
-              <mesh position={[0, 0.30, 0]}>
-                <boxGeometry args={[0.008, 0.6, 0.008]} />
+              <mesh position={[0, 0.27, 0]}>
+                <boxGeometry args={[0.008, 0.54, 0.008]} />
                 <meshStandardMaterial color="#d96a3a" emissive="#d96a3a" emissiveIntensity={0.5} />
               </mesh>
             </group>
+
+            {/* デジタル表示パネル（アナログの下） */}
+            <mesh position={[0, -0.62, 0.005]}>
+              <planeGeometry args={[1.32, 0.32]} />
+              <meshStandardMaterial color="#0a0a14" roughness={0.55} metalness={0.4} />
+            </mesh>
+            {/* デジタル表示の発光面 */}
+            <mesh position={[0, -0.62, 0.012]}>
+              <planeGeometry args={[1.22, 0.24]} />
+              <meshStandardMaterial
+                map={digital.tex}
+                emissiveMap={digital.tex}
+                emissive="#f5cf8a"
+                emissiveIntensity={2.2}
+                color="#000000"
+                transparent
+                toneMapped={false}
+              />
+            </mesh>
+            {/* パネルの金色フレーム */}
+            <mesh position={[0, -0.62, 0.008]}>
+              <ringGeometry args={[0.0, 0.0, 4]} />
+              <meshStandardMaterial color="#d4a574" metalness={0.9} roughness={0.2} />
+            </mesh>
           </group>
         ))}
 
-        {/* 室内光（夜に文字盤を照らす） */}
         <pointLight ref={glowRef} position={[0, 0, 0]} color="#f5cf8a" intensity={1.6} distance={6} decay={2} />
       </group>
 
-      {/* 時計室の上の天蓋（モール状） */}
-      <mesh position={[0, 6.55, 0]} castShadow>
+      <mesh position={[0, 6.65, 0]} castShadow>
         <boxGeometry args={[1.95, 0.16, 1.95]} />
         <meshStandardMaterial color="#a87a4f" metalness={0.85} roughness={0.25} />
       </mesh>
 
-      {/* 屋根（八角錐） */}
-      <mesh position={[0, 7.4, 0]} castShadow>
+      <mesh position={[0, 7.5, 0]} castShadow>
         <coneGeometry args={[1.4, 1.6, 8]} />
         <meshStandardMaterial color="#3a2a55" metalness={0.55} roughness={0.35} />
       </mesh>
 
-      {/* 屋根の縁の金モール */}
-      <mesh position={[0, 6.62, 0]} castShadow>
+      <mesh position={[0, 6.72, 0]} castShadow>
         <torusGeometry args={[1.42, 0.05, 8, 32]} />
         <meshStandardMaterial color="#d4a574" metalness={0.92} roughness={0.18} />
       </mesh>
 
-      {/* スパイア（先端） */}
-      <mesh position={[0, 8.65, 0]} castShadow>
+      <mesh position={[0, 8.75, 0]} castShadow>
         <coneGeometry args={[0.08, 0.9, 16]} />
         <meshStandardMaterial color="#d4a574" metalness={0.92} roughness={0.15} />
       </mesh>
 
-      {/* 球体のフィニアル */}
-      <mesh position={[0, 8.18, 0]} castShadow>
+      <mesh position={[0, 8.28, 0]} castShadow>
         <sphereGeometry args={[0.13, 16, 16]} />
         <meshStandardMaterial color="#d4a574" metalness={0.92} roughness={0.15} />
       </mesh>
@@ -239,7 +272,36 @@ export default function ClockTower({ position = [0, 0, 0] }: Props) {
   );
 }
 
-// ---------- 文字盤テクスチャ ----------
+function pad2(n: number): string {
+  return n.toString().padStart(2, "0");
+}
+
+function drawDigital(ctx: CanvasRenderingContext2D, text: string) {
+  const W = ctx.canvas.width;
+  const H = ctx.canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  // 背景は透明（外側は黒い土台、内側は発光のみ）
+  ctx.fillStyle = "rgba(8, 6, 12, 1)";
+  ctx.fillRect(0, 0, W, H);
+  // 細いグリッドライン（LED風）
+  ctx.strokeStyle = "rgba(245, 207, 138, 0.05)";
+  ctx.lineWidth = 1;
+  for (let y = 0; y < H; y += 6) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(W, y);
+    ctx.stroke();
+  }
+  // 文字
+  ctx.fillStyle = "#ffe4a8";
+  ctx.font = "700 78px 'Courier New', monospace";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.shadowColor = "#f5cf8a";
+  ctx.shadowBlur = 16;
+  ctx.fillText(text, W / 2, H / 2 + 4);
+  ctx.shadowBlur = 0;
+}
 
 function makeClockFace(size: number): THREE.CanvasTexture {
   const cnv = document.createElement("canvas");
@@ -249,7 +311,6 @@ function makeClockFace(size: number): THREE.CanvasTexture {
   const cy = size / 2;
   const radius = size * 0.46;
 
-  // 背景
   const g = ctx.createRadialGradient(cx, cy, radius * 0.2, cx, cy, radius);
   g.addColorStop(0, "#fff8e8");
   g.addColorStop(0.7, "#f5e6c8");
@@ -259,14 +320,12 @@ function makeClockFace(size: number): THREE.CanvasTexture {
   ctx.arc(cx, cy, radius, 0, Math.PI * 2);
   ctx.fill();
 
-  // 細い装飾円
   ctx.strokeStyle = "rgba(64,40,20,0.35)";
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.arc(cx, cy, radius * 0.93, 0, Math.PI * 2);
   ctx.stroke();
 
-  // 分の目盛り
   for (let i = 0; i < 60; i++) {
     const ang = (i / 60) * Math.PI * 2 - Math.PI / 2;
     const isHour = i % 5 === 0;
@@ -280,7 +339,6 @@ function makeClockFace(size: number): THREE.CanvasTexture {
     ctx.stroke();
   }
 
-  // ローマ数字
   const numerals = ["XII", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI"];
   ctx.fillStyle = "#1a120a";
   ctx.font = `bold ${Math.round(size * 0.085)}px 'Cinzel', serif`;
@@ -292,7 +350,6 @@ function makeClockFace(size: number): THREE.CanvasTexture {
     ctx.fillText(numerals[i], cx + Math.cos(ang) * r, cy + Math.sin(ang) * r);
   }
 
-  // 中央のロゴ
   ctx.fillStyle = "rgba(64,40,20,0.6)";
   ctx.font = `${Math.round(size * 0.04)}px 'Cinzel', serif`;
   ctx.fillText("TECH PARTNERS", cx, cy + radius * 0.32);

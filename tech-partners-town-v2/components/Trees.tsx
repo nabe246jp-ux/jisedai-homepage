@@ -7,35 +7,71 @@ import { useStore } from "@/lib/store";
 import { getInterpolatedSeason } from "@/lib/seasons";
 
 /**
- * 街路樹。葉の色は季節で変化、風で揺れる。
+ * 巨木群。参考画像のように 街全体を 緑が 覆う 雰囲気を 出すため、
+ * 建物より 高い 大樹を 大量に 配置する。
  */
 export default function Trees() {
   const trees = useMemo(() => {
-    const arr: { pos: [number, number, number]; scale: number; phase: number }[] = [];
-    // プラザの少し外側に16本
-    const count = 16;
-    const r = 13;
-    for (let i = 0; i < count; i++) {
-      const a = (i / count) * Math.PI * 2 + 0.13;
+    const arr: { pos: [number, number, number]; scale: number; phase: number; tone: string }[] = [];
+    const tones = ["#5a8a5a", "#4a7a4a", "#6a9a5a", "#7aaa6a", "#3a6a3a", "#5a8a4a"];
+
+    // 街路樹（プラザ内側）
+    for (let i = 0; i < 16; i++) {
+      const a = (i / 16) * Math.PI * 2 + 0.13;
       arr.push({
-        pos: [Math.cos(a) * r, 0, Math.sin(a) * r],
-        scale: 0.8 + Math.random() * 0.5,
+        pos: [Math.cos(a) * 13, 0, Math.sin(a) * 13],
+        scale: 1.4 + Math.random() * 0.6,
         phase: Math.random() * Math.PI * 2,
+        tone: tones[Math.floor(Math.random() * tones.length)],
       });
     }
-    // 建物の脇にも少し
-    const extras: [number, number, number][] = [
+
+    // 中間ゾーンの 巨木（建物と建物の間に そびえる）
+    for (let i = 0; i < 22; i++) {
+      const a = (i / 22) * Math.PI * 2;
+      const onRoad = Math.abs(Math.cos(a)) > 0.96 || Math.abs(Math.sin(a)) > 0.96;
+      if (onRoad) continue;
+      const r = 19 + (Math.random() - 0.5) * 3;
+      arr.push({
+        pos: [Math.cos(a) * r, 0, Math.sin(a) * r],
+        scale: 2.4 + Math.random() * 1.4,
+        phase: Math.random() * Math.PI * 2,
+        tone: tones[Math.floor(Math.random() * tones.length)],
+      });
+    }
+
+    // 外周の 巨木（背景の壁のように）
+    for (let i = 0; i < 28; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const r = 28 + Math.random() * 10;
+      arr.push({
+        pos: [Math.cos(a) * r, 0, Math.sin(a) * r],
+        scale: 3.0 + Math.random() * 2.0,
+        phase: Math.random() * Math.PI * 2,
+        tone: tones[Math.floor(Math.random() * tones.length)],
+      });
+    }
+
+    // 主要建物の脇
+    const sides: [number, number, number][] = [
       [-9, 0, -3], [-9, 0, 7], [9, 0, -3], [9, 0, 7],
       [-4.5, 0, -7.5], [4.5, 0, -7.5], [-4.5, 0, 7.5], [4.5, 0, 7.5],
     ];
-    extras.forEach((p) => arr.push({ pos: p, scale: 0.9 + Math.random() * 0.3, phase: Math.random() * Math.PI * 2 }));
+    sides.forEach((p) =>
+      arr.push({
+        pos: p,
+        scale: 1.5 + Math.random() * 0.5,
+        phase: Math.random() * Math.PI * 2,
+        tone: tones[Math.floor(Math.random() * tones.length)],
+      })
+    );
     return arr;
   }, []);
 
   return (
     <group>
       {trees.map((t, i) => (
-        <Tree key={i} position={t.pos} scale={t.scale} phase={t.phase} />
+        <Tree key={i} position={t.pos} scale={t.scale} phase={t.phase} tone={t.tone} />
       ))}
     </group>
   );
@@ -45,67 +81,69 @@ function Tree({
   position,
   scale,
   phase,
+  tone,
 }: {
   position: [number, number, number];
   scale: number;
   phase: number;
+  tone: string;
 }) {
-  const foliageRef = useRef<THREE.Mesh>(null!);
+  const foliageRef = useRef<THREE.Group>(null!);
   const matRef = useRef<THREE.MeshStandardMaterial>(null!);
-  const accentMatRef = useRef<THREE.MeshStandardMaterial>(null!);
   const virtualDate = useStore((s) => s.virtualDate);
 
   useFrame((state) => {
     const now = virtualDate ?? new Date();
     const season = getInterpolatedSeason(now);
     const t = state.clock.getElapsedTime();
-
     if (foliageRef.current) {
-      foliageRef.current.rotation.z = Math.sin(t * 0.8 + phase) * 0.04;
-      foliageRef.current.position.y = 1.3 + Math.sin(t * 0.6 + phase) * 0.02;
+      foliageRef.current.rotation.z = Math.sin(t * 0.6 + phase) * 0.03;
+      foliageRef.current.position.y = 2.0 + Math.sin(t * 0.5 + phase) * 0.04;
     }
     if (matRef.current) {
       matRef.current.color.lerp(new THREE.Color(season.treeAccent), 0.02);
-    }
-    if (accentMatRef.current) {
-      accentMatRef.current.color.lerp(new THREE.Color(season.treeAccent), 0.02);
-      accentMatRef.current.emissive.lerp(new THREE.Color(season.treeAccent), 0.02);
     }
   });
 
   return (
     <group position={position} scale={scale}>
-      {/* 幹 */}
-      <mesh position={[0, 0.6, 0]} castShadow>
-        <cylinderGeometry args={[0.08, 0.12, 1.2, 10]} />
-        <meshStandardMaterial color="#3a2a1a" roughness={0.85} metalness={0.05} />
+      {/* 太い幹 */}
+      <mesh position={[0, 1.0, 0]} castShadow>
+        <cylinderGeometry args={[0.18, 0.32, 2.0, 12]} />
+        <meshStandardMaterial color="#3a2a1a" roughness={0.9} metalness={0.05} />
       </mesh>
-      {/* 葉のかたまり（多重球で雲っぽく） */}
-      <mesh ref={foliageRef} position={[0, 1.3, 0]} castShadow>
-        <sphereGeometry args={[0.55, 16, 16]} />
-        <meshStandardMaterial ref={matRef} color="#5a8a6b" roughness={0.85} metalness={0.0} />
-      </mesh>
-      <mesh position={[0.3, 1.5, 0.1]} castShadow>
-        <sphereGeometry args={[0.4, 12, 12]} />
-        <meshStandardMaterial color="#4a7a5b" roughness={0.85} metalness={0.0} />
-      </mesh>
-      <mesh position={[-0.25, 1.4, -0.15]} castShadow>
-        <sphereGeometry args={[0.42, 12, 12]} />
-        <meshStandardMaterial color="#5a8a6b" roughness={0.85} metalness={0.0} />
-      </mesh>
-      {/* 季節アクセント（花や紅葉） */}
-      <mesh position={[0, 1.3, 0]} castShadow>
-        <sphereGeometry args={[0.62, 16, 16]} />
-        <meshStandardMaterial
-          ref={accentMatRef}
-          color="#5a8a6b"
-          emissive="#5a8a6b"
-          emissiveIntensity={0.15}
-          transparent
-          opacity={0.45}
-          roughness={0.7}
-        />
-      </mesh>
+      {/* 巨大な 葉のかたまり（多重球） */}
+      <group ref={foliageRef} position={[0, 2.0, 0]}>
+        <mesh castShadow>
+          <sphereGeometry args={[1.4, 16, 16]} />
+          <meshStandardMaterial ref={matRef} color={tone} roughness={0.9} />
+        </mesh>
+        <mesh position={[0.7, 0.5, 0.3]} castShadow>
+          <sphereGeometry args={[1.0, 12, 12]} />
+          <meshStandardMaterial color={tone} roughness={0.9} />
+        </mesh>
+        <mesh position={[-0.8, 0.4, -0.4]} castShadow>
+          <sphereGeometry args={[1.1, 12, 12]} />
+          <meshStandardMaterial color={tone} roughness={0.9} />
+        </mesh>
+        <mesh position={[0.0, 1.0, 0.0]} castShadow>
+          <sphereGeometry args={[0.95, 12, 12]} />
+          <meshStandardMaterial color={tone} roughness={0.9} />
+        </mesh>
+        <mesh position={[-0.4, 0.7, 0.7]} castShadow>
+          <sphereGeometry args={[0.85, 12, 12]} />
+          <meshStandardMaterial color={tone} roughness={0.9} />
+        </mesh>
+        <mesh position={[0.5, 1.1, -0.5]} castShadow>
+          <sphereGeometry args={[0.7, 12, 12]} />
+          <meshStandardMaterial color={tone} roughness={0.9} />
+        </mesh>
+        {/* 上に飛び出る もくもく */}
+        <mesh position={[0.2, 1.6, 0.0]} castShadow>
+          <sphereGeometry args={[0.6, 12, 12]} />
+          <meshStandardMaterial color={tone} roughness={0.9} />
+        </mesh>
+      </group>
     </group>
   );
 }

@@ -33,14 +33,16 @@ body {
 
 .custom-cursor {
   position: fixed;
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: rgba(245, 207, 138, 0.9);
-  box-shadow: 0 0 16px rgba(245, 207, 138, 0.6), 0 0 32px rgba(245, 207, 138, 0.3);
+  background: #fff8e0;
+  box-shadow:
+    0 0 0 2px rgba(20, 14, 8, 0.85),
+    0 0 14px rgba(245, 207, 138, 0.95),
+    0 0 28px rgba(245, 207, 138, 0.55);
   pointer-events: none;
   z-index: 9999;
-  mix-blend-mode: screen;
   transform: translate(-50%, -50%);
   transition: width 0.2s, height 0.2s, opacity 0.2s;
 }
@@ -49,7 +51,8 @@ body {
   position: fixed;
   width: 36px;
   height: 36px;
-  border: 1px solid rgba(245, 207, 138, 0.4);
+  border: 1.5px solid rgba(245, 207, 138, 0.7);
+  box-shadow: 0 0 0 1px rgba(20, 14, 8, 0.5);
   border-radius: 50%;
   pointer-events: none;
   z-index: 9998;
@@ -435,4 +438,59 @@ body {
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-top: 12px solid #fef3df;
+}
+
+/* デジタル時計 HUD */
+.dc-frame {
+  background: linear-gradient(180deg, rgba(20, 16, 28, 0.7) 0%, rgba(10, 8, 14, 0.78) 100%);
+  border: 1px solid rgba(245, 207, 138, 0.35);
+  border-radius: 14px;
+  padding: 2px;
+  box-shadow:
+    0 0 0 1px rgba(20, 14, 8, 0.4),
+    0 18px 40px rgba(0, 0, 0, 0.45),
+    0 0 60px rgba(245, 207, 138, 0.18) inset;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+.dc-inner {
+  background: linear-gradient(180deg, rgba(8, 6, 12, 0.88) 0%, rgba(14, 10, 18, 0.92) 100%);
+  border-radius: 12px;
+  padding: 12px 28px 14px;
+  text-align: center;
+  min-width: 280px;
+}
+.dc-eyebrow {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  color: rgba(245, 207, 138, 0.7);
+  margin-bottom: 4px;
+}
+.dc-time {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  color: #ffe4a8;
+  text-shadow:
+    0 0 8px rgba(245, 207, 138, 0.85),
+    0 0 24px rgba(245, 207, 138, 0.4);
+  line-height: 1;
+}
+.dc-digit { font-size: 38px; letter-spacing: 0.05em; }
+.dc-colon { font-size: 32px; opacity: 0.85; animation: dc-blink 1s steps(1) infinite; }
+.dc-digit-sm { font-size: 24px; opacity: 0.9; }
+.dc-colon-sm { font-size: 20px; }
+@keyframes dc-blink {
+  0%, 50% { opacity: 0.85; }
+  51%, 100% { opacity: 0.35; }
+}
+.dc-date {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: rgba(243, 231, 211, 0.7);
+  margin-top: 4px;
 }

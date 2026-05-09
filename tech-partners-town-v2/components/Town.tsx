@@ -4,15 +4,13 @@ import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import * as THREE from "three";
 import Ground from "./Ground";
-import ClockTower from "./ClockTower";
 import Buildings from "./Buildings";
 import StreetLamps from "./StreetLamps";
 import Trees from "./Trees";
 import SeasonalParticles from "./SeasonalParticles";
 import Crowd from "./Crowd";
 import Clouds from "./Clouds";
-import EuropeanProps from "./EuropeanProps";
-import BackgroundBuildings from "./BackgroundBuildings";
+import JapaneseTown from "./JapaneseTown";
 import Roads from "./Roads";
 import { useStore } from "@/lib/store";
 import { getInterpolatedSeason } from "@/lib/seasons";
@@ -85,12 +83,10 @@ export default function Town() {
 
       <Ground />
       <Roads />
-      <ClockTower position={[0, 0, 0]} />
       <Buildings />
-      <BackgroundBuildings />
+      <JapaneseTown />
       <StreetLamps />
       <Trees />
-      <EuropeanProps />
       <Crowd />
       <Clouds />
       <SeasonalParticles />
