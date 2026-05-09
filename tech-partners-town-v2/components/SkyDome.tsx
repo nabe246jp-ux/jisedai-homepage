@@ -3,57 +3,34 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
-import { useStore } from "@/lib/store";
-import { getInterpolatedSeason } from "@/lib/seasons";
-import { getTimePalette } from "@/lib/timeOfDay";
 
 /**
- * 巨大な球体の内側にグラデーションを描いた空ドーム。
- * 季節色 + 時刻色を ShaderMaterial でブレンドする。
+ * 常に明るい青空。時間帯・季節の影響は受けない。
+ * 上空は深めの青、地平線は淡い水色のグラデーション。
  */
 export default function SkyDome() {
   const ref = useRef<THREE.Mesh>(null!);
-  const virtualDate = useStore((s) => s.virtualDate);
   const { scene } = useThree();
 
   const uniforms = useMemo(
     () => ({
-      uSkyTop: { value: new THREE.Color("#1a2855") },
-      uSkyBottom: { value: new THREE.Color("#f0c898") },
-      uOverlayTop: { value: new THREE.Color("#0a0a1a") },
-      uOverlayBottom: { value: new THREE.Color("#1a1230") },
-      uOverlayStrength: { value: 0.5 },
+      uSkyTop: { value: new THREE.Color("#3a82c8") },
+      uSkyBottom: { value: new THREE.Color("#cfe6f5") },
       uTime: { value: 0 },
     }),
     []
   );
 
   useFrame((state) => {
-    const now = virtualDate ?? new Date();
-    const season = getInterpolatedSeason(now);
-    const time = getTimePalette(now);
-
-    const lerp = 0.04;
-    uniforms.uSkyTop.value.lerp(new THREE.Color(season.skyTop), lerp);
-    uniforms.uSkyBottom.value.lerp(new THREE.Color(season.skyBottom), lerp);
-    uniforms.uOverlayTop.value.lerp(new THREE.Color(time.skyOverlay), lerp);
-    uniforms.uOverlayBottom.value.lerp(new THREE.Color(time.horizonOverlay), lerp);
-    uniforms.uOverlayStrength.value +=
-      (time.overlayStrength - uniforms.uOverlayStrength.value) * lerp;
     uniforms.uTime.value = state.clock.getElapsedTime();
 
-    // 霧も連動
+    // 霧は薄く、地平線色に合わせる（遠くがふわっと馴染む程度）
     if (!scene.fog) {
-      scene.fog = new THREE.FogExp2("#1a1830", season.fog * 0.04);
+      scene.fog = new THREE.FogExp2("#cfe6f5", 0.008);
     } else {
       const fog = scene.fog as THREE.FogExp2;
-      fog.density += (season.fog * 0.04 - fog.density) * 0.02;
-      // 霧の色は地平線色とブレンド
-      const fogColor = new THREE.Color(season.skyBottom).lerp(
-        new THREE.Color(time.horizonOverlay),
-        time.overlayStrength * 0.7
-      );
-      fog.color.lerp(fogColor, 0.04);
+      fog.density += (0.008 - fog.density) * 0.05;
+      fog.color.lerp(new THREE.Color("#cfe6f5"), 0.05);
     }
   });
 
