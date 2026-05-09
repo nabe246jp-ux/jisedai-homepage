@@ -34,9 +34,6 @@ export default function JapaneseTown() {
       <SkyBridge from={[14, 4.5, -16]} to={[18, 5.0, 8]} />
       <SkyBridge from={[-15, 4.0, -14]} to={[-18, 4.5, 10]} />
 
-      {/* 緑色の 入口アーチ */}
-      <GreenArch position={[0, 0, 12.5]} />
-
       {/* 屋台 */}
       <Yatai position={[-4.5, 0, 9.2]} cloth="#c84a3a" sign="ら" />
       <Yatai position={[4.5, 0, 9.2]} cloth="#3a6a8a" sign="茶" />
@@ -44,9 +41,6 @@ export default function JapaneseTown() {
 
       {/* 大量の吊り看板（カラフルな箱看板） */}
       <BoxSigns />
-
-      {/* 紙提灯の 串（縦と環状） */}
-      <LanternStrings />
 
       {/* 垂れる蔓（多め） */}
       <HangingVines />
