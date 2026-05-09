@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>スマートサイト MVP セットアップ手順</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#0B1020; --muted:#475569; --line:#E5EAF2;
+    --brand:#3D6EFF; --brand-700:#1E3FAE; --mint:#34D399;
+    --code-bg:#0B1020; --code-fg:#E2E8F0;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);
+    font-family: -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", Meiryo, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:48px 24px 96px}
+  .hero{padding:48px 0 32px;border-bottom:1px solid var(--line);margin-bottom:40px}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;font-size:11px;color:var(--muted);background:#fff}
+  .pill .dot{width:8px;height:8px;border-radius:50%;background:var(--mint)}
+  h1{font-size:36px;line-height:1.25;margin:16px 0 12px;letter-spacing:-0.01em}
+  h1 .grad{background:linear-gradient(90deg,#1E3FAE,#3D6EFF 50%,#34D399);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{color:var(--muted);font-size:15px;line-height:1.8;margin:0}
+  h2{font-size:22px;margin:48px 0 12px;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+  h2 .num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:var(--fg);color:#fff;font-size:13px;font-weight:600}
+  h3{font-size:15px;margin:24px 0 8px;color:var(--fg)}
+  p{color:var(--muted);font-size:14px;line-height:1.85;margin:8px 0}
+  .card{border:1px solid var(--line);border-radius:16px;padding:20px 22px;background:#fff;box-shadow:0 4px 18px rgba(15,23,42,0.04);margin:14px 0}
+  .note{border-left:3px solid var(--brand);background:#F4F7FF;padding:14px 16px;border-radius:8px;margin:16px 0;font-size:13px;color:#1E3FAE;line-height:1.7}
+  .warn{border-left:3px solid #f59e0b;background:#FFF7E8;padding:14px 16px;border-radius:8px;margin:16px 0;font-size:13px;color:#92400E;line-height:1.7}
+
+  /* code block */
+  .code{position:relative;background:var(--code-bg);color:var(--code-fg);border-radius:12px;padding:16px 18px;margin:12px 0;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:13px;line-height:1.7;overflow-x:auto}
+  .code pre{margin:0;white-space:pre;color:inherit}
+  .copy{position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:5px 10px;font-size:11px;cursor:pointer;font-family:inherit}
+  .copy:hover{background:rgba(255,255,255,0.16)}
+  .copy.done{background:var(--mint);border-color:var(--mint);color:#0B1020}
+
+  .step{display:flex;gap:14px;align-items:flex-start;margin:14px 0}
+  .step .badge{flex:none;width:24px;height:24px;border-radius:50%;background:var(--brand);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;margin-top:2px}
+  .toc{background:#F7F9FC;border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:20px 0;font-size:13px}
+  .toc a{color:var(--fg);text-decoration:none;display:block;padding:4px 0}
+  .toc a:hover{color:var(--brand)}
+
+  .footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--line);font-size:12px;color:#94A3B8;text-align:center}
+  kbd{font-family:inherit;background:#fff;border:1px solid var(--line);border-bottom-width:2px;padding:1px 6px;border-radius:4px;font-size:12px}
+
+  /* チェックリスト */
+  .check{list-style:none;padding:0;margin:0}
+  .check li{position:relative;padding:6px 0 6px 26px;color:var(--muted);font-size:14px;line-height:1.7}
+  .check li::before{content:"";position:absolute;left:0;top:11px;width:14px;height:14px;border:2px solid var(--brand);border-radius:4px}
+
+  details{border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:12px 0;background:#fff}
+  details summary{cursor:pointer;font-weight:600;font-size:14px}
+  details[open]{box-shadow:0 4px 18px rgba(15,23,42,0.04)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <span class="pill"><span class="dot"></span>SMART SITE — Setup Guide</span>
+  <h1>スマートサイトMVPを<br/><span class="grad">あなたのパソコンで動かす</span>手順</h1>
+  <p class="lead">
+    このページの通りにコピペで進めれば、ブラウザで実際のスマートサイトMVPが動きます。専門知識は不要です。所要時間は10分ほどです。
+  </p>
+</header>
+
+<div class="toc">
+  <strong>目次</strong>
+  <a href="#prep">0. 事前準備（PowerShellを開く）</a>
+  <a href="#install-node">1. Node.jsをインストール</a>
+  <a href="#move">2. プロジェクトフォルダに移動</a>
+  <a href="#install-deps">3. 必要なライブラリをインストール</a>
+  <a href="#run">4. ローカル起動</a>
+  <a href="#cc">5. Claude Codeで編集する場合</a>
+  <a href="#trouble">困ったときは</a>
+</div>
+
+<!-- 0 -->
+<h2 id="prep"><span class="num">0</span>事前準備（PowerShellを開く）</h2>
+<div class="card">
+  <p>
+    Windowsの「スタート」メニューを押し、「<strong>PowerShell</strong>」と入力してEnterで開いてください。
+    黒い（または青い）画面が出たら準備完了です。
+  </p>
+  <div class="note">
+    PowerShellは、文字コマンドでパソコンに指示を出すための窓です。これから出てくるコマンドはすべてここに貼り付けて実行します。
+  </div>
+</div>
+
+<!-- 1 -->
+<h2 id="install-node"><span class="num">1</span>Node.jsをインストール</h2>
+<div class="card">
+  <p>
+    すでにNode.jsが入っている場合はスキップしてください。確認は次のコマンドです。
+  </p>
+  <div class="code">
+    <button class="copy" data-copy="node -v">コピー</button>
+<pre>node -v</pre>
+  </div>
+  <p>「v18」以上の数字が表示されればOKです。表示されない／古い場合は、下の手順でインストールしてください。</p>
+
+  <div class="step"><span class="badge">A</span><div>
+    <strong>公式サイトを開く</strong>
+    <p>ブラウザで <a href="https://nodejs.org/ja" target="_blank" rel="noopener">https://nodejs.org/ja</a> を開きます。</p>
+  </div></div>
+
+  <div class="step"><span class="badge">B</span><div>
+    <strong>「LTS版」をクリックしてダウンロード</strong>
+    <p>緑色のボタンの「LTS（推奨）」を押してファイルをダウンロードします。</p>
+  </div></div>
+
+  <div class="step"><span class="badge">C</span><div>
+    <strong>ダウンロードしたファイルを実行してインストール</strong>
+    <p>「次へ」を押し続けるだけでインストールは完了します。</p>
+  </div></div>
+
+  <div class="step"><span class="badge">D</span><div>
+    <strong>PowerShellを一度閉じて、もう一度開く</strong>
+    <p>その後、もう一度 <code>node -v</code> を実行し、バージョンが表示されればOKです。</p>
+  </div></div>
+</div>
+
+<!-- 2 -->
+<h2 id="move"><span class="num">2</span>プロジェクトフォルダに移動</h2>
+<div class="card">
+  <p>
+    今回作ったMVPの中身は、すでにあなたのパソコンの中にあります。下のコマンドをそのままコピーしてPowerShellに貼り付けてください。
+  </p>
+  <div class="code">
+    <button class="copy" data-copy='cd "$env:USERPROFILE\Documents\Claude\Projects\次世代ホームページ\smart-site"'>コピー</button>
+<pre>cd "$env:USERPROFILE\Documents\Claude\Projects\次世代ホームページ\smart-site"</pre>
+  </div>
+  <p>
+    実行すると、画面の左側のパス（青い文字）が <code>...\smart-site</code> に変わります。これでフォルダの中に入った状態になります。
+  </p>
+  <div class="warn">
+    左側に <code>smart-site</code> という文字が見えなければ、フォルダの場所が違います。エクスプローラーで「ドキュメント → Claude → Projects → 次世代ホームページ → smart-site」を確認してください。
+  </div>
+</div>
+
+<!-- 3 -->
+<h2 id="install-deps"><span class="num">3</span>必要なライブラリをインストール</h2>
+<div class="card">
+  <p>
+    プロジェクトを動かすために必要な部品（ライブラリ）をまとめてダウンロードします。1〜3分かかります。
+  </p>
+  <div class="code">
+    <button class="copy" data-copy="npm install">コピー</button>
+<pre>npm install</pre>
+  </div>
+  <p>
+    たくさんの文字が流れますが、止まるまで待ってください。最後に <code>added 〇〇 packages</code> のような表示が出れば完了です。
+  </p>
+  <div class="note">
+    途中で警告（黄色や黒い文字）が出ても、エラー（赤い文字）でなければ問題ありません。
+  </div>
+</div>
+
+<!-- 4 -->
+<h2 id="run"><span class="num">4</span>ローカル起動</h2>
+<div class="card">
+  <p>いよいよ起動です。次のコマンドを実行してください。</p>
+  <div class="code">
+    <button class="copy" data-copy="npm run dev">コピー</button>
+<pre>npm run dev</pre>
+  </div>
+  <p>
+    数秒後に <code>Local: http://localhost:3000</code> という表示が出ます。
+    その後、ブラウザを開いて下のアドレスにアクセスしてください。
+  </p>
+  <div class="code">
+    <button class="copy" data-copy="http://localhost:3000">コピー</button>
+<pre>http://localhost:3000</pre>
+  </div>
+  <p>スマートサイトMVPの画面が表示されれば成功です。</p>
+
+  <h3>動作チェックリスト</h3>
+  <ul class="check">
+    <li>トップに「作って終わりのHPから、賢く動くスマートサイトへ。」と表示される</li>
+    <li>「新規のお客様／既存のお客様／求職中の方」を切り替えるとカードが入れ替わる</li>
+    <li>Smart Dataの数字がアニメーションでカウントアップする</li>
+    <li>Smart Topicsのカードが横に流れる</li>
+    <li>マップのアイコンを押すと、右側の詳細パネルが切り替わる</li>
+    <li>診断の3問に答えると、結果ページが出る</li>
+    <li>AIナビのチップを押すと、チャットが進む</li>
+    <li>Before/Afterのトグルで内容が切り替わる</li>
+  </ul>
+
+  <h3>止め方</h3>
+  <p>PowerShell上で <kbd>Ctrl</kbd> + <kbd>C</kbd> を押せばサーバーが止まります。</p>
+</div>
+
+<!-- 5 -->
+<h2 id="cc"><span class="num">5</span>Claude Codeで編集する場合</h2>
+<div class="card">
+  <p>
+    Claude Codeを使ってこのMVPを改造したい場合は、別のPowerShellをもう一つ開き、同じフォルダで以下を実行してください。
+  </p>
+  <div class="code">
+    <button class="copy" data-copy='cd "$env:USERPROFILE\Documents\Claude\Projects\次世代ホームページ\smart-site"'>コピー</button>
+<pre>cd "$env:USERPROFILE\Documents\Claude\Projects\次世代ホームページ\smart-site"</pre>
+  </div>
+  <div class="code">
+    <button class="copy" data-copy="claude">コピー</button>
+<pre>claude</pre>
+  </div>
+  <p>
+    Claude Codeが立ち上がったら、たとえば次のように指示できます。
+  </p>
+  <details>
+    <summary>指示の例（クリックで開く）</summary>
+    <p style="margin-top:8px">「Heroセクションのキャッチコピーを変えて」</p>
+    <p>「Smart Dataの数字を、自社の実績値に差し替えて」</p>
+    <p>「Smart Topicsのカードに画像エリアを追加して」</p>
+    <p>「lib/mockData.ts のデータをSupabaseから取ってくるように変更して」</p>
+  </details>
+</div>
+
+<!-- trouble -->
+<h2 id="trouble"><span class="num">!</span>困ったときは</h2>
+<div class="card">
+  <details open>
+    <summary>「npm: コマンドが認識されません」と出る</summary>
+    <p>Node.jsが入っていない、もしくはPowerShellを開き直していないのが原因です。手順1のDをやり直してください。</p>
+  </details>
+  <details>
+    <summary>http://localhost:3000 を開いても何も表示されない</summary>
+    <p>PowerShell側で <code>npm run dev</code> が実行中かどうか確認してください。止まっていれば、もう一度実行します。すでに別のアプリが3000番ポートを使っている場合、自動で3001番などに切り替わるので、PowerShellの表示にしたがってください。</p>
+  </details>
+  <details>
+    <summary>赤い文字でエラーが出た</summary>
+    <p>そのエラーメッセージをそのままClaudeにコピーして送ってください。原因と直し方を一緒に調べます。</p>
+  </details>
+  <details>
+    <summary>もう一度最初からやり直したい</summary>
+    <p>smart-siteフォルダの中の <code>node_modules</code> フォルダを削除してから、もう一度 <code>npm install</code> を実行してください。</p>
+  </details>
+</div>
+
+<div class="footer">
+  Smart Site MVP — Setup Guide / 作成日: 2026-05-10
+</div>
+
+</div>
+
+<script>
+  document.querySelectorAll(".copy").forEach(btn=>{
+    btn.addEventListener("click", async ()=>{
+      const text = btn.getAttribute("data-copy");
+      try{
+        await navigator.clipboard.writeText(text);
+        btn.classList.add("done");
+        const original = btn.textContent;
+        btn.textContent = "コピー済";
+        setTimeout(()=>{ btn.classList.remove("done"); btn.textContent = original; }, 1400);
+      }catch(e){
+        // フォールバック
+        const ta = document.createElement("textarea");
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand("copy"); document.body.removeChild(ta);
+        btn.textContent="コピー済";
+        setTimeout(()=>{ btn.textContent="コピー"; }, 1400);
+      }
+    });
+  });
+</script>
+</body>
+</html>
