@@ -53,30 +53,15 @@ export default function SkyDome() {
           varying vec3 vWorldPos;
           uniform vec3 uSkyTop;
           uniform vec3 uSkyBottom;
-          uniform vec3 uOverlayTop;
-          uniform vec3 uOverlayBottom;
-          uniform float uOverlayStrength;
           uniform float uTime;
 
           void main() {
             float h = clamp((vWorldPos.y / 80.0) * 0.7 + 0.4, 0.0, 1.0);
-            vec3 base = mix(uSkyBottom, uSkyTop, smoothstep(0.0, 1.0, h));
-            vec3 overlay = mix(uOverlayBottom, uOverlayTop, smoothstep(0.0, 1.0, h));
-            vec3 col = mix(base, overlay, uOverlayStrength);
+            vec3 col = mix(uSkyBottom, uSkyTop, smoothstep(0.0, 1.0, h));
 
-            // 微細な縦方向のグラデーションでバンディング軽減
+            // 微細なノイズでバンディング軽減
             float dither = (fract(sin(dot(vWorldPos.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) / 255.0;
             col += dither;
-
-            // 星のきらめき（夜だけうっすら出す）
-            if (uOverlayStrength > 0.6 && h > 0.4) {
-              vec2 g = floor(vWorldPos.xz * 1.5);
-              float r = fract(sin(dot(g, vec2(91.345, 47.853))) * 43758.5453);
-              if (r > 0.997) {
-                float twinkle = 0.5 + 0.5 * sin(uTime * 2.0 + r * 6.28);
-                col += vec3(0.9, 0.95, 1.0) * twinkle * (uOverlayStrength - 0.6) * 1.5;
-              }
-            }
 
             gl_FragColor = vec4(col, 1.0);
           }
