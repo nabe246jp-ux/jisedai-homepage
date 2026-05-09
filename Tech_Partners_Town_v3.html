@@ -316,6 +316,47 @@
     <img class="bg" src="v3-sample.jpg" alt="Tech Partners Town" />
     <div class="vignette"></div>
 
+    <!-- ============ 動きのレイヤ ============ -->
+    <div class="fx-layer">
+      <!-- 噴水の水 -->
+      <div class="fountain-fx">
+        <svg viewBox="-50 -60 100 100" xmlns="http://www.w3.org/2000/svg">
+          <!-- 水しぶきの輪 -->
+          <ellipse class="water-ring" cx="0" cy="20" rx="22" ry="6" fill="none" stroke="#a3f0ed" stroke-width="2"/>
+          <ellipse class="water-ring b" cx="0" cy="20" rx="22" ry="6" fill="none" stroke="#a3f0ed" stroke-width="2"/>
+          <!-- 噴き上がる水柱 -->
+          <g class="water-spray">
+            <path d="M-3 0 Q0 -34 3 0 Z" fill="#a3f0ed" opacity="0.75"/>
+            <path d="M-1 -8 Q0 -28 1 -8 Z" fill="#d8f8f5" opacity="0.9"/>
+          </g>
+          <!-- 水滴 -->
+          <circle class="water-drop" cx="-8" cy="-10" r="2" fill="#a3f0ed"/>
+          <circle class="water-drop b" cx="8" cy="-12" r="2" fill="#a3f0ed"/>
+          <circle class="water-drop c" cx="-4" cy="-15" r="1.5" fill="#d8f8f5"/>
+          <circle class="water-drop d" cx="6" cy="-9" r="1.5" fill="#d8f8f5"/>
+        </svg>
+      </div>
+
+      <!-- 街灯のゆらぎ（画像内の街灯にだいたい合わせて配置） -->
+      <div class="lamp-fx s"   style="left:6%;  top:53%;"></div>
+      <div class="lamp-fx b"   style="left:14%; top:64%;"></div>
+      <div class="lamp-fx"     style="left:30%; top:42%;"></div>
+      <div class="lamp-fx c"   style="left:34%; top:67%;"></div>
+      <div class="lamp-fx s b" style="left:40%; top:30%;"></div>
+      <div class="lamp-fx"     style="left:45%; top:78%;"></div>
+      <div class="lamp-fx l c" style="left:53%; top:60%;"></div>
+      <div class="lamp-fx"     style="left:54%; top:30%;"></div>
+      <div class="lamp-fx b"   style="left:61%; top:62%;"></div>
+      <div class="lamp-fx s d" style="left:67%; top:48%;"></div>
+      <div class="lamp-fx c"   style="left:75%; top:30%;"></div>
+      <div class="lamp-fx"     style="left:78%; top:62%;"></div>
+      <div class="lamp-fx s b" style="left:90%; top:35%;"></div>
+      <div class="lamp-fx d"   style="left:94%; top:62%;"></div>
+    </div>
+
+    <!-- 桜の花びら -->
+    <div class="petals" id="petals"></div>
+
     <!-- ============ 建物クリック領域 ============ -->
     <!-- 座標は画像基準で % 指定 -->
     <!-- 左上の大きなコテージ → RESEARCH -->
@@ -543,6 +584,36 @@
 
   updateClock();
   updateKpi();
+
+  // ===== 桜の花びら生成 =====
+  (function petalSpawner(){
+    const wrap = document.getElementById('petals');
+    if(!wrap) return;
+    function spawn(){
+      const p = document.createElement('div');
+      p.className = 'petal';
+      const startX = Math.random()*100;
+      const drift = (Math.random()*200 - 100); // 左右の流れ
+      const duration = 8 + Math.random()*8;     // 8〜16秒
+      const delay = Math.random()*4;
+      const size = 7 + Math.random()*7;         // 7〜14px
+      const rot = Math.random()*360;
+      p.style.left = startX + '%';
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.setProperty('--dx', drift + 'px');
+      p.style.animationDuration = duration + 's';
+      p.style.animationDelay = (-delay) + 's';
+      p.style.transform = `rotate(${rot}deg)`;
+      wrap.appendChild(p);
+      // 終わったら消す
+      setTimeout(()=>p.remove(), (duration+1)*1000);
+    }
+    // 初期に何枚か散らす
+    for(let i=0;i<14;i++) spawn();
+    // 一定間隔で追加
+    setInterval(spawn, 700);
+  })();
 </script>
 
 </body>
