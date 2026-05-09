@@ -36,9 +36,6 @@ export default function JapaneseTown() {
 
       {/* 大量の吊り看板（カラフルな箱看板） */}
       <BoxSigns />
-
-      {/* 垂れる蔓（多め） */}
-      <HangingVines />
     </group>
   );
 }
