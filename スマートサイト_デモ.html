@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>スマートサイト — 作って終わりのHPから、賢く動くスマートサイトへ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink:   { 900:'#0B1020', 700:'#1F2937', 500:'#475569', 300:'#94A3B8' },
+          brand: { 50:'#EEF4FF', 100:'#DCE7FF', 300:'#9DB7FF', 500:'#3D6EFF', 600:'#2B57E0', 700:'#1E3FAE' },
+          mint:  { 400:'#6EE7B7', 500:'#34D399' },
+          surface:{ 0:'#FFFFFF', 50:'#F7F9FC', 100:'#EEF2F7' }
+        },
+        boxShadow: {
+          soft: "0 8px 30px rgba(15, 23, 42, 0.06)",
+          glow: "0 0 0 1px rgba(61,110,255,0.15), 0 12px 40px rgba(61,110,255,0.18)"
+        },
+        backgroundImage: {
+          "grid-fade":
+            "radial-gradient(circle at 30% 20%, rgba(61,110,255,0.10), transparent 40%), radial-gradient(circle at 80% 60%, rgba(110,231,183,0.10), transparent 45%)"
+        }
+      }
+    }
+  }
+</script>
+<style>
+  html,body{
+    font-family:-apple-system,"Segoe UI","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
+    background:#fff;color:#0B1020;-webkit-font-smoothing:antialiased
+  }
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:rgba(15,23,42,.15);border-radius:8px}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(15,23,42,.3)}
+  .bg-dot{background-image:radial-gradient(rgba(15,23,42,.06) 1px,transparent 1px);background-size:24px 24px}
+  .text-gradient{
+    background:linear-gradient(90deg,#1E3FAE 0%,#3D6EFF 50%,#34D399 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent
+  }
+  .fade-mask-x{
+    -webkit-mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent);
+    mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent)
+  }
+  /* 流れるカード */
+  @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  .ticker-track{display:flex;gap:1rem;animation:ticker 30s linear infinite;width:max-content}
+  .ticker-pause{animation-play-state:paused}
+
+  /* 浮遊 */
+  @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  @keyframes floaty2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+  .floaty{animation:floaty 4s ease-in-out infinite}
+  .floaty2{animation:floaty2 4s ease-in-out infinite 1s}
+
+  /* パルスドット */
+  @keyframes pulseDot {
+    0%{box-shadow:0 0 0 0 rgba(52,211,153,0.6)}
+    70%{box-shadow:0 0 0 10px rgba(52,211,153,0)}
+    100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}
+  }
+  .pulse-dot{animation:pulseDot 2s infinite}
+
+  /* フェードイン */
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  /* 切り替え時アニメ */
+  @keyframes fadeSlideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+  .anim-in{animation:fadeSlideIn .35s ease both}
+
+  .icon{display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor}
+</style>
+</head>
+<body class="bg-white text-ink-900">
+
+<!-- ===== Header ===== -->
+<header class="sticky top-0 z-50 border-b border-surface-100 bg-white/80 backdrop-blur">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
+    <a href="#" class="flex items-center gap-2">
+      <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-mint-500 text-white shadow-soft">
+        <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current"><path d="M12 1.5l2.4 6.1 6.1 2.4-6.1 2.4-2.4 6.1-2.4-6.1-6.1-2.4 6.1-2.4z"/></svg>
+      </div>
+      <span class="text-sm font-semibold tracking-wide text-ink-900">Smart Site</span>
+    </a>
+    <nav class="hidden gap-7 md:flex">
+      <a href="#smart-data" class="text-sm text-ink-500 transition hover:text-ink-900">Smart Data</a>
+      <a href="#smart-topics" class="text-sm text-ink-500 transition hover:text-ink-900">Topics</a>
+      <a href="#smart-experience" class="text-sm text-ink-500 transition hover:text-ink-900">Experience</a>
+      <a href="#diagnosis" class="text-sm text-ink-500 transition hover:text-ink-900">診断</a>
+      <a href="#ai-navi" class="text-sm text-ink-500 transition hover:text-ink-900">AIナビ</a>
+    </nav>
+    <a href="#contact" class="rounded-full bg-ink-900 px-4 py-2 text-xs font-medium text-white shadow-soft transition hover:bg-brand-700">相談する</a>
+  </div>
+</header>
+
+<!-- ===== Hero ===== -->
+<section class="relative overflow-hidden bg-white">
+  <div class="absolute inset-0 bg-grid-fade opacity-60"></div>
+  <div class="absolute inset-0 bg-dot opacity-40"></div>
+  <div class="relative mx-auto grid max-w-6xl items-center gap-12 px-6 py-20 md:grid-cols-2 md:py-28">
+    <div class="reveal">
+      <div class="inline-flex items-center gap-2 rounded-full border border-surface-100 bg-white px-3 py-1 text-xs text-ink-500 shadow-soft">
+        <span class="h-2 w-2 rounded-full bg-mint-500 pulse-dot"></span>
+        次世代型ホームページ「スマートサイト」
+      </div>
+      <h1 class="mt-5 text-4xl font-bold leading-tight tracking-tight text-ink-900 md:text-5xl">
+        作って終わりのHPから、<br/>
+        <span class="text-gradient">賢く動く</span>スマートサイトへ。
+      </h1>
+      <p class="mt-6 max-w-lg text-base leading-relaxed text-ink-500">
+        会社の“今”を自動で伝える、次世代型ホームページ。訪問者ごとに最適な情報を出し分け、社内データと連携し、問い合わせまで自然につなぎます。
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="#contact" class="group inline-flex items-center gap-2 rounded-full bg-ink-900 px-6 py-3 text-sm font-medium text-white shadow-soft transition hover:bg-brand-700">
+          相談する
+          <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current transition group-hover:translate-x-1"><path d="M13 5l7 7-7 7v-4H4v-6h9V5z"/></svg>
+        </a>
+        <a href="#diagnosis" class="inline-flex items-center gap-2 rounded-full border border-surface-100 bg-white px-6 py-3 text-sm font-medium text-ink-700 shadow-soft transition hover:border-brand-300 hover:text-brand-600">
+          30秒診断をはじめる
+        </a>
+      </div>
+      <div class="mt-10 flex items-center gap-6 text-xs text-ink-300">
+        <div>● リアルタイム連携</div>
+        <div>● AIナビ標準搭載</div>
+        <div>● 多言語対応</div>
+      </div>
+    </div>
+
+    <div class="relative reveal">
+      <div class="relative rounded-3xl border border-surface-100 bg-white p-3 shadow-glow">
+        <div class="flex items-center gap-1.5 px-2 py-1.5">
+          <span class="h-2.5 w-2.5 rounded-full bg-rose-300"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-amber-300"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-emerald-300"></span>
+          <span class="ml-3 text-[10px] text-ink-300">smartsite.app/dashboard</span>
+        </div>
+        <div class="space-y-3 rounded-2xl bg-surface-50 p-4">
+          <div class="flex items-center justify-between">
+            <div class="text-xs font-medium text-ink-700">会社の“今”</div>
+            <div class="rounded-full bg-mint-400/30 px-2 py-0.5 text-[10px] text-emerald-700">Live</div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-xl border border-surface-100 bg-white p-3">
+              <div class="text-[10px] text-ink-300">支援企業</div>
+              <div class="mt-1 bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-lg font-bold text-transparent">1,284社</div>
+            </div>
+            <div class="rounded-xl border border-surface-100 bg-white p-3">
+              <div class="text-[10px] text-ink-300">満足度</div>
+              <div class="mt-1 bg-gradient-to-r from-emerald-400 to-emerald-600 bg-clip-text text-lg font-bold text-transparent">98.0%</div>
+            </div>
+            <div class="rounded-xl border border-surface-100 bg-white p-3">
+              <div class="text-[10px] text-ink-300">稼働率</div>
+              <div class="mt-1 bg-gradient-to-r from-sky-400 to-brand-500 bg-clip-text text-lg font-bold text-transparent">99.98%</div>
+            </div>
+            <div class="rounded-xl border border-surface-100 bg-white p-3">
+              <div class="text-[10px] text-ink-300">メンバー</div>
+              <div class="mt-1 bg-gradient-to-r from-violet-400 to-brand-500 bg-clip-text text-lg font-bold text-transparent">312名</div>
+            </div>
+          </div>
+          <div class="rounded-xl border border-surface-100 bg-white p-3">
+            <div class="text-[10px] text-ink-300">最新トピック</div>
+            <div class="mt-1 text-xs text-ink-700">第3回DXアワードを受賞しました</div>
+            <div class="mt-1 h-1 w-full overflow-hidden rounded-full bg-surface-100">
+              <div class="h-full bg-gradient-to-r from-brand-500 to-mint-500" style="width:72%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="floaty absolute -right-4 -top-4 hidden rounded-2xl border border-surface-100 bg-white px-4 py-3 shadow-soft md:block">
+        <div class="text-[10px] text-ink-300">AIナビ</div>
+        <div class="text-xs text-ink-700">何かお手伝いしますか？</div>
+      </div>
+      <div class="floaty2 absolute -bottom-4 -left-4 hidden rounded-2xl border border-surface-100 bg-white px-4 py-3 shadow-soft md:block">
+        <div class="text-[10px] text-ink-300">診断</div>
+        <div class="text-xs text-ink-700">30秒で最適な提案</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Visitor Type ===== -->
+<section id="visitor" class="bg-surface-50 py-20">
+  <div class="mx-auto max-w-6xl px-6">
+    <div class="mb-10 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end reveal">
+      <div>
+        <div class="text-xs font-semibold tracking-widest text-brand-600">VISITOR</div>
+        <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink-900">あなたに合わせて、表示が変わります。</h2>
+        <p class="mt-2 max-w-xl text-sm text-ink-500">ご来訪の目的を選んでください。下のおすすめが切り替わります。</p>
+      </div>
+      <div id="visitor-tabs" class="flex flex-wrap gap-2">
+        <button data-v="new"      class="visitor-tab rounded-full border px-4 py-2 text-sm transition">新規のお客様</button>
+        <button data-v="existing" class="visitor-tab rounded-full border px-4 py-2 text-sm transition">既存のお客様</button>
+        <button data-v="recruit"  class="visitor-tab rounded-full border px-4 py-2 text-sm transition">求職中の方</button>
+      </div>
+    </div>
+
+    <div id="visitor-cards" class="grid gap-4 md:grid-cols-3"></div>
+  </div>
+</section>
+
+<!-- ===== Smart Data ===== -->
+<section id="smart-data" class="relative bg-white py-24">
+  <div class="mx-auto max-w-6xl px-6">
+    <div class="mb-12 text-center reveal">
+      <div class="text-xs font-semibold tracking-widest text-brand-600">SMART DATA</div>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink-900">会社の“今”を、数字で語る。</h2>
+      <p class="mx-auto mt-3 max-w-2xl text-sm text-ink-500">
+        社内データやSaaSと連携し、サイト訪問者にリアルな数字を自動で伝えます。（本デモは仮の値です）
+      </p>
+    </div>
+    <div id="metrics" class="grid grid-cols-2 gap-4 md:grid-cols-4"></div>
+  </div>
+</section>
+
+<!-- ===== Smart Topics ===== -->
+<section id="smart-topics" class="bg-surface-50 py-24">
+  <div class="mx-auto max-w-6xl px-6">
+    <div class="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end reveal">
+      <div>
+        <div class="text-xs font-semibold tracking-widest text-brand-600">SMART TOPICS</div>
+        <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink-900">最新の動きが、勝手に集まる。</h2>
+        <p class="mt-2 max-w-xl text-sm text-ink-500">プレス、事例、お知らせ、ブログ。社内のチャネルから自動で集約します。</p>
+      </div>
+      <div id="topic-filter" class="flex flex-wrap gap-2"></div>
+    </div>
+  </div>
+  <div class="fade-mask-x relative overflow-hidden">
+    <div id="ticker" class="ticker-track px-6"></div>
+  </div>
+</section>
+
+<!-- ===== Smart Experience ===== -->
+<section id="smart-experience" class="bg-white py-24">
+  <div class="mx-auto max-w-6xl px-6">
+    <div class="mb-10 text-center reveal">
+      <div class="text-xs font-semibold tracking-widest text-brand-600">SMART EXPERIENCE</div>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink-900">会社のすべてを、地図のように歩く。</h2>
+      <p class="mx-auto mt-3 max-w-2xl text-sm text-ink-500">拠点・部署・サービスをマップ上で可視化。アイコンを選ぶと詳細が表示されます。</p>
+    </div>
+    <div class="grid gap-6 md:grid-cols-3">
+      <div class="relative overflow-hidden rounded-3xl border border-surface-100 bg-gradient-to-br from-surface-50 to-white p-4 shadow-soft md:col-span-2">
+        <div id="map" class="bg-dot relative h-80 w-full rounded-2xl border border-surface-100 bg-white md:h-[420px]">
+          <div class="pointer-events-none absolute inset-0 bg-grid-fade opacity-70"></div>
+          <svg id="map-lines" class="pointer-events-none absolute inset-0 h-full w-full"></svg>
+          <div class="absolute right-4 top-4 floaty rounded-full border border-surface-100 bg-white px-2 py-1 text-[10px] text-ink-300 shadow-soft">Map View · Live</div>
+        </div>
+      </div>
+      <div id="map-detail" class="rounded-3xl border border-surface-100 bg-white p-6 shadow-soft"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Diagnosis ===== -->
+<section id="diagnosis" class="bg-surface-50 py-24">
+  <div class="mx-auto max-w-3xl px-6">
+    <div class="mb-10 text-center reveal">
+      <div class="text-xs font-semibold tracking-widest text-brand-600">DIAGNOSIS</div>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink-900">30秒で、あなたに最適な答えを。</h2>
+      <p class="mx-auto mt-3 max-w-xl text-sm text-ink-500">3つの質問にお答えください。御社にフィットする方向性を診断します。</p>
+    </div>
+    <div id="quiz" class="rounded-3xl border border-surface-100 bg-white p-8 shadow-soft md:p-10"></div>
+  </div>
+</section>
+
+<!-- ===== AI Navi ===== -->
+<section id="ai-navi" class="bg-white py-24">
+  <div class="mx-auto max-w-5xl px-6">
+    <div class="mb-10 text-center reveal">
+      <div class="text-xs font-semibold tracking-widest text-brand-600">AI NAVI</div>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink-900">欲しい情報まで、最短ルートで案内。</h2>
+      <p class="mx-auto mt-3 max-w-2xl text-sm text-ink-500">サイト上のAIナビが、あなたの目的に合わせて必要な情報をご案内します。</p>
+    </div>
+    <div class="overflow-hidden rounded-3xl border border-surface-100 bg-gradient-to-br from-surface-50 to-white shadow-soft">
+      <div class="flex items-center justify-between border-b border-surface-100 px-5 py-3">
+        <div class="flex items-center gap-2">
+          <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-mint-500 text-white">
+            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 fill-current"><path d="M12 1.5l2.4 6.1 6.1 2.4-6.1 2.4-2.4 6.1-2.4-6.1-6.1-2.4 6.1-2.4z"/></svg>
+          </div>
+          <div>
+            <div class="text-sm font-semibold text-ink-900">Smart Navi</div>
+            <div class="text-[10px] text-ink-300">オンライン</div>
+          </div>
+        </div>
+        <div class="rounded-full bg-mint-400/30 px-2 py-0.5 text-[10px] text-emerald-700">Live</div>
+      </div>
+      <div id="chat" class="max-h-[420px] space-y-3 overflow-y-auto bg-white px-5 py-6"></div>
+      <div class="flex items-center gap-2 border-t border-surface-100 bg-white px-4 py-3">
+        <input type="text" placeholder="メッセージを入力（デモ：上の候補からどうぞ）"
+          class="flex-1 rounded-full border border-surface-100 bg-surface-50 px-4 py-2 text-sm text-ink-700 outline-none focus:border-brand-300" />
+        <button class="flex h-9 w-9 items-center justify-center rounded-full bg-ink-900 text-white shadow-soft transition hover:bg-brand-700">
+          <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Before / After ===== -->
+<section class="bg-surface-50 py-24">
+  <div class="mx-auto max-w-6xl px-6">
+    <div class="mb-10 text-center reveal">
+      <div class="text-xs font-semibold tracking-widest text-brand-600">BEFORE / AFTER</div>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink-900">“普通のHP”から、“動くサイト”へ。</h2>
+      <p class="mx-auto mt-3 max-w-2xl text-sm text-ink-500">ボタンを切り替えて違いをご覧ください。</p>
+    </div>
+    <div class="mb-8 flex justify-center">
+      <div class="inline-flex items-center gap-1 rounded-full border border-surface-100 bg-white p-1 shadow-soft">
+        <button data-ba="before" class="ba-tab rounded-full px-5 py-2 text-xs font-medium transition">Before（従来HP）</button>
+        <button data-ba="after"  class="ba-tab rounded-full px-5 py-2 text-xs font-medium transition">After（スマートサイト）</button>
+      </div>
+    </div>
+    <div id="ba-grid" class="grid gap-4 md:grid-cols-2"></div>
+  </div>
+</section>
+
+<!-- ===== Contact ===== -->
+<section id="contact" class="relative overflow-hidden bg-white py-28">
+  <div class="absolute inset-0 bg-grid-fade opacity-70"></div>
+  <div class="relative mx-auto max-w-6xl px-6">
+    <div class="mb-10 text-center reveal">
+      <div class="text-xs font-semibold tracking-widest text-brand-600">CONTACT</div>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink-900 md:text-4xl">まずは、話してみませんか。</h2>
+      <p class="mx-auto mt-3 max-w-2xl text-sm text-ink-500">ご検討段階に合わせて、3つの相談導線をご用意しました。お気軽にどうぞ。</p>
+    </div>
+    <div class="grid gap-4 md:grid-cols-3" id="contact-cards"></div>
+    <div class="mt-12 text-center">
+      <a href="#" class="inline-flex items-center gap-2 rounded-full bg-ink-900 px-8 py-4 text-sm font-medium text-white shadow-soft transition hover:bg-brand-700">
+        すべての相談導線を見る
+        <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 fill-current"><path d="M13 5l7 7-7 7v-4H4v-6h9V5z"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="border-t border-surface-100 bg-white py-10">
+  <div class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-6 md:flex-row md:items-center">
+    <div class="flex items-center gap-2">
+      <div class="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-brand-500 to-mint-500 text-white">
+        <svg viewBox="0 0 24 24" class="h-3 w-3 fill-current"><path d="M12 1.5l2.4 6.1 6.1 2.4-6.1 2.4-2.4 6.1-2.4-6.1-6.1-2.4 6.1-2.4z"/></svg>
+      </div>
+      <span class="text-sm font-semibold text-ink-900">Smart Site</span>
+      <span class="text-xs text-ink-300">— 株式会社サンプル</span>
+    </div>
+    <div class="flex flex-wrap gap-5 text-xs text-ink-500">
+      <a href="#" class="hover:text-ink-900">会社概要</a>
+      <a href="#" class="hover:text-ink-900">プライバシー</a>
+      <a href="#" class="hover:text-ink-900">利用規約</a>
+      <a href="#contact" class="hover:text-ink-900">お問い合わせ</a>
+    </div>
+    <div id="copyright" class="text-[10px] text-ink-300"></div>
+  </div>
+</footer>
+
+<!-- 浮かぶ相談ボタン -->
+<a href="#contact" class="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-500 to-mint-500 px-5 py-3 text-sm font-medium text-white shadow-glow transition hover:scale-105">
+  <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  相談する
+</a>
+
+<!-- ============================================== -->
+<!-- ============== JavaScript =================== -->
+<!-- ============================================== -->
+<script>
+/* ============== モックデータ ============== */
+const recommendations = {
+  new: [
+    { title:"3分で分かるスマートサイト", desc:"従来HPとの違いと導入メリットを動画でご紹介", badge:"イチオシ" },
+    { title:"業界別 導入事例集", desc:"あなたの業界に近い導入企業の成果をまとめました", badge:"資料DL" },
+    { title:"料金プランと比較表", desc:"他社サービスと比較した強み・弱みを正直に公開", badge:"比較" }
+  ],
+  existing: [
+    { title:"新機能リリースノート", desc:"今月追加された分析ダッシュボードのご案内", badge:"新着" },
+    { title:"活用テンプレート集", desc:"他社が成果を出した運用パターンをそのまま使えます", badge:"活用" },
+    { title:"サポート窓口・コミュニティ", desc:"担当チームと直接つながるチャネル一覧", badge:"サポート" }
+  ],
+  recruit: [
+    { title:"中途採用ポジション一覧", desc:"現在募集中の全ポジションをまとめてチェック", badge:"募集中" },
+    { title:"社員インタビュー", desc:"実際に働くメンバーが語る、入社の決め手と日常", badge:"カルチャー" },
+    { title:"選考フローと面談予約", desc:"カジュアル面談から選考まで、その場で予約可能", badge:"面談予約" }
+  ]
+};
+
+const metrics = [
+  { label:"支援企業数", value:1284,  decimals:0, suffix:"社", trend:"up",   delta:"+12%",  desc:"前年同月比で増加中" },
+  { label:"顧客満足度", value:98,    decimals:0, suffix:"%",  trend:"up",   delta:"+1.2pt",desc:"NPS平均" },
+  { label:"稼働率",     value:99.98, decimals:2, suffix:"%",  trend:"flat", delta:"安定",   desc:"24時間モニタ" },
+  { label:"メンバー数", value:312,   decimals:0, suffix:"名", trend:"up",   delta:"+24名", desc:"今期入社" }
+];
+
+const topics = [
+  { cat:"プレス",   title:"スマートサイトが第3回DXアワードを受賞しました", date:"2026.05.08", tag:"受賞" },
+  { cat:"事例",     title:"導入3ヶ月で問い合わせ2.4倍。製造業D社の事例公開", date:"2026.05.02", tag:"BtoB" },
+  { cat:"お知らせ", title:"夏季休業期間のお知らせ（8/13〜8/16）",          date:"2026.04.28", tag:"営業" },
+  { cat:"ブログ",   title:"“今”を伝えるサイトとは？──静的HPの限界と次世代設計", date:"2026.04.20", tag:"考察" },
+  { cat:"プレス",   title:"シリーズBで12億円を調達、開発組織を倍増へ",      date:"2026.04.10", tag:"資金調達" },
+  { cat:"事例",     title:"求人サイト改修でエントリー数3倍。人材会社F社",   date:"2026.04.02", tag:"採用" }
+];
+
+const experiencePoints = [
+  { id:"hq",       label:"本社オフィス",     x:28, y:45, cat:"office",   desc:"東京・大手町。経営／開発／営業の中枢拠点" },
+  { id:"showroom", label:"ショールーム",     x:55, y:30, cat:"showroom", desc:"実際の導入画面を体験できる常設スペース" },
+  { id:"support",  label:"サポートセンター", x:72, y:60, cat:"support",  desc:"365日対応のカスタマーサポート拠点" },
+  { id:"lab",      label:"R&Dラボ",         x:42, y:70, cat:"lab",      desc:"AI・データ基盤の研究開発を担う部門" }
+];
+const catColors = {
+  office:"from-brand-500 to-brand-700",
+  showroom:"from-emerald-400 to-emerald-600",
+  support:"from-amber-400 to-amber-600",
+  lab:"from-violet-400 to-violet-600"
+};
+const catIcons = {
+  office:'<svg viewBox="0 0 24 24" class="h-4 w-4 fill-current"><path d="M3 21V7l9-4 9 4v14h-7v-6h-4v6H3z"/></svg>',
+  showroom:'<svg viewBox="0 0 24 24" class="h-4 w-4 fill-current"><path d="M3 9l1.5-5h15L21 9v2H3V9zm0 4h18v8H3v-8z"/></svg>',
+  support:'<svg viewBox="0 0 24 24" class="h-4 w-4 fill-current"><path d="M12 1a9 9 0 0 0-9 9v7a3 3 0 0 0 3 3h3v-8H5v-2a7 7 0 1 1 14 0v2h-4v8h3a3 3 0 0 0 3-3v-7a9 9 0 0 0-9-9z"/></svg>',
+  lab:'<svg viewBox="0 0 24 24" class="h-4 w-4 fill-current"><path d="M9 2v6L4 20a2 2 0 0 0 1.8 2.8h12.4A2 2 0 0 0 20 20l-5-12V2H9z"/></svg>'
+};
+
+const diagnosis = [
+  { q:"現在のホームページで一番もったいないと思うことは？",
+    options:[
+      {label:"更新が止まっている",       score:{content:2,design:0,lead:1}},
+      {label:"問い合わせがほぼ来ない",   score:{content:0,design:1,lead:2}},
+      {label:"見た目が古い",             score:{content:0,design:2,lead:0}}
+    ]},
+  { q:"サイトに期待する役割は？",
+    options:[
+      {label:"情報発信のハブ",           score:{content:2,design:1,lead:0}},
+      {label:"営業の最前線",             score:{content:0,design:0,lead:2}},
+      {label:"ブランドの顔",             score:{content:0,design:2,lead:0}}
+    ]},
+  { q:"更新の体制は？",
+    options:[
+      {label:"社内で運用したい",         score:{content:2,design:0,lead:1}},
+      {label:"丸ごとお任せしたい",       score:{content:1,design:1,lead:1}},
+      {label:"とりあえず話を聞きたい",   score:{content:1,design:1,lead:1}}
+    ]}
+];
+const diagResults = {
+  content:{ title:"コンテンツ自動更新タイプ", headline:"“発信し続ける”サイトに進化させましょう",
+    body:"御社は情報発信を強化することで成果が出やすいタイプです。Smart Topicsの自動収集とお知らせ自動配信が特に相性◎"},
+  design:{  title:"ブランド体験タイプ", headline:"“見た瞬間に伝わる”サイトを作りましょう",
+    body:"御社はブランディング起点での改修が効きやすいタイプです。Smart Experienceマップやインタラクティブ演出で印象を一変できます。"},
+  lead:{    title:"問い合わせ獲得タイプ", headline:"“最前線の営業マン”に育てましょう",
+    body:"御社は問い合わせ転換率の改善余地が大きいタイプです。診断・AIナビ・複数CTAの組み合わせで反応率を底上げできます。"}
+};
+
+const aiNaviStart = { role:"ai", text:"こんにちは、サイトのご案内係です。何にご興味がありますか？", chips:["料金が知りたい","事例を見たい","資料が欲しい","採用情報"] };
+const aiNaviAnswers = {
+  "料金が知りたい":[
+    {role:"user", text:"料金が知りたい"},
+    {role:"ai",   text:"プランは3種類あります。会社規模をお選びください。", chips:["〜50名","50〜300名","300名以上"]}
+  ],
+  "事例を見たい":[
+    {role:"user", text:"事例を見たい"},
+    {role:"ai",   text:"業界をお選びください。近い事例をピックアップします。", chips:["製造業","IT・SaaS","小売","人材"]}
+  ],
+  "資料が欲しい":[
+    {role:"user", text:"資料が欲しい"},
+    {role:"ai",   text:"メールアドレスをお送りいただければ、すぐに資料をお送りします。下のフォームからどうぞ。", chips:["フォームへ"]}
+  ],
+  "採用情報":[
+    {role:"user", text:"採用情報"},
+    {role:"ai",   text:"ご興味のある職種は？", chips:["エンジニア","デザイナー","ビジネス","コーポレート"]}
+  ]
+};
+
+const beforeAfter = [
+  { title:"更新の仕組み",       before:"誰かが手で更新するまで止まったまま", after:"社内データから自動で“今”を反映" },
+  { title:"訪問者への対応",     before:"誰が来ても同じ画面",                 after:"訪問者タイプ別に最適なコンテンツを出し分け" },
+  { title:"問い合わせ導線",     before:"ページ最下部のフォームのみ",         after:"AIナビ、診断、複数CTAで反応率を底上げ" },
+  { title:"改善のスピード",     before:"依頼→見積→納品で数週間",           after:"管理画面から即時反映" }
+];
+
+const contactCards = [
+  { title:"メールで相談",         desc:"24時間以内にご返信します",        cta:"問い合わせフォームへ",
+    icon:'<svg viewBox="0 0 24 24" class="h-5 w-5 fill-current"><path d="M22 6l-10 7L2 6v12h20V6zm0-2H2l10 7L22 4z"/></svg>'},
+  { title:"オンライン面談",       desc:"30分のカジュアル面談を予約",      cta:"日程を選ぶ",
+    icon:'<svg viewBox="0 0 24 24" class="h-5 w-5 fill-current"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14v10z"/></svg>'},
+  { title:"資料ダウンロード",     desc:"サービス概要・料金表をPDFで",     cta:"資料を受け取る",
+    icon:'<svg viewBox="0 0 24 24" class="h-5 w-5 fill-current"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>'}
+];
+
+/* ============== Visitor Type ============== */
+let currentVisitor = "new";
+function renderVisitor(){
+  document.querySelectorAll(".visitor-tab").forEach(b=>{
+    const active = b.dataset.v === currentVisitor;
+    b.className = "visitor-tab rounded-full border px-4 py-2 text-sm transition " + (
+      active
+        ? "border-ink-900 bg-ink-900 text-white shadow-soft"
+        : "border-surface-100 bg-white text-ink-500 hover:border-brand-300 hover:text-brand-600"
+    );
+  });
+  const items = recommendations[currentVisitor];
+  const c = document.getElementById("visitor-cards");
+  c.innerHTML = items.map((it,i)=>`
+    <a href="#" class="anim-in group rounded-2xl border border-surface-100 bg-white p-6 shadow-soft transition hover:border-brand-300 hover:shadow-glow" style="animation-delay:${i*60}ms">
+      <div class="inline-flex items-center gap-1 rounded-full bg-brand-50 px-2 py-0.5 text-[10px] font-semibold text-brand-700">${it.badge}</div>
+      <h3 class="mt-4 text-lg font-semibold text-ink-900">${it.title}</h3>
+      <p class="mt-2 text-sm leading-relaxed text-ink-500">${it.desc}</p>
+      <div class="mt-5 inline-flex items-center gap-1 text-xs text-brand-600">詳しく見る →</div>
+    </a>
+  `).join("");
+}
+document.getElementById("visitor-tabs").addEventListener("click",(e)=>{
+  const btn = e.target.closest(".visitor-tab"); if(!btn) return;
+  currentVisitor = btn.dataset.v; renderVisitor();
+});
+
+/* ============== Smart Data: Count Up ============== */
+function renderMetrics(){
+  const c = document.getElementById("metrics");
+  c.innerHTML = metrics.map((m,i)=>{
+    const trendColor = m.trend==="up" ? "text-emerald-600" : m.trend==="down" ? "text-rose-600" : "text-ink-500";
+    const arrow = m.trend==="up" ? "▲" : m.trend==="down" ? "▼" : "—";
+    return `
+      <div class="reveal rounded-2xl border border-surface-100 bg-white p-6 shadow-soft transition hover:shadow-glow" style="transition-delay:${i*70}ms">
+        <div class="text-xs text-ink-300">${m.label}</div>
+        <div class="mt-2 flex items-baseline gap-1 text-4xl font-bold text-ink-900">
+          <span class="counter" data-value="${m.value}" data-decimals="${m.decimals}">0</span>
+          <span class="text-base font-medium text-ink-500">${m.suffix}</span>
+        </div>
+        <div class="mt-3 flex items-center gap-1.5 text-xs">
+          <span class="${trendColor}">${arrow}</span>
+          <span class="${trendColor}">${m.delta}</span>
+          <span class="text-ink-300">${m.desc}</span>
+        </div>
+      </div>`;
+  }).join("");
+}
+function animateCounter(el){
+  const target = parseFloat(el.dataset.value);
+  const decimals = parseInt(el.dataset.decimals||"0",10);
+  const dur = 1600; const start = performance.now();
+  function step(now){
+    const t = Math.min(1,(now-start)/dur);
+    const ease = 1 - Math.pow(1-t,3);
+    const v = target*ease;
+    el.textContent = decimals>0 ? v.toFixed(decimals) : Math.round(v).toLocaleString("ja-JP");
+    if(t<1) requestAnimationFrame(step);
+    else el.textContent = decimals>0 ? target.toFixed(decimals) : target.toLocaleString("ja-JP");
+  }
+  requestAnimationFrame(step);
+}
+
+/* ============== Smart Topics ============== */
+const topicCats = ["すべて","プレス","事例","お知らせ","ブログ"];
+let topicFilter = "すべて";
+function renderTopicFilter(){
+  document.getElementById("topic-filter").innerHTML = topicCats.map(c=>{
+    const active = c===topicFilter;
+    return `<button data-c="${c}" class="topic-tab rounded-full border px-3 py-1.5 text-xs transition ${
+      active ? "border-ink-900 bg-ink-900 text-white" : "border-surface-100 bg-white text-ink-500 hover:border-brand-300 hover:text-brand-600"
+    }">${c}</button>`;
+  }).join("");
+}
+function renderTicker(){
+  const list = topicFilter==="すべて" ? topics : topics.filter(t=>t.cat===topicFilter);
+  const looped = list.concat(list);
+  document.getElementById("ticker").innerHTML = looped.map(t=>`
+    <a href="#" class="group flex w-80 flex-shrink-0 flex-col rounded-2xl border border-surface-100 bg-white p-5 shadow-soft transition hover:border-brand-300 hover:shadow-glow">
+      <div class="flex items-center gap-2 text-[10px]">
+        <span class="rounded-full bg-brand-50 px-2 py-0.5 font-semibold text-brand-700">${t.cat}</span>
+        <span class="text-ink-300">${t.date}</span>
+      </div>
+      <h3 class="mt-3 text-base font-semibold leading-snug text-ink-900 group-hover:text-brand-600">${t.title}</h3>
+      <div class="mt-auto pt-4 text-[10px] text-ink-300">#${t.tag}</div>
+    </a>
+  `).join("");
+}
+document.getElementById("topic-filter").addEventListener("click",(e)=>{
+  const b = e.target.closest(".topic-tab"); if(!b) return;
+  topicFilter = b.dataset.c; renderTopicFilter(); renderTicker();
+});
+document.getElementById("ticker").addEventListener("mouseenter",()=>document.getElementById("ticker").classList.add("ticker-pause"));
+document.getElementById("ticker").addEventListener("mouseleave",()=>document.getElementById("ticker").classList.remove("ticker-pause"));
+
+/* ============== Smart Experience Map ============== */
+let currentPoint = experiencePoints[0].id;
+function renderMap(){
+  const map = document.getElementById("map");
+  // 既存ポイントを削除（線とラベル装飾は残す）
+  map.querySelectorAll(".exp-point").forEach(p=>p.remove());
+  experiencePoints.forEach(p=>{
+    const active = p.id===currentPoint;
+    const wrap = document.createElement("button");
+    wrap.className = "exp-point absolute -translate-x-1/2 -translate-y-1/2";
+    wrap.style.left = p.x + "%";
+    wrap.style.top = p.y + "%";
+    wrap.dataset.id = p.id;
+    wrap.innerHTML = `
+      ${active ? '<span class="absolute -inset-3 rounded-full border border-brand-500"></span>' : ''}
+      <span class="relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br ${catColors[p.cat]} text-white shadow-glow transition ${active?'scale-110':'opacity-90 hover:scale-105'}">${catIcons[p.cat]}</span>
+      <span class="absolute left-1/2 mt-2 -translate-x-1/2 whitespace-nowrap text-[10px] text-ink-500">${p.label}</span>
+    `;
+    wrap.addEventListener("click",()=>{ currentPoint=p.id; renderMap(); renderMapDetail(); });
+    map.appendChild(wrap);
+  });
+  // 接続線
+  const sel = experiencePoints.find(p=>p.id===currentPoint);
+  const svg = document.getElementById("map-lines");
+  svg.innerHTML = experiencePoints
+    .filter(p=>p.id!==currentPoint)
+    .map(p=>`<line x1="${sel.x}%" y1="${sel.y}%" x2="${p.x}%" y2="${p.y}%" stroke="rgba(61,110,255,0.18)" stroke-dasharray="4 4" stroke-width="1" />`)
+    .join("");
+}
+function renderMapDetail(){
+  const sel = experiencePoints.find(p=>p.id===currentPoint);
+  document.getElementById("map-detail").innerHTML = `
+    <div class="anim-in">
+      <div class="text-xs text-ink-300">SELECTED</div>
+      <h3 class="mt-2 text-2xl font-bold text-ink-900">${sel.label}</h3>
+      <p class="mt-3 text-sm leading-relaxed text-ink-500">${sel.desc}</p>
+      <div class="mt-6 space-y-2 text-xs">
+        ${experiencePoints.map(p=>`
+          <button data-id="${p.id}" class="map-pick flex w-full items-center justify-between rounded-xl border px-3 py-2 transition ${
+            p.id===currentPoint ? "border-ink-900 bg-ink-900 text-white" : "border-surface-100 bg-white text-ink-500 hover:border-brand-300"
+          }">
+            <span>${p.label}</span><span class="text-[10px] opacity-70">${p.cat}</span>
+          </button>
+        `).join("")}
+      </div>
+      <a href="#contact" class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink-900 px-4 py-2.5 text-xs font-medium text-white shadow-soft transition hover:bg-brand-700">この拠点について相談する</a>
+    </div>
+  `;
+  document.querySelectorAll(".map-pick").forEach(b=>{
+    b.addEventListener("click",()=>{ currentPoint=b.dataset.id; renderMap(); renderMapDetail(); });
+  });
+}
+
+/* ============== Diagnosis ============== */
+let qStep = 0; let qScore = {content:0,design:0,lead:0};
+function renderQuiz(){
+  const finished = qStep >= diagnosis.length;
+  const wrap = document.getElementById("quiz");
+  const progress = `
+    <div class="mb-8 flex items-center gap-2">
+      ${diagnosis.map((_,i)=>`<div class="h-1.5 flex-1 rounded-full transition ${i<qStep?'bg-brand-500':'bg-surface-100'}"></div>`).join("")}
+      <span class="ml-2 text-xs text-ink-300">${Math.min(qStep,diagnosis.length)} / ${diagnosis.length}</span>
+    </div>`;
+  if(!finished){
+    const q = diagnosis[qStep];
+    wrap.innerHTML = progress + `
+      <div class="anim-in">
+        <div class="text-xs text-ink-300">Q${qStep+1}.</div>
+        <h3 class="mt-2 text-xl font-semibold text-ink-900 md:text-2xl">${q.q}</h3>
+        <div class="mt-6 grid gap-3">
+          ${q.options.map((opt,i)=>`
+            <button data-i="${i}" class="quiz-opt group flex items-center justify-between rounded-2xl border border-surface-100 bg-white px-5 py-4 text-left transition hover:border-brand-300 hover:bg-brand-50">
+              <span class="text-sm text-ink-700 group-hover:text-brand-700">${opt.label}</span>
+              <span class="text-xs text-ink-300 group-hover:text-brand-600">選ぶ →</span>
+            </button>`).join("")}
+        </div>
+      </div>`;
+    wrap.querySelectorAll(".quiz-opt").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const idx = parseInt(btn.dataset.i,10);
+        const s = diagnosis[qStep].options[idx].score;
+        qScore.content += s.content||0; qScore.design += s.design||0; qScore.lead += s.lead||0;
+        qStep++; renderQuiz();
+      });
+    });
+  } else {
+    const winner = Object.entries(qScore).sort((a,b)=>b[1]-a[1])[0][0];
+    const r = diagResults[winner];
+    wrap.innerHTML = progress + `
+      <div class="anim-in">
+        <div class="inline-flex items-center gap-2 rounded-full bg-mint-400/30 px-3 py-1 text-xs font-semibold text-emerald-700">✓ 診断完了</div>
+        <div class="mt-4 text-xs text-ink-300">あなたのタイプは</div>
+        <h3 class="mt-1 text-2xl font-bold text-ink-900 md:text-3xl">${r.title}</h3>
+        <p class="mt-3 text-base font-medium text-brand-700">${r.headline}</p>
+        <p class="mt-3 text-sm leading-relaxed text-ink-500">${r.body}</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="#contact" class="rounded-full bg-ink-900 px-5 py-2.5 text-xs font-medium text-white shadow-soft transition hover:bg-brand-700">結果をもとに相談する</a>
+          <button id="quiz-reset" class="inline-flex items-center gap-1.5 rounded-full border border-surface-100 bg-white px-5 py-2.5 text-xs text-ink-500 transition hover:border-brand-300 hover:text-brand-600">↻ もう一度診断する</button>
+        </div>
+      </div>`;
+    document.getElementById("quiz-reset").addEventListener("click",()=>{
+      qStep=0; qScore={content:0,design:0,lead:0}; renderQuiz();
+    });
+  }
+}
+
+/* ============== AI Navi ============== */
+let chat = [aiNaviStart];
+function renderChat(){
+  const c = document.getElementById("chat");
+  let html = chat.map(m=>{
+    const right = m.role==="user";
+    return `<div class="flex ${right?'justify-end':'justify-start'} anim-in">
+      <div class="max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-soft ${
+        right ? 'bg-ink-900 text-white' : 'bg-white text-ink-700 ring-1 ring-surface-100'
+      }">${m.text}</div>
+    </div>`;
+  }).join("");
+  const last = chat[chat.length-1];
+  if(last && last.role==="ai" && last.chips && last.chips.length){
+    html += `<div class="flex flex-wrap justify-start gap-2 pt-1 anim-in">
+      ${last.chips.map(ch=>`<button data-chip="${ch}" class="chip rounded-full border border-brand-300 bg-white px-3 py-1.5 text-xs text-brand-700 shadow-soft transition hover:bg-brand-50">${ch}</button>`).join("")}
+    </div>`;
+  }
+  c.innerHTML = html;
+  c.scrollTop = c.scrollHeight;
+  c.querySelectorAll(".chip").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const ch = btn.dataset.chip;
+      const next = aiNaviAnswers[ch];
+      if(next){ chat = chat.concat(next); }
+      else {
+        chat = chat.concat([
+          {role:"user", text:ch},
+          {role:"ai",   text:`「${ch}」についてですね。担当者にお繋ぎする前に、簡単にご相談内容を教えてください。`, chips:["フォームへ","電話で話したい"]}
+        ]);
+      }
+      renderChat();
+    });
+  });
+}
+
+/* ============== Before / After ============== */
+let baMode = "after";
+function renderBA(){
+  document.querySelectorAll(".ba-tab").forEach(b=>{
+    const active = b.dataset.ba===baMode;
+    b.className = "ba-tab rounded-full px-5 py-2 text-xs font-medium transition " + (
+      active
+        ? (baMode==="before" ? "bg-ink-700 text-white" : "bg-gradient-to-r from-brand-500 to-mint-500 text-white")
+        : "text-ink-500 hover:text-ink-900"
+    );
+  });
+  const grid = document.getElementById("ba-grid");
+  grid.innerHTML = beforeAfter.map((it,i)=>{
+    const inner = baMode==="before"
+      ? `<div class="text-[10px] tracking-widest text-ink-300">BEFORE</div>
+         <p class="mt-2 text-base text-ink-500 line-through decoration-rose-300/60">${it.before}</p>`
+      : `<div class="text-[10px] tracking-widest text-emerald-600">AFTER</div>
+         <p class="mt-2 text-base font-semibold text-ink-900">${it.after}</p>`;
+    return `<div class="rounded-2xl border border-surface-100 bg-white p-6 shadow-soft anim-in" style="animation-delay:${i*60}ms">
+      <div class="flex items-center gap-2 text-xs font-semibold text-brand-700">⇄ ${it.title}</div>
+      <div class="mt-4">${inner}</div>
+    </div>`;
+  }).join("");
+}
+document.querySelectorAll(".ba-tab").forEach(b=>{
+  b.addEventListener("click",()=>{ baMode=b.dataset.ba; renderBA(); });
+});
+
+/* ============== Contact Cards ============== */
+function renderContact(){
+  document.getElementById("contact-cards").innerHTML = contactCards.map((c,i)=>`
+    <a href="#" class="reveal group relative overflow-hidden rounded-3xl border border-surface-100 bg-white p-7 shadow-soft transition hover:-translate-y-1 hover:shadow-glow" style="transition-delay:${i*80}ms">
+      <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-mint-500 text-white shadow-soft">${c.icon}</div>
+      <h3 class="mt-5 text-lg font-semibold text-ink-900">${c.title}</h3>
+      <p class="mt-2 text-sm text-ink-500">${c.desc}</p>
+      <div class="mt-6 inline-flex items-center gap-1 text-xs font-medium text-brand-600">${c.cta} →</div>
+    </a>
+  `).join("");
+  // re-attach reveal observer to new els
+  observeReveal();
+}
+
+/* ============== Reveal on scroll & counter trigger ============== */
+let revealObserver;
+function observeReveal(){
+  if(!revealObserver){
+    revealObserver = new IntersectionObserver((entries)=>{
+      entries.forEach(en=>{
+        if(en.isIntersecting){
+          en.target.classList.add("in");
+          // counter trigger
+          en.target.querySelectorAll(".counter").forEach(c=>{
+            if(!c.dataset.done){ animateCounter(c); c.dataset.done="1"; }
+          });
+          revealObserver.unobserve(en.target);
+        }
+      });
+    },{threshold:0.15});
+  }
+  document.querySelectorAll(".reveal").forEach(el=>revealObserver.observe(el));
+  // 単独カウンター（reveal外）対策
+  const cObs = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting && !en.target.dataset.done){
+        animateCounter(en.target); en.target.dataset.done="1"; cObs.unobserve(en.target);
+      }
+    });
+  },{threshold:0.4});
+  document.querySelectorAll(".counter").forEach(el=>cObs.observe(el));
+}
+
+/* ============== Init ============== */
+document.getElementById("copyright").textContent = "© " + new Date().getFullYear() + " Sample Inc. Demo.";
+renderVisitor();
+renderMetrics();
+renderTopicFilter();
+renderTicker();
+renderMap();
+renderMapDetail();
+renderQuiz();
+renderChat();
+renderBA();
+renderContact();
+observeReveal();
+</script>
+</body>
+</html>
