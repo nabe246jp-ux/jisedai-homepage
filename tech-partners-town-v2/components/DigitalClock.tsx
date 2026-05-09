@@ -24,10 +24,10 @@ export default function DigitalClock() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
-      className="fixed top-20 left-1/2 -translate-x-1/2 z-30 pointer-events-none"
+      className="fixed top-20 right-6 z-30 pointer-events-none"
       data-tick={tick}
     >
       <div className="dc-frame">
