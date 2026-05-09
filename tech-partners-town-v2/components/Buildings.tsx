@@ -320,8 +320,8 @@ function Building({
         <Dormer position={[0, h + 0.45, d / 2 + 0.05]} accent={shutterColor} />
 
         {/* 銘板（建物正面） */}
-        <mesh position={[0, h + 0.25, d / 2 + 0.21]}>
-          <planeGeometry args={[1.6, 0.36]} />
+        <mesh position={[0, h + 0.28, d / 2 + 0.22]}>
+          <planeGeometry args={[2.4, 0.6]} />
           <meshBasicMaterial map={makeLabelTexture(label)} transparent />
         </mesh>
       </group>
@@ -544,22 +544,26 @@ function makeWindowGlassTexture(): THREE.CanvasTexture {
 
 function makeLabelTexture(label: string): THREE.CanvasTexture {
   const cnv = document.createElement("canvas");
-  cnv.width = 512;
-  cnv.height = 128;
+  cnv.width = 1024;
+  cnv.height = 256;
   const ctx = cnv.getContext("2d")!;
-  ctx.clearRect(0, 0, 512, 128);
-  // 古い銘板風（金色）
-  ctx.fillStyle = "rgba(40, 30, 20, 0.92)";
-  ctx.fillRect(20, 24, 472, 80);
-  ctx.strokeStyle = "rgba(212, 165, 116, 0.95)";
-  ctx.lineWidth = 3;
-  ctx.strokeRect(28, 32, 456, 64);
+  ctx.clearRect(0, 0, 1024, 256);
+  // 古い銘板風（黒地に金）
+  ctx.fillStyle = "rgba(28, 22, 14, 0.95)";
+  ctx.fillRect(40, 48, 944, 160);
+  ctx.strokeStyle = "rgba(212, 165, 116, 0.98)";
+  ctx.lineWidth = 6;
+  ctx.strokeRect(56, 64, 912, 128);
   ctx.fillStyle = "#f5cf8a";
-  ctx.font = "bold 48px 'Cinzel', 'Hiragino Mincho ProN', serif";
+  ctx.font = "bold 96px 'Hiragino Mincho ProN', 'Cinzel', serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(label, 256, 64);
+  // 軽いシャドウで読みやすく
+  ctx.shadowColor = "rgba(0,0,0,0.6)";
+  ctx.shadowBlur = 6;
+  ctx.fillText(label, 512, 128);
   const tex = new THREE.CanvasTexture(cnv);
   tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 8;
   return tex;
 }
