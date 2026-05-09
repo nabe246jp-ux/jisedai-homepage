@@ -166,33 +166,52 @@ export default function Fountain({
         <meshStandardMaterial color="#d4a574" metalness={0.9} roughness={0.2} />
       </mesh>
 
-      {/* 中央の噴き上がる水（円錐） */}
-      <mesh ref={sprayRef} position={[0, 2.55, 0]}>
-        <coneGeometry args={[0.18, 0.85, 16, 1, true]} />
+      {/* 中央の噴き上がる水（円錐・高め） */}
+      <mesh ref={sprayRef} position={[0, 3.5, 0]}>
+        <coneGeometry args={[0.22, 2.6, 18, 1, true]} />
         <meshStandardMaterial
           color="#cfe6f5"
           transparent
-          opacity={0.45}
+          opacity={0.5}
           emissive="#aacfee"
-          emissiveIntensity={0.6}
+          emissiveIntensity={0.7}
           metalness={0.2}
           roughness={0.05}
           side={THREE.DoubleSide}
         />
       </mesh>
-      {/* 噴水の頂点のしずく球 */}
-      <mesh position={[0, 3.05, 0]}>
-        <sphereGeometry args={[0.15, 16, 16]} />
+      {/* 噴水の頂点のしずく球（高めに） */}
+      <mesh position={[0, 5.0, 0]}>
+        <sphereGeometry args={[0.18, 16, 16]} />
         <meshStandardMaterial
           color="#cfe6f5"
           transparent
-          opacity={0.85}
+          opacity={0.9}
           emissive="#aacfee"
-          emissiveIntensity={0.7}
+          emissiveIntensity={0.8}
           metalness={0.4}
           roughness={0.05}
         />
       </mesh>
+      {/* 周辺に飛び散る小さなしずく（広がりを出す） */}
+      {Array.from({ length: 8 }).map((_, i) => {
+        const a = (i / 8) * Math.PI * 2;
+        const r = 0.4;
+        return (
+          <mesh key={`spritz-${i}`} position={[Math.cos(a) * r, 4.4, Math.sin(a) * r]}>
+            <sphereGeometry args={[0.07, 8, 8]} />
+            <meshStandardMaterial
+              color="#cfe6f5"
+              transparent
+              opacity={0.7}
+              emissive="#aacfee"
+              emissiveIntensity={0.6}
+              metalness={0.4}
+              roughness={0.05}
+            />
+          </mesh>
+        );
+      })}
 
       {/* 上の皿の周りに飛沫リング（うっすら） */}
       <mesh ref={upperWaterRef} position={[0, 1.92, 0]} rotation={[-Math.PI / 2, 0, 0]}>
