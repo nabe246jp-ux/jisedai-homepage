@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NEXT HOMEPAGE — 歩いて、触れて、選ぶホームページ</title>
+<style>
+:root{
+  --bg-deep:#0B1728;
+  --bg-mid:#152540;
+  --bg-soft:#1F3358;
+  --gold:#D4A857;
+  --gold-soft:#E8C783;
+  --cream:#F4EFE6;
+  --white:#FFFFFF;
+  --mute:#93A3B8;
+  --line:rgba(212,168,87,0.25);
+  --shadow:0 18px 48px rgba(0,0,0,0.45);
+  --radius:14px;
+  --t-fast:160ms ease;
+  --t-mid:340ms cubic-bezier(.2,.8,.2,1);
+  --t-slow:680ms cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%;font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",system-ui,sans-serif;color:var(--white);background:var(--bg-deep);overflow:hidden;letter-spacing:.02em}
+button{font-family:inherit;color:inherit;cursor:pointer;border:0;background:transparent}
+a{color:inherit;text-decoration:none}
+
+/* ---------------- LAYOUT ---------------- */
+.app{position:fixed;inset:0;display:flex;flex-direction:column;background:radial-gradient(ellipse at 50% 35%,#1A2D52 0%,#0B1728 70%,#05101F 100%)}
+
+/* TOP BAR */
+.topbar{position:relative;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:18px 28px;backdrop-filter:blur(8px);background:linear-gradient(180deg,rgba(11,23,40,0.85),rgba(11,23,40,0.0))}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#D4A857 0%,#8B6E32 100%);display:grid;place-items:center;box-shadow:0 6px 18px rgba(212,168,87,0.35)}
+.brand-mark svg{width:22px;height:22px}
+.brand-name{font-weight:700;font-size:18px;letter-spacing:.18em}
+.brand-sub{font-size:11px;color:var(--mute);letter-spacing:.2em;margin-top:2px}
+
+.nav{display:flex;gap:6px}
+.nav-btn{padding:10px 16px;border-radius:999px;font-size:13px;letter-spacing:.12em;color:var(--mute);transition:var(--t-fast)}
+.nav-btn:hover{color:var(--gold-soft);background:rgba(212,168,87,0.08)}
+.nav-btn.active{color:var(--bg-deep);background:var(--gold)}
+
+.cta-group{display:flex;gap:10px;align-items:center}
+.cta-btn{padding:10px 18px;border-radius:999px;font-size:13px;letter-spacing:.12em;border:1px solid var(--line);color:var(--cream);transition:var(--t-fast)}
+.cta-btn:hover{border-color:var(--gold);background:rgba(212,168,87,0.1)}
+.cta-btn.solid{background:var(--gold);color:var(--bg-deep);border-color:var(--gold);font-weight:700}
+.cta-btn.solid:hover{background:var(--gold-soft)}
+
+/* STAGE */
+.stage{position:relative;flex:1;overflow:hidden}
+.showroom-svg{position:absolute;inset:0;width:100%;height:100%;cursor:none}
+
+/* PAVILION SCREEN (HTML overlay above SVG) */
+.pavilion{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:520px;max-width:46vw;pointer-events:none;text-align:center;z-index:5}
+.pavilion-card{position:relative;padding:36px 32px;border-radius:18px;background:linear-gradient(180deg,rgba(21,37,64,0.85),rgba(11,23,40,0.92));border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(14px);pointer-events:auto;animation:floaty 6s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.pav-eyebrow{font-size:11px;letter-spacing:.34em;color:var(--gold);margin-bottom:10px}
+.pav-title{font-size:28px;font-weight:700;letter-spacing:.06em;line-height:1.4;color:var(--cream)}
+.pav-title .accent{color:var(--gold)}
+.pav-lead{margin-top:14px;font-size:13px;color:var(--mute);line-height:1.9}
+.pav-hint{margin-top:20px;font-size:11px;letter-spacing:.28em;color:var(--gold-soft);opacity:.8}
+.pav-hint .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);margin-right:8px;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.4;transform:scale(.9)}50%{opacity:1;transform:scale(1.2)}}
+.pav-body{display:none;text-align:left;margin-top:18px;font-size:13px;color:var(--cream);line-height:1.9}
+.pavilion[data-mode="detail"] .pav-body{display:block}
+.pavilion[data-mode="detail"] .pav-hint{display:none}
+
+.pav-back{position:absolute;top:14px;left:14px;width:32px;height:32px;border-radius:50%;display:none;align-items:center;justify-content:center;background:rgba(212,168,87,0.12);border:1px solid var(--line);color:var(--gold)}
+.pavilion[data-mode="detail"] .pav-back{display:flex}
+.pav-back:hover{background:rgba(212,168,87,0.25)}
+
+/* PAVILION CONTENT TYPES */
+.kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.kv{background:rgba(255,255,255,0.04);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.kv-label{font-size:10px;color:var(--mute);letter-spacing:.2em;margin-bottom:4px}
+.kv-value{font-size:14px;color:var(--cream);font-weight:600}
+
+.plans{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px}
+.plan{padding:14px 10px;border:1px solid var(--line);border-radius:12px;text-align:center;background:rgba(255,255,255,0.03);transition:var(--t-fast)}
+.plan:hover{border-color:var(--gold);transform:translateY(-3px)}
+.plan-name{font-size:11px;letter-spacing:.24em;color:var(--gold)}
+.plan-price{font-size:18px;font-weight:700;color:var(--cream);margin-top:6px}
+.plan-unit{font-size:10px;color:var(--mute);margin-top:2px}
+.plan-feat{font-size:11px;color:var(--mute);margin-top:8px;line-height:1.6}
+
+.works-list{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.work{padding:10px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,0.03)}
+.work-name{font-size:12px;color:var(--cream);font-weight:600}
+.work-tag{font-size:10px;color:var(--gold);letter-spacing:.18em;margin-top:4px}
+
+.recruit-list{margin-top:12px}
+.recruit-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);font-size:12px}
+.recruit-row:last-child{border-bottom:0}
+.recruit-role{color:var(--cream)}
+.recruit-mode{color:var(--gold)}
+
+.news-feed{margin-top:12px}
+.news-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:12px}
+.news-row:last-child{border-bottom:0}
+.news-date{color:var(--gold);min-width:78px;font-size:11px;letter-spacing:.1em}
+.news-text{color:var(--cream)}
+
+.contact-form{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.contact-form input,.contact-form textarea{background:rgba(255,255,255,0.04);border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--cream);font-family:inherit;font-size:12px;outline:none;transition:var(--t-fast)}
+.contact-form input:focus,.contact-form textarea:focus{border-color:var(--gold);background:rgba(255,255,255,0.07)}
+.contact-form textarea{min-height:80px;resize:none}
+.contact-form button{margin-top:6px;padding:12px;background:var(--gold);color:var(--bg-deep);border-radius:8px;font-weight:700;letter-spacing:.18em;font-size:12px}
+.contact-form button:hover{background:var(--gold-soft)}
+
+/* LIVE PANEL */
+.live{position:absolute;left:24px;bottom:24px;z-index:8;width:280px;padding:16px;border-radius:14px;border:1px solid var(--line);background:rgba(11,23,40,0.78);backdrop-filter:blur(10px);box-shadow:var(--shadow)}
+.live-head{display:flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.28em;color:var(--gold);margin-bottom:10px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#3DD686;box-shadow:0 0 8px #3DD686;animation:pulse 1.4s ease-in-out infinite}
+.live-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;font-size:12px}
+.live-key{color:var(--mute);letter-spacing:.16em;font-size:10px}
+.live-val{color:var(--cream);font-weight:600;font-feature-settings:"tnum"}
+.live-news{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:11px;color:var(--cream);line-height:1.6;min-height:34px}
+.live-news .small{font-size:9px;letter-spacing:.2em;color:var(--gold);display:block;margin-bottom:4px}
+
+/* HINT */
+.hint{position:absolute;left:50%;bottom:32px;transform:translateX(-50%);z-index:7;font-size:11px;letter-spacing:.32em;color:var(--mute);background:rgba(11,23,40,0.6);padding:8px 18px;border-radius:999px;border:1px solid var(--line);transition:var(--t-mid)}
+.hint.fade{opacity:0;pointer-events:none}
+
+/* BREADCRUMB */
+.crumb{position:absolute;top:24px;left:50%;transform:translateX(-50%);z-index:7;font-size:11px;letter-spacing:.24em;color:var(--mute);display:none;align-items:center;gap:10px}
+.crumb.show{display:flex}
+.crumb .sep{color:var(--gold);opacity:.6}
+.crumb .now{color:var(--gold)}
+
+/* SIDE PANEL (slide-in) */
+.side{position:absolute;top:0;right:0;bottom:0;width:480px;max-width:90vw;z-index:50;background:linear-gradient(180deg,#152540,#0B1728);border-left:1px solid var(--line);box-shadow:-20px 0 60px rgba(0,0,0,0.5);transform:translateX(100%);transition:transform var(--t-slow);overflow-y:auto}
+.side.open{transform:translateX(0)}
+.side-head{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:24px;background:linear-gradient(180deg,#152540 60%,rgba(21,37,64,0));z-index:2}
+.side-title{font-size:20px;font-weight:700;letter-spacing:.08em;color:var(--cream)}
+.side-eyebrow{font-size:10px;letter-spacing:.32em;color:var(--gold);margin-bottom:6px}
+.side-close{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid var(--line);color:var(--cream);display:grid;place-items:center;font-size:16px}
+.side-close:hover{background:rgba(212,168,87,0.15);color:var(--gold)}
+.side-body{padding:0 24px 32px;font-size:13px;line-height:1.9;color:var(--cream)}
+.side-body h3{margin:24px 0 8px;font-size:14px;letter-spacing:.16em;color:var(--gold)}
+.side-body p{color:var(--mute);margin:8px 0}
+.side-body .lead{font-size:14px;color:var(--cream)}
+
+/* PRICE TABLE in side */
+.price-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+.price-card{padding:18px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,0.03);transition:var(--t-fast)}
+.price-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.price-card .name{font-size:12px;letter-spacing:.28em;color:var(--gold)}
+.price-card .price{font-size:24px;font-weight:700;color:var(--cream);margin-top:6px}
+.price-card .price small{font-size:11px;color:var(--mute);font-weight:400;margin-left:6px}
+.price-card .feat{margin-top:10px;font-size:12px;color:var(--mute);line-height:1.8}
+
+.faq{margin-top:8px}
+.faq-q{padding:12px 0;border-bottom:1px dashed var(--line);cursor:pointer}
+.faq-q .q{color:var(--gold);font-size:13px;font-weight:600}
+.faq-q .a{color:var(--mute);font-size:12px;line-height:1.8;margin-top:8px;display:none}
+.faq-q.open .a{display:block}
+
+/* CUSTOM CURSOR (visitor character handled in SVG) */
+.dim{position:absolute;inset:0;background:rgba(11,23,40,0.55);opacity:0;pointer-events:none;transition:opacity var(--t-mid);z-index:40}
+.dim.show{opacity:1;pointer-events:auto}
+
+/* TOAST */
+.toast{position:absolute;left:50%;top:80px;transform:translateX(-50%) translateY(-20px);background:rgba(212,168,87,0.92);color:var(--bg-deep);padding:10px 20px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.16em;opacity:0;pointer-events:none;transition:var(--t-mid);z-index:100}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* RESPONSIVE LITE */
+@media (max-width:900px){
+  .pavilion{width:90vw;max-width:90vw}
+  .live{width:calc(100vw - 48px)}
+  .nav{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 20V4l8 8 8-8v16" stroke="#0B1728" stroke-width="2.4" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">NEXT HOMEPAGE</div>
+        <div class="brand-sub">SHOWROOM EDITION</div>
+      </div>
+    </div>
+    <nav class="nav" id="nav">
+      <button class="nav-btn" data-section="about">ABOUT</button>
+      <button class="nav-btn" data-section="service">SERVICE</button>
+      <button class="nav-btn" data-section="works">WORKS</button>
+      <button class="nav-btn" data-section="recruit">RECRUIT</button>
+      <button class="nav-btn" data-section="news">NEWS</button>
+      <button class="nav-btn" data-section="contact">CONTACT</button>
+    </nav>
+    <div class="cta-group">
+      <button class="cta-btn" id="open-pricing">料金プラン</button>
+      <button class="cta-btn solid" id="open-contact">お問い合わせ</button>
+    </div>
+  </header>
+
+  <!-- STAGE -->
+  <main class="stage" id="stage">
+
+    <!-- BREADCRUMB -->
+    <div class="crumb" id="crumb">
+      <span>SHOWROOM</span>
+      <span class="sep">/</span>
+      <span class="now" id="crumb-now"></span>
+    </div>
+
+    <!-- SVG SHOWROOM -->
+    <svg class="showroom-svg" id="svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <radialGradient id="floorGrad" cx="50%" cy="50%" r="60%">
+          <stop offset="0%" stop-color="#1F3358" stop-opacity="0.9"/>
+          <stop offset="60%" stop-color="#0F1F38" stop-opacity="0.7"/>
+          <stop offset="100%" stop-color="#05101F" stop-opacity="0.95"/>
+        </radialGradient>
+        <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#D4A857" stop-opacity="0.32"/>
+          <stop offset="50%" stop-color="#D4A857" stop-opacity="0.08"/>
+          <stop offset="100%" stop-color="#D4A857" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="boothGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#D4A857" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#D4A857" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="podiumGrad" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="#243C68"/>
+          <stop offset="100%" stop-color="#0E1A2E"/>
+        </linearGradient>
+        <linearGradient id="podiumTop" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="#3A5688"/>
+          <stop offset="100%" stop-color="#1A2A44"/>
+        </linearGradient>
+        <linearGradient id="beamGrad" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="#D4A857" stop-opacity="0.0"/>
+          <stop offset="40%" stop-color="#D4A857" stop-opacity="0.08"/>
+          <stop offset="100%" stop-color="#D4A857" stop-opacity="0"/>
+        </linearGradient>
+        <pattern id="floorTiles" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+          <rect width="80" height="80" fill="none"/>
+          <path d="M0 0H80M0 0V80" stroke="rgba(212,168,87,0.06)" stroke-width="1"/>
+        </pattern>
+        <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="6" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- BACKGROUND HALL -->
+      <rect width="1600" height="900" fill="url(#floorGrad)"/>
+
+      <!-- BACK WALL gradient strip -->
+      <rect x="0" y="0" width="1600" height="280" fill="url(#floorGrad)" opacity="0.6"/>
+      <line x1="0" y1="280" x2="1600" y2="280" stroke="rgba(212,168,87,0.18)" stroke-width="1"/>
+
+      <!-- AMBIENT STARS / DUST -->
+      <g id="dust"></g>
+
+      <!-- SPOTLIGHT BEAMS (back wall) -->
+      <g id="beams" opacity="0.7">
+        <polygon points="300,0 380,0 460,300 220,300" fill="url(#beamGrad)"/>
+        <polygon points="800,0 880,0 920,300 760,300" fill="url(#beamGrad)"/>
+        <polygon points="1300,0 1380,0 1380,300 1140,300" fill="url(#beamGrad)"/>
+      </g>
+
+      <!-- FLOOR TILES OVERLAY -->
+      <rect x="0" y="280" width="1600" height="620" fill="url(#floorTiles)"/>
+
+      <!-- CENTER PAVILION GLOW -->
+      <ellipse cx="800" cy="460" rx="360" ry="220" fill="url(#centerGlow)"/>
+
+      <!-- PAVILION STAGE (octagonal platform) -->
+      <g id="pavilion-stage">
+        <!-- shadow -->
+        <ellipse cx="800" cy="600" rx="260" ry="40" fill="rgba(0,0,0,0.4)"/>
+        <!-- base -->
+        <polygon points="540,540 660,460 940,460 1060,540 1060,580 940,660 660,660 540,580"
+          fill="url(#podiumTop)" stroke="rgba(212,168,87,0.4)" stroke-width="1.5"/>
+        <!-- top ring -->
+        <polygon points="560,535 670,470 930,470 1040,535 1040,545 930,475 670,475 560,545"
+          fill="rgba(212,168,87,0.15)" stroke="rgba(212,168,87,0.35)"/>
+      </g>
+
+      <!-- BACKGROUND VISITORS (silhouettes walking) -->
+      <g id="visitors-bg"></g>
+
+      <!-- BOOTHS (6) -->
+      <g id="booths"></g>
+
+      <!-- VISITOR CHARACTER (you) -->
+      <g id="visitor" transform="translate(800,720)">
+        <ellipse cx="0" cy="32" rx="22" ry="5" fill="rgba(0,0,0,0.5)"/>
+        <!-- body -->
+        <rect x="-13" y="-6" width="26" height="32" rx="6" fill="#D4A857"/>
+        <rect x="-13" y="-6" width="26" height="10" rx="6" fill="#E8C783"/>
+        <!-- head -->
+        <circle cx="0" cy="-16" r="11" fill="#F4E0BD"/>
+        <path d="M-9,-22 Q0,-30 9,-22 L9,-18 L-9,-18 Z" fill="#3A2A1A"/>
+        <!-- legs -->
+        <rect x="-8" y="22" width="6" height="10" rx="2" fill="#1A2A44"/>
+        <rect x="2" y="22" width="6" height="10" rx="2" fill="#1A2A44"/>
+        <!-- label -->
+        <g id="visitor-label" opacity="0">
+          <rect x="-32" y="-58" width="64" height="20" rx="10" fill="rgba(11,23,40,0.85)" stroke="rgba(212,168,87,0.6)"/>
+          <text x="0" y="-44" text-anchor="middle" fill="#F4EFE6" font-size="10" letter-spacing="2">YOU</text>
+        </g>
+      </g>
+
+      <!-- CEILING CHANDELIER -->
+      <g id="chandelier" transform="translate(800,30)" opacity="0.85">
+        <line x1="0" y1="0" x2="0" y2="40" stroke="rgba(212,168,87,0.4)" stroke-width="1"/>
+        <circle cx="0" cy="50" r="14" fill="url(#boothGlow)"/>
+        <circle cx="0" cy="50" r="6" fill="#D4A857" filter="url(#softGlow)"/>
+      </g>
+
+    </svg>
+
+    <!-- PAVILION SCREEN (HTML overlay on pavilion) -->
+    <div class="pavilion" id="pavilion" data-mode="default">
+      <div class="pavilion-card">
+        <button class="pav-back" id="pav-back" title="戻る (Esc)">←</button>
+        <div class="pav-eyebrow" id="pav-eyebrow">WELCOME</div>
+        <div class="pav-title" id="pav-title">次の世代の、<span class="accent">ホームページへ。</span></div>
+        <div class="pav-lead" id="pav-lead">スクロールではなく、歩いて選ぶ。クリックで別ページに飛ばず、その場で内容が切り替わる。<br>あなたの会社だけの、動くショールームをつくります。</div>
+        <div class="pav-hint"><span class="dot"></span>カーソルを動かして、ブースをのぞいてみてください</div>
+        <div class="pav-body" id="pav-body"></div>
+      </div>
+    </div>
+
+    <!-- LIVE PANEL -->
+    <aside class="live">
+      <div class="live-head"><span class="live-dot"></span><span>LIVE STATUS</span></div>
+      <div class="live-row"><span class="live-key">現在時刻</span><span class="live-val" id="live-time">--:--</span></div>
+      <div class="live-row"><span class="live-key">ショールーム来館</span><span class="live-val" id="live-visitors">000</span></div>
+      <div class="live-row"><span class="live-key">本日のテーマ</span><span class="live-val" id="live-theme">朝の陽だまり</span></div>
+      <div class="live-news">
+        <span class="small" id="live-news-tag">LATEST</span>
+        <span id="live-news-text">読み込み中...</span>
+      </div>
+    </aside>
+
+    <!-- HINT -->
+    <div class="hint" id="hint">マウスで歩く ・ クリックで開く ・ Esc で戻る</div>
+
+  </main>
+
+  <!-- SIDE PANEL -->
+  <div class="dim" id="dim"></div>
+  <aside class="side" id="side">
+    <div class="side-head">
+      <div>
+        <div class="side-eyebrow" id="side-eyebrow">PRICING</div>
+        <div class="side-title" id="side-title">料金プラン</div>
+      </div>
+      <button class="side-close" id="side-close" aria-label="閉じる">×</button>
+    </div>
+    <div class="side-body" id="side-body"></div>
+  </aside>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">送信しました</div>
+
+</div>
+
+<script>
+/* =========================================================
+   NEXT HOMEPAGE — Showroom v1
+   ========================================================= */
+
+/* ---- DATA ---- */
+const SECTIONS = {
+  about:{
+    eyebrow:"ABOUT",
+    title:"私たちのこと",
+    lead:"NEXT HOMEPAGE は、中小企業と店舗オーナーの「商品体験ができるホームページ」を作る制作チームです。",
+    body:`
+      <div class="kv-grid">
+        <div class="kv"><div class="kv-label">設立</div><div class="kv-value">2025年4月</div></div>
+        <div class="kv"><div class="kv-label">拠点</div><div class="kv-value">東京・京都</div></div>
+        <div class="kv"><div class="kv-label">代表</div><div class="kv-value">渡辺 拓海</div></div>
+        <div class="kv"><div class="kv-label">スタッフ</div><div class="kv-value">12名</div></div>
+        <div class="kv"><div class="kv-label">納品実績</div><div class="kv-value">38サイト</div></div>
+        <div class="kv"><div class="kv-label">対応エリア</div><div class="kv-value">全国・オンライン</div></div>
+      </div>
+      <p style="margin-top:14px;color:var(--mute);font-size:12px;line-height:1.9">私たちが大切にしているのは、訪問者が「歩いて、触れて、選べる」体験です。情報を並べるだけのページではなく、お店や会社の空気感まで持ち帰ってもらえるホームページを目指しています。</p>
+    `
+  },
+  service:{
+    eyebrow:"SERVICE",
+    title:"事業内容",
+    lead:"次世代ホームページの制作と、納品後の自動更新サポート。3つの柱でご提供します。",
+    body:`
+      <div class="plans">
+        <div class="plan">
+          <div class="plan-name">LITE</div>
+          <div class="plan-price">¥298,000</div>
+          <div class="plan-unit">＋月¥9,800</div>
+          <div class="plan-feat">基本5ページ＋動く演出</div>
+        </div>
+        <div class="plan">
+          <div class="plan-name">STANDARD</div>
+          <div class="plan-price">¥598,000</div>
+          <div class="plan-unit">＋月¥19,800</div>
+          <div class="plan-feat">フル機能ショールーム</div>
+        </div>
+        <div class="plan">
+          <div class="plan-name">CUSTOM</div>
+          <div class="plan-price">¥1,200,000〜</div>
+          <div class="plan-unit">月額別途</div>
+          <div class="plan-feat">完全オーダーメイド</div>
+        </div>
+      </div>
+      <p style="margin-top:14px;color:var(--mute);font-size:12px;line-height:1.9">どのプランも、お問い合わせから約4〜8週間で納品。納品後は内容の自動更新（お知らせ・在庫・予約状況など）を月額でお預かりします。</p>
+    `
+  },
+  works:{
+    eyebrow:"WORKS",
+    title:"制作実績",
+    lead:"これまでに納品したショールーム型ホームページの一部をご紹介します。",
+    body:`
+      <div class="works-list">
+        <div class="work"><div class="work-name">サクラ食堂</div><div class="work-tag">CAFE / 時間帯メニュー連動</div></div>
+        <div class="work"><div class="work-name">美容室 KOKAGE</div><div class="work-tag">SALON / 担当者ショールーム</div></div>
+        <div class="work"><div class="work-name">山田司法書士事務所</div><div class="work-tag">LEGAL / 相談カテゴリ歩行型</div></div>
+        <div class="work"><div class="work-name">ソラミドリクリニック</div><div class="work-tag">CLINIC / 院内ツアー再現</div></div>
+        <div class="work"><div class="work-name">田中工務店</div><div class="work-tag">CONSTRUCTION / 施工事例3D</div></div>
+        <div class="work"><div class="work-name">ASAHI不動産</div><div class="work-tag">REAL ESTATE / 物件マップ</div></div>
+      </div>
+    `
+  },
+  recruit:{
+    eyebrow:"RECRUIT",
+    title:"採用情報",
+    lead:"一緒に「歩けるホームページ」をつくる仲間を募集しています。",
+    body:`
+      <div class="recruit-list">
+        <div class="recruit-row"><span class="recruit-role">フロントエンドデザイナー</span><span class="recruit-mode">正社員 / 在宅可</span></div>
+        <div class="recruit-row"><span class="recruit-role">3D / インタラクション設計</span><span class="recruit-mode">業務委託</span></div>
+        <div class="recruit-row"><span class="recruit-role">ディレクター（顧客対応）</span><span class="recruit-mode">正社員</span></div>
+        <div class="recruit-row"><span class="recruit-role">アシスタント（運用更新）</span><span class="recruit-mode">パート / 在宅</span></div>
+      </div>
+      <p style="margin-top:14px;color:var(--mute);font-size:12px;line-height:1.9">完全リモート可。週4日勤務、副業もOK。書類選考のあと、Zoom面談を1〜2回行います。</p>
+    `
+  },
+  news:{
+    eyebrow:"NEWS",
+    title:"お知らせ",
+    lead:"最近の動きをお伝えします。",
+    body:`
+      <div class="news-feed" id="news-feed"></div>
+    `,
+    feed:[
+      ["2026.05.08","ショールーム型ホームページの新プラン「LITE」をリリースしました"],
+      ["2026.04.22","美容室 KOKAGE 様のサイトを公開しました"],
+      ["2026.04.10","採用ページを更新。フロントエンド職を増員募集中です"],
+      ["2026.03.30","東京オフィスを移転しました（新住所は会社概要をご参照ください）"],
+      ["2026.03.14","制作事例ページに3社追加しました"]
+    ]
+  },
+  contact:{
+    eyebrow:"CONTACT",
+    title:"お問い合わせ",
+    lead:"気軽にご相談ください。1営業日以内にご返信します。",
+    body:`
+      <form class="contact-form" id="contact-form" onsubmit="return false;">
+        <input type="text" placeholder="会社名・お名前" required>
+        <input type="email" placeholder="メールアドレス" required>
+        <textarea placeholder="ご相談内容（業種・希望時期など）" required></textarea>
+        <button type="submit" id="contact-submit">送信する</button>
+      </form>
+    `
+  }
+};
+
+const PRICING_HTML = `
+  <p class="lead">納品 + 自動更新 + サポートをまとめた、わかりやすい3プラン。</p>
+  <div class="price-grid">
+    <div class="price-card">
+      <div class="name">LITE</div>
+      <div class="price">¥298,000<small>＋月¥9,800</small></div>
+      <div class="feat">基本5ページ／動く演出／簡易自動更新／メールサポート</div>
+    </div>
+    <div class="price-card">
+      <div class="name">STANDARD</div>
+      <div class="price">¥598,000<small>＋月¥19,800</small></div>
+      <div class="feat">フル機能ショールーム／全画面動作／予約や在庫の自動連携／チャットサポート</div>
+    </div>
+    <div class="price-card">
+      <div class="name">CUSTOM</div>
+      <div class="price">¥1,200,000〜<small>月額別途</small></div>
+      <div class="feat">完全オーダーメイド／3D演出／自社専用の世界観構築／優先サポート</div>
+    </div>
+  </div>
+  <h3>よくあるご質問</h3>
+  <div class="faq" id="faq">
+    <div class="faq-q"><div class="q">Q. 普通のホームページとどう違いますか？</div><div class="a">A. ページ移動が無く、画面の中を「歩いて」情報を選びます。お客様の滞在時間と記憶への残り方が大きく変わります。</div></div>
+    <div class="faq-q"><div class="q">Q. スマホでも動きますか？</div><div class="a">A. はい。タッチ操作にも最適化します。動きが多くなる分、スマホ表示は軽量モードに自動切替します。</div></div>
+    <div class="faq-q"><div class="q">Q. 月額の更新サポートは何をしてくれますか？</div><div class="a">A. お知らせ・メニュー・在庫・予約状況などを、ご要望に合わせて自動または半自動で反映します。</div></div>
+    <div class="faq-q"><div class="q">Q. 既存サイトからの移行はできますか？</div><div class="a">A. はい。文章や画像はそのまま活かせます。1〜2週間ほどで移行可能です。</div></div>
+  </div>
+`;
+
+/* ---- BOOTH LAYOUT ---- */
+const BOOTHS=[
+  {key:"about",   x: 250, y: 230, label:"ABOUT",   ja:"会社概要"},
+  {key:"service", x: 800, y: 170, label:"SERVICE", ja:"事業内容"},
+  {key:"works",   x:1350, y: 230, label:"WORKS",   ja:"制作実績"},
+  {key:"recruit", x:1380, y: 690, label:"RECRUIT", ja:"採用情報"},
+  {key:"news",    x: 220, y: 690, label:"NEWS",    ja:"お知らせ"},
+  {key:"contact", x: 800, y: 770, label:"CONTACT", ja:"お問い合わせ"}
+];
+
+/* ---- BOOTH ICONS (small SVG markup per section) ---- */
+const ICONS={
+  about:`<g><rect x="-22" y="-30" width="44" height="44" rx="6" fill="#1A2A44" stroke="#D4A857" stroke-width="1.5"/><circle cx="0" cy="-14" r="6" fill="#D4A857"/><rect x="-14" y="-2" width="28" height="14" rx="3" fill="#D4A857" opacity="0.6"/></g>`,
+  service:`<g><polygon points="0,-30 18,-10 18,16 -18,16 -18,-10" fill="#1A2A44" stroke="#D4A857" stroke-width="1.5"/><rect x="-12" y="-4" width="24" height="14" rx="2" fill="#D4A857" opacity="0.7"/><circle cx="-6" cy="3" r="2" fill="#0B1728"/><circle cx="6" cy="3" r="2" fill="#0B1728"/></g>`,
+  works:`<g><rect x="-22" y="-26" width="44" height="38" rx="4" fill="#1A2A44" stroke="#D4A857" stroke-width="1.5"/><line x1="-16" y1="-16" x2="16" y2="-16" stroke="#D4A857" stroke-width="2"/><line x1="-16" y1="-8" x2="16" y2="-8" stroke="#D4A857" stroke-width="2" opacity="0.7"/><line x1="-16" y1="0" x2="6" y2="0" stroke="#D4A857" stroke-width="2" opacity="0.5"/></g>`,
+  recruit:`<g><circle cx="0" cy="-14" r="9" fill="#D4A857"/><path d="M-18,18 Q0,-2 18,18 Z" fill="#1A2A44" stroke="#D4A857" stroke-width="1.5"/></g>`,
+  news:`<g><rect x="-22" y="-26" width="44" height="38" rx="4" fill="#1A2A44" stroke="#D4A857" stroke-width="1.5"/><circle cx="-12" cy="-14" r="3" fill="#D4A857"/><line x1="-4" y1="-14" x2="14" y2="-14" stroke="#D4A857" stroke-width="2"/><line x1="-16" y1="-2" x2="16" y2="-2" stroke="#D4A857" stroke-width="1.5" opacity="0.7"/><line x1="-16" y1="6" x2="10" y2="6" stroke="#D4A857" stroke-width="1.5" opacity="0.5"/></g>`,
+  contact:`<g><rect x="-22" y="-18" width="44" height="30" rx="3" fill="#1A2A44" stroke="#D4A857" stroke-width="1.5"/><polyline points="-22,-18 0,2 22,-18" fill="none" stroke="#D4A857" stroke-width="1.8"/></g>`
+};
+
+/* ---- BUILD BOOTHS ---- */
+const svg = document.getElementById('svg');
+const boothsG = document.getElementById('booths');
+const SVGNS="http://www.w3.org/2000/svg";
+
+function buildBooths(){
+  BOOTHS.forEach((b,i)=>{
+    const g = document.createElementNS(SVGNS,"g");
+    g.setAttribute("class","booth");
+    g.setAttribute("data-section",b.key);
+    g.setAttribute("transform",`translate(${b.x},${b.y})`);
+    g.style.cursor="pointer";
+    g.innerHTML = `
+      <ellipse cx="0" cy="78" rx="78" ry="14" fill="rgba(0,0,0,0.45)"/>
+      <circle cx="0" cy="0" r="120" fill="url(#boothGlow)" class="booth-glow" opacity="0.0"/>
+      <rect x="-70" y="20" width="140" height="56" rx="6" fill="url(#podiumGrad)" stroke="rgba(212,168,87,0.35)"/>
+      <rect x="-72" y="14" width="144" height="10" rx="3" fill="url(#podiumTop)" stroke="rgba(212,168,87,0.5)"/>
+      <line x1="-50" y1="42" x2="50" y2="42" stroke="rgba(212,168,87,0.25)" stroke-width="1"/>
+      ${ICONS[b.key]||""}
+      <text x="0" y="58" text-anchor="middle" fill="#F4EFE6" font-size="12" letter-spacing="3" font-weight="700">${b.label}</text>
+      <text x="0" y="72" text-anchor="middle" fill="#93A3B8" font-size="9" letter-spacing="2">${b.ja}</text>
+      <g class="booth-hover-arrow" opacity="0">
+        <text x="0" y="-50" text-anchor="middle" fill="#D4A857" font-size="11" letter-spacing="3">CLICK</text>
+        <text x="0" y="-36" text-anchor="middle" fill="#D4A857" font-size="14">▼</text>
+      </g>
+    `;
+    g.addEventListener('mouseenter',()=>{
+      g.querySelector('.booth-glow').setAttribute('opacity','0.85');
+      g.querySelector('.booth-hover-arrow').setAttribute('opacity','1');
+      g.style.transform = `translate(${b.x}px,${b.y - 4}px)`;
+    });
+    g.addEventListener('mouseleave',()=>{
+      g.querySelector('.booth-glow').setAttribute('opacity','0');
+      g.querySelector('.booth-hover-arrow').setAttribute('opacity','0');
+      g.style.transform = `translate(${b.x}px,${b.y}px)`;
+    });
+    g.addEventListener('click',(e)=>{e.stopPropagation();selectSection(b.key)});
+    boothsG.appendChild(g);
+  });
+}
+buildBooths();
+
+/* ---- AMBIENT DUST ---- */
+function buildDust(){
+  const dust=document.getElementById('dust');
+  for(let i=0;i<60;i++){
+    const c=document.createElementNS(SVGNS,"circle");
+    const x=Math.random()*1600, y=Math.random()*900;
+    const r=Math.random()*1.6+0.4;
+    c.setAttribute("cx",x);c.setAttribute("cy",y);c.setAttribute("r",r);
+    c.setAttribute("fill","#D4A857");c.setAttribute("opacity",Math.random()*0.4+0.05);
+    c.dataset.vx=(Math.random()-0.5)*0.15;
+    c.dataset.vy=(Math.random()-0.5)*0.1-0.05;
+    dust.appendChild(c);
+  }
+}
+buildDust();
+
+function animateDust(){
+  document.querySelectorAll('#dust circle').forEach(c=>{
+    let x=parseFloat(c.getAttribute('cx'))+parseFloat(c.dataset.vx);
+    let y=parseFloat(c.getAttribute('cy'))+parseFloat(c.dataset.vy);
+    if(x<0)x=1600;if(x>1600)x=0;if(y<0)y=900;if(y>900)y=0;
+    c.setAttribute('cx',x);c.setAttribute('cy',y);
+  });
+  requestAnimationFrame(animateDust);
+}
+animateDust();
+
+/* ---- BACKGROUND VISITORS ---- */
+const visitorsBg=document.getElementById('visitors-bg');
+function buildBgVisitors(){
+  for(let i=0;i<5;i++){
+    const g=document.createElementNS(SVGNS,"g");
+    g.setAttribute("opacity","0.35");
+    const startX=Math.random()*1600;
+    const y=380+Math.random()*60;
+    const dir=Math.random()<0.5?1:-1;
+    g.setAttribute("transform",`translate(${startX},${y}) scale(${0.55+Math.random()*0.2})`);
+    g.dataset.x=startX;g.dataset.y=y;g.dataset.vx=dir*(0.25+Math.random()*0.2);g.dataset.scale=0.55+Math.random()*0.2;
+    g.innerHTML=`
+      <rect x="-9" y="-3" width="18" height="22" rx="4" fill="#243C68"/>
+      <circle cx="0" cy="-12" r="8" fill="#3A5688"/>
+      <rect x="-5" y="16" width="4" height="7" fill="#1A2A44"/>
+      <rect x="1" y="16" width="4" height="7" fill="#1A2A44"/>
+    `;
+    visitorsBg.appendChild(g);
+  }
+}
+buildBgVisitors();
+
+function animateBgVisitors(){
+  document.querySelectorAll('#visitors-bg g').forEach(g=>{
+    let x=parseFloat(g.dataset.x)+parseFloat(g.dataset.vx);
+    if(x<-30)x=1630;if(x>1630)x=-30;
+    g.dataset.x=x;
+    const sc=g.dataset.scale;
+    const dir=parseFloat(g.dataset.vx)<0?-1:1;
+    g.setAttribute("transform",`translate(${x},${g.dataset.y}) scale(${sc*dir},${sc})`);
+  });
+  requestAnimationFrame(animateBgVisitors);
+}
+animateBgVisitors();
+
+/* ---- VISITOR (YOU) MOUSE FOLLOW ---- */
+const stage=document.getElementById('stage');
+const visitor=document.getElementById('visitor');
+const visitorLabel=document.getElementById('visitor-label');
+let mouseSvgX=800, mouseSvgY=720;
+let curX=800, curY=720;
+let lastDir=1;
+
+function clientToSvg(clientX,clientY){
+  const rect = svg.getBoundingClientRect();
+  const sx = (clientX - rect.left) / rect.width * 1600;
+  const sy = (clientY - rect.top) / rect.height * 900;
+  return [sx,sy];
+}
+
+stage.addEventListener('mousemove',(e)=>{
+  const [sx,sy]=clientToSvg(e.clientX,e.clientY);
+  // restrict y so visitor doesn't leave the floor area
+  mouseSvgX = Math.max(60, Math.min(1540, sx));
+  mouseSvgY = Math.max(380, Math.min(820, sy));
+  visitorLabel.setAttribute('opacity','1');
+  clearTimeout(window._labelTimer);
+  window._labelTimer=setTimeout(()=>visitorLabel.setAttribute('opacity','0'),1500);
+});
+
+function animateVisitor(){
+  const dx = mouseSvgX - curX;
+  const dy = mouseSvgY - curY;
+  curX += dx * 0.08;
+  curY += dy * 0.08;
+  if(Math.abs(dx)>1) lastDir = dx>0 ? 1 : -1;
+  visitor.setAttribute("transform",`translate(${curX},${curY}) scale(${lastDir},1)`);
+  requestAnimationFrame(animateVisitor);
+}
+animateVisitor();
+
+/* ---- SECTION SELECT (pavilion content swap) ---- */
+const pavilion = document.getElementById('pavilion');
+const pavEyebrow = document.getElementById('pav-eyebrow');
+const pavTitle = document.getElementById('pav-title');
+const pavLead = document.getElementById('pav-lead');
+const pavBody = document.getElementById('pav-body');
+const pavBack = document.getElementById('pav-back');
+const crumb = document.getElementById('crumb');
+const crumbNow = document.getElementById('crumb-now');
+const hint = document.getElementById('hint');
+
+function selectSection(key){
+  const data = SECTIONS[key]; if(!data) return;
+  pavilion.setAttribute('data-mode','detail');
+  pavilion.style.transform='translate(-50%,-50%) scale(0.92)';
+  pavilion.style.opacity='0';
+  setTimeout(()=>{
+    pavEyebrow.textContent = data.eyebrow;
+    pavTitle.innerHTML = data.title;
+    pavLead.innerHTML = data.lead;
+    pavBody.innerHTML = data.body;
+    pavilion.style.transform='translate(-50%,-50%) scale(1)';
+    pavilion.style.opacity='1';
+    if(key==='news') renderNewsFeed();
+    if(key==='contact') bindContactForm();
+  },180);
+  // nav state
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.section===key));
+  // breadcrumb
+  crumb.classList.add('show');
+  crumbNow.textContent = data.title;
+  // hint hide
+  hint.classList.add('fade');
+}
+
+function resetSection(){
+  pavilion.setAttribute('data-mode','default');
+  pavilion.style.transform='translate(-50%,-50%) scale(0.92)';
+  pavilion.style.opacity='0';
+  setTimeout(()=>{
+    pavEyebrow.textContent="WELCOME";
+    pavTitle.innerHTML='次の世代の、<span class="accent">ホームページへ。</span>';
+    pavLead.innerHTML='スクロールではなく、歩いて選ぶ。クリックで別ページに飛ばず、その場で内容が切り替わる。<br>あなたの会社だけの、動くショールームをつくります。';
+    pavBody.innerHTML='';
+    pavilion.style.transform='translate(-50%,-50%) scale(1)';
+    pavilion.style.opacity='1';
+  },180);
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  crumb.classList.remove('show');
+  hint.classList.remove('fade');
+}
+
+pavBack.addEventListener('click',(e)=>{e.stopPropagation();resetSection();});
+
+document.addEventListener('keydown',(e)=>{
+  if(e.key==='Escape'){
+    if(side.classList.contains('open')) closeSide();
+    else if(pavilion.dataset.mode==='detail') resetSection();
+  }
+});
+
+// click empty stage to close
+stage.addEventListener('click',(e)=>{
+  if(e.target.closest('.booth')||e.target.closest('.pavilion')||e.target.closest('.live')||e.target.closest('.crumb')) return;
+  if(pavilion.dataset.mode==='detail') resetSection();
+});
+
+// nav buttons
+document.querySelectorAll('.nav-btn').forEach(b=>{
+  b.addEventListener('click',()=>selectSection(b.dataset.section));
+});
+
+/* ---- NEWS FEED RENDERER ---- */
+function renderNewsFeed(){
+  const feed = SECTIONS.news.feed;
+  const target = document.getElementById('news-feed');
+  if(!target) return;
+  target.innerHTML = feed.map(([d,t])=>`<div class="news-row"><span class="news-date">${d}</span><span class="news-text">${t}</span></div>`).join('');
+}
+
+/* ---- CONTACT FORM ---- */
+function bindContactForm(){
+  const f = document.getElementById('contact-form');
+  if(!f) return;
+  f.addEventListener('submit',(e)=>{
+    e.preventDefault();
+    showToast('送信しました（デモ）');
+    f.reset();
+  });
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+/* ---- LIVE PANEL UPDATES ---- */
+function updateClock(){
+  const now=new Date();
+  const hh=String(now.getHours()).padStart(2,'0');
+  const mm=String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('live-time').textContent=`${hh}:${mm}`;
+  // theme by hour
+  const h=now.getHours();
+  let theme='夜のロビー';
+  if(h>=5&&h<10) theme='朝の陽だまり';
+  else if(h>=10&&h<16) theme='昼の展示室';
+  else if(h>=16&&h<19) theme='夕暮れの回廊';
+  document.getElementById('live-theme').textContent=theme;
+  applyTheme(theme);
+}
+setInterval(updateClock,30000);
+updateClock();
+
+function applyTheme(theme){
+  const app=document.getElementById('app');
+  let bg='radial-gradient(ellipse at 50% 35%,#1A2D52 0%,#0B1728 70%,#05101F 100%)';
+  if(theme==='朝の陽だまり') bg='radial-gradient(ellipse at 50% 35%,#2A4470 0%,#1A2D52 60%,#0B1728 100%)';
+  else if(theme==='昼の展示室') bg='radial-gradient(ellipse at 50% 35%,#3D5990 0%,#1F3358 60%,#0B1728 100%)';
+  else if(theme==='夕暮れの回廊') bg='radial-gradient(ellipse at 50% 35%,#5A3A60 0%,#2A1F44 55%,#0B1728 100%)';
+  else bg='radial-gradient(ellipse at 50% 35%,#152540 0%,#0B1728 60%,#05101F 100%)';
+  app.style.background=bg;
+}
+
+let visitors = 142;
+function tickVisitors(){
+  const delta = Math.random()<0.7 ? 1 : (Math.random()<0.5 ? 0 : -1);
+  visitors = Math.max(80, visitors + delta);
+  document.getElementById('live-visitors').textContent = String(visitors).padStart(3,'0');
+}
+setInterval(tickVisitors,4500);
+tickVisitors();
+
+const NEWS_TICKER = [
+  ["NEW","ショールーム型「LITE」プランをリリース"],
+  ["WORK","美容室 KOKAGE 様のサイトを公開"],
+  ["JOIN","フロントエンドデザイナー増員募集中"],
+  ["TIP","スマホ表示は自動で軽量モードに切替"],
+  ["EVENT","オンライン無料相談 受付中（初回30分）"]
+];
+let newsIdx = 0;
+function rotateNews(){
+  const [tag,text]=NEWS_TICKER[newsIdx%NEWS_TICKER.length];
+  const tagEl=document.getElementById('live-news-tag');
+  const txtEl=document.getElementById('live-news-text');
+  tagEl.style.opacity='0'; txtEl.style.opacity='0';
+  setTimeout(()=>{
+    tagEl.textContent=tag; txtEl.textContent=text;
+    tagEl.style.opacity='1'; txtEl.style.opacity='1';
+  },280);
+  newsIdx++;
+}
+setInterval(rotateNews,6000);
+rotateNews();
+
+/* ---- SIDE PANEL ---- */
+const side = document.getElementById('side');
+const dim = document.getElementById('dim');
+const sideTitle = document.getElementById('side-title');
+const sideEyebrow = document.getElementById('side-eyebrow');
+const sideBody = document.getElementById('side-body');
+
+function openSide(kind){
+  if(kind==='pricing'){
+    sideEyebrow.textContent='PRICING';
+    sideTitle.textContent='料金プラン';
+    sideBody.innerHTML = PRICING_HTML;
+    bindFAQ();
+  }else if(kind==='contact'){
+    sideEyebrow.textContent='CONTACT';
+    sideTitle.textContent='お問い合わせ';
+    sideBody.innerHTML = `
+      <p class="lead">お電話・メール・フォーム、お好きな方法で。1営業日以内にご返信します。</p>
+      <h3>連絡先</h3>
+      <p>電話　03-1234-5678（平日 10:00-18:00）<br>メール　hello@nexthomepage.example</p>
+      <h3>フォーム</h3>
+      ${SECTIONS.contact.body}
+    `;
+    bindContactForm();
+  }
+  side.classList.add('open');
+  dim.classList.add('show');
+}
+function closeSide(){ side.classList.remove('open'); dim.classList.remove('show'); }
+
+document.getElementById('open-pricing').addEventListener('click',()=>openSide('pricing'));
+document.getElementById('open-contact').addEventListener('click',()=>openSide('contact'));
+document.getElementById('side-close').addEventListener('click',closeSide);
+dim.addEventListener('click',closeSide);
+
+function bindFAQ(){
+  document.querySelectorAll('.faq-q').forEach(q=>{
+    q.addEventListener('click',()=>q.classList.toggle('open'));
+  });
+}
+
+/* ---- INTRO HINT FADE ---- */
+setTimeout(()=>{
+  if(pavilion.dataset.mode!=='detail') hint.style.opacity='0.5';
+},5000);
+
+</script>
+</body>
+</html>
