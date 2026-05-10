@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>スマートサイト MVP リニューアル 報告書</title>
+<style>
+  :root{
+    --bg:#07090F; --panel:#0E1322; --panel2:#161C30; --line:rgba(255,255,255,.08);
+    --text:#F2F4F8; --muted:#94A3B8; --cyan:#22D3EE; --violet:#A78BFA; --magenta:#F472B6;
+    --grad:linear-gradient(135deg,#22D3EE 0%,#A78BFA 50%,#F472B6 100%);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans JP","Yu Gothic","Hiragino Kaku Gothic ProN","Meiryo",sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--cyan)}
+  .wrap{max-width:980px;margin:0 auto;padding:48px 22px 80px}
+  .badge{display:inline-block;padding:6px 12px;border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:999px;font-size:11px;letter-spacing:.18em;font-weight:700;color:#cdd5e6;text-transform:uppercase}
+  h1{font-size:38px;line-height:1.15;margin:14px 0 8px;letter-spacing:-.02em;font-weight:800}
+  h1 .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{color:#cdd5e6;font-size:15px;line-height:1.9;max-width:780px}
+  h2{font-size:22px;margin:48px 0 14px;letter-spacing:-.01em}
+  h2::before{content:"";display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--grad);margin-right:10px;vertical-align:middle}
+  h3{font-size:16px;margin:24px 0 8px;color:#e6ebf5}
+  p{line-height:1.95;color:#cdd5e6;font-size:14px}
+  .section{margin-top:32px;padding:22px 22px 6px;background:var(--panel);border:1px solid var(--line);border-radius:18px}
+  .grid2{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+  @media (max-width:760px){.grid2{grid-template-columns:1fr}}
+  .item{padding:14px 16px;background:var(--panel2);border:1px solid var(--line);border-radius:12px}
+  .item .lbl{font-size:11px;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+  .item p{margin:6px 0 0;font-size:13.5px}
+  .strike{color:#f2a4b8;text-decoration:line-through;text-decoration-thickness:1px}
+  .arrow{color:#94A3B8;margin:0 8px}
+  table{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:13.5px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:#9aa6c0;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+  td code{background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.18);color:#a8eef9;padding:1px 6px;border-radius:6px;font-size:12px}
+  .step{position:relative;padding:18px 18px 18px 60px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;margin:10px 0}
+  .step::before{content:attr(data-n);position:absolute;left:14px;top:14px;width:30px;height:30px;display:grid;place-items:center;background:var(--grad);color:#0B1020;border-radius:8px;font-weight:900;font-size:14px}
+  .codebox{position:relative;margin:10px 0 16px;background:#0a0d18;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .codebox pre{margin:0;padding:16px 16px 16px 18px;color:#dbe2f4;font-size:13px;line-height:1.7;overflow:auto;font-family:"SF Mono",Menlo,Consolas,monospace;white-space:pre}
+  .copybtn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:#dbe2f4;font-size:11px;letter-spacing:.06em;font-weight:700;padding:6px 10px;border-radius:8px;cursor:pointer;transition:all .15s}
+  .copybtn:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.22)}
+  .copybtn.copied{background:rgba(34,197,94,.16);border-color:rgba(34,197,94,.4);color:#86efac}
+  .links{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+  .links a{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);color:#e6ebf5;text-decoration:none;font-size:13px;font-weight:700;transition:all .15s}
+  .links a:hover{border-color:rgba(255,255,255,.22);background:#1a2338}
+  .callout{padding:14px 16px;border-radius:12px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2);color:#cdf3fa;font-size:13.5px;line-height:1.8;margin:10px 0 14px}
+  .callout.warn{background:rgba(244,114,182,.08);border-color:rgba(244,114,182,.22);color:#fbd2e8}
+  ul{padding-left:20px;line-height:1.95;color:#cdd5e6;font-size:14px}
+  hr{border:none;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);margin:36px 0}
+  .files{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;font-size:13px}
+  @media (max-width:760px){.files{grid-template-columns:1fr}}
+  .files div{padding:6px 8px;color:#dbe2f4}
+  .files .new{color:#a8eef9}
+  .files .new::before{content:"＋";color:#34d399;margin-right:6px;font-weight:700}
+  .files .mod::before{content:"●";color:#a78bfa;margin-right:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="badge">Live Site OS · Smart Site MVP</span>
+  <h1>スマートサイトMVPを、<br><span class="grad">高級感ある自社プロダクト</span>として刷新しました。</h1>
+  <p class="lead">
+    Next.jsプロジェクトをGitHubから取得し、デザインを黒基調＋シアン×紫×ピンクのオーロラ・グラデへ全面刷新。コピーは「動かないHPを、動くプロダクトへ」という、買い手の現状に切り込む方向に書き換え、Header/Footer/Aurora背景を新規分離してコンポーネント設計も整えました。タイプチェック（tsc --noEmit）はエラーゼロで通過済みです。
+  </p>
+
+  <div class="links">
+    <a href="computer://C:\Users\nabe2\Documents\Claude\Projects\次世代ホームページ\smart-site-mvp">変更後プロジェクト一式を開く</a>
+    <a href="https://github.com/nabe246jp-ux/smart-site-mvp" target="_blank" rel="noopener">GitHub リポジトリ</a>
+    <a href="https://smart-site-mvp.vercel.app" target="_blank" rel="noopener">公開URL（更新前）</a>
+  </div>
+
+  <hr>
+
+  <h2>1. 何を変えたか（要点）</h2>
+  <div class="section">
+    <h3>デザインの方向性</h3>
+    <p>
+      ライトな白背景＋teal/coralのSaaSトーンから、深い宇宙黒（#07090F）＋シアン/紫/ピンクのオーロラ・グラデへ刷新。背景にはオーロラ光球とグリッド模様を重ね、ガラスモーフィズム調の半透明カードと極細グラデ・ボーダーで奥行きを出しました。タイポグラフィはInter＋Noto Sans JPの2軸で統一し、見出しは大きく太く、字間を詰めてプロダクト感を強くしています。
+    </p>
+
+    <h3>ブランド軸</h3>
+    <p>
+      プロダクト名「Smart Site / スマートサイト」とサブブランド「Live Site OS」の二段ロックアップを、ヘッダーとフッターで統一。ロゴは黒地にグラデの輪郭が浮かぶマークに更新しました。
+    </p>
+
+    <h3>コピーの再構築</h3>
+    <p>
+      ヒーローを「動かないHPを、動くプロダクトへ。」に変更し、買い手の現状を一行で否定して動かす導入に。CTAは「体験を開始」→「デモを体験する」、相談導線は「30分相談を予約」と行動を具体化しました。各セクションの見出しもプロダクト視点（数字で語る／案内役／4ステップで動く）に書き換えています。
+    </p>
+
+    <h3>コンポーネント分割</h3>
+    <p>
+      Hero内に埋まっていたサイト共通要素を分離し、固定追従型のHeader、サイト全体のFooter、ヒーローと相談セクションで再利用するAurora背景、ロゴ用BrandMarkを新規追加。framer-motionを使う全コンポーネントに「use client」を明示し、Server/Client境界を整えました。
+    </p>
+  </div>
+
+  <hr>
+
+  <h2>2. Before / After</h2>
+  <div class="section">
+    <div class="grid2">
+      <div class="item"><div class="lbl">配色</div><p><span class="strike">白背景＋teal/coral/sun</span><span class="arrow">→</span>黒基調＋シアン×紫×ピンク・グラデ</p></div>
+      <div class="item"><div class="lbl">背景</div><p><span class="strike">単色グラデ＋ドットグリッド</span><span class="arrow">→</span>オーロラ光球＋細グリッド＋下部マスク</p></div>
+      <div class="item"><div class="lbl">ヒーロー見出し</div><p><span class="strike">作って終わりのHPから、賢く動くスマートサイトへ。</span><span class="arrow">→</span>動かないHPを、動くプロダクトへ。</p></div>
+      <div class="item"><div class="lbl">主CTA</div><p><span class="strike">体験を開始</span><span class="arrow">→</span>デモを体験する／30分相談を予約</p></div>
+      <div class="item"><div class="lbl">カード表現</div><p><span class="strike">白カード＋影</span><span class="arrow">→</span>ガラス効果＋極細グラデ・ボーダー＋光球の演出</p></div>
+      <div class="item"><div class="lbl">ナビゲーション</div><p><span class="strike">ヒーロー内に埋め込み</span><span class="arrow">→</span>固定追従ヘッダー（スクロールでぼかし強化）</p></div>
+      <div class="item"><div class="lbl">タイポ</div><p><span class="strike">Yu Gothic系のみ</span><span class="arrow">→</span>Inter＋Noto Sans JPの2軸で統一</p></div>
+      <div class="item"><div class="lbl">フッター</div><p><span class="strike">なし</span><span class="arrow">→</span>サイトマップと連絡先を含む正式フッター</p></div>
+    </div>
+  </div>
+
+  <hr>
+
+  <h2>3. 変更ファイル一覧</h2>
+  <div class="section">
+    <p>新規8ファイル、修正13ファイル。型エラーは0件で通過済みです。</p>
+    <h3>新規追加</h3>
+    <div class="files">
+      <div class="new"><code>src/components/site/Header.tsx</code></div>
+      <div class="new"><code>src/components/site/Footer.tsx</code></div>
+      <div class="new"><code>src/components/site/Aurora.tsx</code></div>
+      <div class="new"><code>src/components/site/BrandMark.tsx</code></div>
+      <div class="new"><code>src/lib/cn.ts</code></div>
+    </div>
+    <h3>修正</h3>
+    <div class="files">
+      <div class="mod"><code>tailwind.config.ts</code> 配色・グラデ・アニメ追加</div>
+      <div class="mod"><code>src/app/layout.tsx</code> Inter+Noto Sans JP導入</div>
+      <div class="mod"><code>src/app/globals.css</code> 黒基調＋トークン整理</div>
+      <div class="mod"><code>src/data/smartSite.ts</code> コピーとデータ拡張</div>
+      <div class="mod"><code>src/components/SmartSiteApp.tsx</code> Header/Footer配置</div>
+      <div class="mod"><code>src/components/Hero.tsx</code> オーロラ＋ガラスダッシュボード</div>
+      <div class="mod"><code>src/components/SectionShell.tsx</code> 見出しスタイル</div>
+      <div class="mod"><code>src/components/VisitorSelector.tsx</code> グラデ枠＋アクティブ強調</div>
+      <div class="mod"><code>src/components/SmartData.tsx</code> グラデ数字＋ガラスカード</div>
+      <div class="mod"><code>src/components/AnimatedNumber.tsx</code> サフィックスのスタイル微調整</div>
+      <div class="mod"><code>src/components/SmartTopics.tsx</code> ガラスカード＋光球ホバー</div>
+      <div class="mod"><code>src/components/ExperienceMap.tsx</code> グラデ・ステップ表現</div>
+      <div class="mod"><code>src/components/Diagnosis.tsx</code> グラデ進捗バー</div>
+      <div class="mod"><code>src/components/AiNavigator.tsx</code> グラデ吹き出し＋アバター</div>
+      <div class="mod"><code>src/components/BeforeAfter.tsx</code> 黒基調コントラスト</div>
+      <div class="mod"><code>src/components/ConsultationCta.tsx</code> グラデ枠付きCTAパネル</div>
+    </div>
+  </div>
+
+  <hr>
+
+  <h2>4. 動作確認の手順（あなたのパソコンで実行）</h2>
+  <div class="callout">
+    変更ファイル一式は <code>C:\Users\nabe2\Documents\Claude\Projects\次世代ホームページ\smart-site-mvp\</code> に置きました。リモート（GitHub）も設定済みなので、そのままプッシュできます。
+  </div>
+
+  <div class="step" data-n="1">
+    <h3 style="margin-top:0">PowerShellを開いてフォルダへ移動</h3>
+    <div class="codebox">
+      <button class="copybtn" data-copy="cd 'C:\Users\nabe2\Documents\Claude\Projects\次世代ホームページ\smart-site-mvp'">コピー</button>
+      <pre>cd 'C:\Users\nabe2\Documents\Claude\Projects\次世代ホームページ\smart-site-mvp'</pre>
+    </div>
+  </div>
+
+  <div class="step" data-n="2">
+    <h3 style="margin-top:0">パッケージをインストール</h3>
+    <p>新しく追加したGoogleフォント関連の解決のため、念のため最新の依存関係を入れ直します。</p>
+    <div class="codebox">
+      <button class="copybtn" data-copy="npm install">コピー</button>
+      <pre>npm install</pre>
+    </div>
+  </div>
+
+  <div class="step" data-n="3">
+    <h3 style="margin-top:0">ローカルで開発サーバーを起動して見た目を確認</h3>
+    <div class="codebox">
+      <button class="copybtn" data-copy="npm run dev">コピー</button>
+      <pre>npm run dev</pre>
+    </div>
+    <p>ブラウザで <code>http://localhost:3000</code> を開いて確認してください。Ctrl + C で終了します。</p>
+  </div>
+
+  <div class="step" data-n="4">
+    <h3 style="margin-top:0">本番ビルドが通るかを確認</h3>
+    <div class="codebox">
+      <button class="copybtn" data-copy="npm run build">コピー</button>
+      <pre>npm run build</pre>
+    </div>
+    <p>このコマンドはVercelが自動で実行するものと同じです。ローカルで通れば、Vercelのデプロイも基本的に成功します。</p>
+  </div>
+
+  <div class="step" data-n="5">
+    <h3 style="margin-top:0">変更をGitHubへプッシュしてVercelに自動デプロイ</h3>
+    <div class="codebox">
+      <button class="copybtn" data-copy="git add -A
+git commit -m &quot;feat: redesign to dark + gradient brand, add header/footer, refactor copy&quot;
+git push origin main">コピー</button>
+      <pre>git add -A
+git commit -m "feat: redesign to dark + gradient brand, add header/footer, refactor copy"
+git push origin main</pre>
+    </div>
+    <p>Vercelに連携済みなら、push後1〜2分で <a href="https://smart-site-mvp.vercel.app" target="_blank" rel="noopener">smart-site-mvp.vercel.app</a> が新デザインに切り替わります。</p>
+  </div>
+
+  <hr>
+
+  <h2>5. 元に戻したいとき</h2>
+  <div class="section">
+    <p>もし全体を以前の状態に戻したい場合、以下のコマンドで <code>4490d00</code>（更新前のコミット）に戻せます。</p>
+    <div class="codebox">
+      <button class="copybtn" data-copy="git reset --hard 4490d00">コピー</button>
+      <pre>git reset --hard 4490d00</pre>
+    </div>
+    <div class="callout warn">
+      ローカルの未コミット変更は消えます。一部だけ戻したい場合は <code>git checkout 4490d00 -- 対象ファイル</code> で個別に戻せます。
+    </div>
+  </div>
+
+  <hr>
+
+  <h2>6. デザイントークン（一覧）</h2>
+  <div class="section">
+    <table>
+      <thead><tr><th>役割</th><th>値</th><th>使い所</th></tr></thead>
+      <tbody>
+        <tr><td>背景</td><td><code>#07090F</code></td><td>サイト全体の地</td></tr>
+        <tr><td>サーフェス</td><td><code>#0E1322</code> / <code>#161C30</code></td><td>カード／浮き上がる面</td></tr>
+        <tr><td>線</td><td><code>rgba(255,255,255,.08)</code></td><td>ボーダー</td></tr>
+        <tr><td>本文</td><td><code>#F2F4F8</code></td><td>主要テキスト</td></tr>
+        <tr><td>補助文</td><td><code>#94A3B8</code></td><td>サブ説明・キャプション</td></tr>
+        <tr><td>シアン</td><td><code>#22D3EE</code></td><td>フォーカス・アクセント</td></tr>
+        <tr><td>バイオレット</td><td><code>#A78BFA</code></td><td>選択中・強調</td></tr>
+        <tr><td>マゼンタ</td><td><code>#F472B6</code></td><td>差し色・成功表現</td></tr>
+        <tr><td>ブランドグラデ</td><td><code>linear-gradient(135deg,#22D3EE,#A78BFA 50%,#F472B6)</code></td><td>主要CTA・テキストアクセント</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>7. 推奨される次のステップ</h2>
+  <div class="section">
+    <h3>短期で効くもの</h3>
+    <ul>
+      <li>OGP画像（1200×630）を作成してSNSシェア時の見栄えを揃える</li>
+      <li>ヒアリングフォームをHubSpotやTallyで埋め込み、メール直リンクから一段アップグレード</li>
+      <li>診断結果を「相談を予約」CTAと自動連結（結果を初期メッセージに渡す）</li>
+    </ul>
+    <h3>中期で効くもの</h3>
+    <ul>
+      <li>Smart Topicsを実データ（Supabase or Googleスプレッドシート）と接続</li>
+      <li>AIナビをClaude APIに差し替え、サイト内ドキュメントをコンテキストとして回答</li>
+      <li>計測（Vercel Analytics + Plausible / GA4）で訪問者タイプ別の離脱を可視化</li>
+    </ul>
+    <h3>長期の世界観</h3>
+    <p>
+      「Live Site OS」というメタブランドの世界観をプロダクトサイトと自社コーポレートサイトで二重に持たせ、自社サイトを「最高の事例」として運用するのが効果的です。次世代ホームページ プロジェクトの街バージョン（Tech Partners Town）と組み合わせて、ショーケースの厚みを作っていけます（推測です）。
+    </p>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.copybtn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const text = btn.getAttribute('data-copy') || '';
+      try {
+        await navigator.clipboard.writeText(text);
+        const old = btn.textContent;
+        btn.textContent = 'コピー済み';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = old; btn.classList.remove('copied'); }, 1400);
+      } catch (e) {
+        btn.textContent = '失敗';
+      }
+    });
+  });
+</script>
+</body>
+</html>
