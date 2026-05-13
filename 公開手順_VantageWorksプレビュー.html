@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VantageWorks プレビューを公開する手順</title>
+<style>
+  :root{
+    --bg:#FAFBFD; --panel:#fff; --line:rgba(15,23,42,0.10); --ink:#0F172A; --ink-2:#475569; --ink-3:#94A3B8; --brand:#2563EB; --brand-700:#1D4ED8; --brand-50:#EFF6FF; --brand-200:#BFDBFE;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic UI","Noto Sans JP",sans-serif;-webkit-font-smoothing:antialiased;font-feature-settings:"palt" 1}
+  .wrap{max-width:780px;margin:0 auto;padding:40px 22px 80px}
+  .badge{display:inline-block;padding:5px 12px;border-radius:999px;background:var(--brand-50);border:1px solid var(--brand-200);color:var(--brand-700);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase}
+  h1{font-size:28px;line-height:1.3;margin:14px 0 6px;letter-spacing:-0.015em;font-weight:700}
+  .lead{font-size:14px;color:var(--ink-2);line-height:1.95;margin:0 0 26px}
+  h2{font-size:18px;font-weight:700;margin:36px 0 12px;display:flex;align-items:center;gap:10px}
+  h2::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--brand)}
+  p{line-height:1.95;color:var(--ink);font-size:14px;margin:0 0 12px}
+  .step{position:relative;padding:18px 22px 18px 76px;background:var(--panel);border:1px solid var(--line);border-radius:14px;margin:10px 0}
+  .step::before{content:attr(data-n);position:absolute;left:18px;top:18px;width:42px;height:42px;display:grid;place-items:center;background:var(--brand);color:#fff;border-radius:12px;font-weight:700;font-size:16px}
+  .step h3{margin:0 0 6px;font-size:15px;font-weight:700}
+  .step p{margin:6px 0 12px;font-size:13px;color:var(--ink-2);line-height:1.85}
+  .codebox{position:relative;background:#0F172A;border-radius:10px;overflow:hidden;margin:8px 0 0}
+  .codebox pre{margin:0;padding:14px 16px 14px 18px;color:#E2E8F0;font-size:12.5px;line-height:1.7;overflow:auto;font-family:"SF Mono",Menlo,Consolas,monospace;white-space:pre;padding-right:84px}
+  .copybtn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:#E2E8F0;font-size:11px;letter-spacing:0.06em;font-weight:700;padding:6px 12px;border-radius:8px;cursor:pointer;transition:all .15s;font-family:inherit}
+  .copybtn:hover{background:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.32)}
+  .copybtn.copied{background:rgba(34,197,94,0.18);border-color:rgba(34,197,94,0.40);color:#86EFAC}
+  .callout{padding:14px 16px;border-radius:12px;background:var(--brand-50);border:1px solid var(--brand-200);color:var(--ink);font-size:13px;line-height:1.85;margin:14px 0}
+  .callout strong{color:var(--brand-700)}
+  .link-card{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;background:linear-gradient(135deg,var(--brand) 0%,#1E3A8A 100%);color:#fff;border-radius:14px;text-decoration:none;margin-top:18px}
+  .link-card .ttl{font-size:11px;letter-spacing:0.16em;font-weight:700;opacity:0.75;text-transform:uppercase}
+  .link-card .url{font-size:14px;font-weight:700;margin-top:2px;font-family:"SF Mono",Menlo,Consolas,monospace}
+  .link-card .arr{font-size:22px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="badge">Deploy Guide</span>
+  <h1>VantageWorks プレビューを Web に公開する。</h1>
+  <p class="lead">既存の Vercel デプロイ（smart-site-mvp.vercel.app）に、今回のプレビューHTMLを追加で乗せる形にします。PowerShellで3つのコマンドを順番に貼り付ければ、1〜2分後に公開URLからアクセスできます。</p>
+
+  <div class="callout">
+    <strong>公開後のURL：</strong> https://smart-site-mvp.vercel.app/vantageworks.html<br>
+    このURLをそのまま他の人に送れば、PCでもスマホでも見られます。
+  </div>
+
+  <h2>1. プロジェクトフォルダへ移動</h2>
+  <div class="step" data-n="1">
+    <h3>PowerShell を開いて、コピーで貼り付け</h3>
+    <p>Windowsキーを押して「powershell」と検索 → PowerShell を起動。下のコマンドを貼り付けてEnter。</p>
+    <div class="codebox" id="c1">
+      <button class="copybtn" data-target="c1">コピー</button>
+      <pre>cd 'C:\Users\nabe2\Documents\Claude\Projects\次世代ホームページ\smart-site-mvp'</pre>
+    </div>
+  </div>
+
+  <h2>2. プレビューHTMLを公開フォルダにコピー</h2>
+  <div class="step" data-n="2">
+    <h3>同じPowerShellで続けてコピーを実行</h3>
+    <p>下のコマンドを貼り付けてEnter。public フォルダがなければ自動で作られます。</p>
+    <div class="codebox" id="c2">
+      <button class="copybtn" data-target="c2">コピー</button>
+      <pre>New-Item -ItemType Directory -Force -Path .\public | Out-Null
+Copy-Item '..\VantageWorks_SmartSite_preview.html' '.\public\vantageworks.html' -Force</pre>
+    </div>
+  </div>
+
+  <h2>3. GitHub へ送信して、Vercelに自動デプロイ</h2>
+  <div class="step" data-n="3">
+    <h3>git で送信</h3>
+    <p>下のコマンドを順番に貼り付け。Vercelに繋がっていれば、自動で公開ビルドが走ります。</p>
+    <div class="codebox" id="c3">
+      <button class="copybtn" data-target="c3">コピー</button>
+      <pre>git add public/vantageworks.html
+git commit -m "publish: vantageworks smart site preview"
+git push origin main</pre>
+    </div>
+    <p style="margin-top:14px;font-size:12px;color:var(--ink-3)">git push の途中で「Username for GitHub」「Password」を求められたら、いつもどおりGitHubのユーザー名とパスワード（または個人アクセストークン）を入力してください。</p>
+  </div>
+
+  <h2>4. 1〜2分待って、URLを開く</h2>
+  <div class="step" data-n="4">
+    <h3>Vercel の自動デプロイ完了を待つ</h3>
+    <p>git push 後、Vercel が自動でビルド＆公開します。所要時間は 1〜2分です。完了したら下のURLが他の人にも見られるようになります。</p>
+    <a class="link-card" href="https://smart-site-mvp.vercel.app/vantageworks.html" target="_blank" rel="noopener">
+      <span>
+        <span class="ttl">公開URL</span>
+        <div class="url">https://smart-site-mvp.vercel.app/vantageworks.html</div>
+      </span>
+      <span class="arr">→</span>
+    </a>
+  </div>
+
+  <h2>つまづいたとき</h2>
+  <div class="callout">
+    「git push したのに反映されない」ときは、Vercelのダッシュボード（vercel.com）にログインして、smart-site-mvp プロジェクトの Deployments タブを確認すると、ビルド状況がわかります。<br><br>
+    「URL を開いたら 404」になったら、デプロイがまだ走っている途中の可能性があります。30秒〜2分ほど待って再読み込みしてみてください。
+  </div>
+
+  <h2>後でプレビューを更新したくなったら</h2>
+  <p>同じ手順 2〜3 を繰り返せば、上書きで反映されます。プレビューHTML（VantageWorks_SmartSite_preview.html）を私が更新したあと、再度 PowerShell でコピー → git push の流れです。</p>
+
+</div>
+
+<script>
+document.querySelectorAll('.copybtn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const id = btn.getAttribute('data-target');
+    const node = document.getElementById(id);
+    if (!node) return;
+    const pre = node.querySelector('pre');
+    const text = pre ? pre.textContent : '';
+    try {
+      await navigator.clipboard.writeText(text);
+      const old = btn.textContent;
+      btn.textContent = 'コピー済み';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = old; btn.classList.remove('copied'); }, 1500);
+    } catch (e) {
+      btn.textContent = '失敗';
+    }
+  });
+});
+</script>
+</body>
+</html>

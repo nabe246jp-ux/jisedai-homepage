@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VantageWorks プレビュー 公開（1行）</title>
+<style>
+  :root{--bg:#FAFBFD;--ink:#0F172A;--ink-2:#475569;--line:rgba(15,23,42,0.10);--brand:#2563EB;--brand-700:#1D4ED8;--brand-50:#EFF6FF;--brand-200:#BFDBFE;--success:#10B981}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic UI",sans-serif;-webkit-font-smoothing:antialiased;font-feature-settings:"palt" 1}
+  .wrap{max-width:780px;margin:0 auto;padding:48px 22px 80px}
+  .badge{display:inline-block;padding:5px 12px;border-radius:999px;background:var(--brand-50);border:1px solid var(--brand-200);color:var(--brand-700);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase}
+  h1{font-size:28px;line-height:1.3;margin:14px 0 10px;letter-spacing:-0.015em;font-weight:700}
+  .lead{font-size:14px;color:var(--ink-2);line-height:1.95;margin:0 0 24px}
+  .one-step{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 26px;margin:18px 0;box-shadow:0 10px 30px -16px rgba(15,23,42,0.10)}
+  .one-step h2{margin:0 0 10px;font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .one-step h2 .num{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--brand);color:#fff;font-size:13px}
+  .one-step p{margin:6px 0 14px;font-size:13.5px;color:var(--ink-2);line-height:1.85}
+  .codebox{position:relative;background:#0F172A;border-radius:12px;overflow:hidden}
+  .codebox pre{margin:0;padding:18px 100px 18px 18px;color:#E2E8F0;font-size:12.5px;line-height:1.85;overflow-x:auto;font-family:"SF Mono",Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-all}
+  .copybtn{position:absolute;top:10px;right:10px;background:#2563EB;border:1px solid #2563EB;color:#fff;font-size:12px;letter-spacing:0.04em;font-weight:700;padding:8px 16px;border-radius:8px;cursor:pointer;transition:all .15s;font-family:inherit}
+  .copybtn:hover{background:#1D4ED8;border-color:#1D4ED8}
+  .copybtn.ok{background:#10B981;border-color:#10B981}
+  .url-card{margin-top:22px;padding:20px 24px;background:linear-gradient(135deg,var(--brand) 0%,#1E3A8A 100%);color:#fff;border-radius:16px;display:flex;align-items:center;justify-content:space-between;gap:14px;text-decoration:none}
+  .url-card .l{font-size:11px;letter-spacing:0.16em;font-weight:700;opacity:0.8;text-transform:uppercase}
+  .url-card .u{font-size:15px;font-weight:700;font-family:"SF Mono",Menlo,Consolas,monospace;margin-top:4px;word-break:break-all}
+  .url-card .arr{font-size:22px;flex-shrink:0}
+  .note{background:var(--brand-50);border:1px solid var(--brand-200);border-radius:12px;padding:14px 16px;font-size:12.5px;color:var(--ink);line-height:1.85;margin:18px 0}
+  .note strong{color:var(--brand-700)}
+  kbd{display:inline-block;padding:2px 8px;background:#fff;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;font-size:11px;font-family:"SF Mono",Menlo,Consolas,monospace}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="badge">Paste Once</span>
+  <h1>PowerShellに1行だけ貼り付ければ公開できます。</h1>
+  <p class="lead">前回の方法はWindowsの文字コードの相性で動きませんでした。今回は .ps1 ファイルを使わず、PowerShellに長い1行をそのまま貼り付ける方式に変えました。これなら文字コードの問題は起きません。</p>
+
+  <div class="one-step">
+    <h2><span class="num">1</span>このコマンドをコピー</h2>
+    <p>右側の青い「コピー」ボタンをクリックします。</p>
+    <div class="codebox" id="cmd">
+      <button class="copybtn" data-target="cmd">コピー</button>
+<pre>cd 'C:\Users\nabe2\Documents\Claude\Projects\次世代ホームページ\smart-site-mvp'; New-Item -ItemType Directory -Force -Path .\public | Out-Null; Copy-Item '..\VantageWorks_SmartSite_preview.html' '.\public\vantageworks.html' -Force; git add public/vantageworks.html; git commit -m "publish vantageworks preview"; git push origin main</pre>
+    </div>
+  </div>
+
+  <div class="one-step">
+    <h2><span class="num">2</span>PowerShell に貼り付け → Enter</h2>
+    <p>すでに開いているPowerShellの中で、右クリック（または <kbd>Ctrl</kbd> + <kbd>V</kbd>）で貼り付け、<kbd>Enter</kbd> を押します。</p>
+    <p style="font-size:12.5px;color:var(--ink-2);">PowerShellが閉じてしまっている場合は、<kbd>Windowsキー</kbd> → 「powershell」と入力 → <kbd>Enter</kbd> で開けます。</p>
+  </div>
+
+  <div class="one-step">
+    <h2><span class="num">3</span>1〜2分待って完了</h2>
+    <p>「git に追加」「コミット」「push」が順に表示されて、最後にコマンドプロンプトに戻れば成功です。GitHubに送られて、Vercelが自動でWebに公開します。</p>
+  </div>
+
+  <a class="url-card" href="https://smart-site-mvp.vercel.app/vantageworks.html" target="_blank" rel="noopener">
+    <span>
+      <span class="l">公開URL（1〜2分後に有効）</span>
+      <div class="u">https://smart-site-mvp.vercel.app/vantageworks.html</div>
+    </span>
+    <span class="arr">→</span>
+  </a>
+
+  <div class="note">
+    <strong>git push でエラーが出たら：</strong> 「Username for GitHub」「Password」を聞かれることがあります。前にpushしたときと同じ情報（GitHubのユーザー名と、パスワードの代わりに発行している個人アクセストークン）を入れてください。ブラウザでGitHubのログイン画面が出る場合はそちらでサインインしてください。
+  </div>
+
+</div>
+
+<script>
+document.querySelectorAll('.copybtn').forEach(btn=>{
+  btn.addEventListener('click',async()=>{
+    const id=btn.getAttribute('data-target');
+    const node=document.getElementById(id);
+    if(!node) return;
+    const pre=node.querySelector('pre');
+    const text=pre?pre.textContent:'';
+    try{
+      await navigator.clipboard.writeText(text);
+      const old=btn.textContent;
+      btn.textContent='コピー済み';
+      btn.classList.add('ok');
+      setTimeout(()=>{btn.textContent=old;btn.classList.remove('ok');},1800);
+    }catch(e){btn.textContent='失敗';}
+  });
+});
+</script>
+</body>
+</html>

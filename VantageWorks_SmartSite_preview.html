@@ -1,0 +1,3023 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>VantageWorks Smart Site プレビュー</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+  :root {
+    --canvas: #FAFBFD;
+    --surface: #FFFFFF;
+    --panel: #F4F7FB;
+    --line: rgba(15, 23, 42, 0.10);
+    --rule: rgba(15, 23, 42, 0.16);
+    --ink: #0F172A;
+    --ink-2: #475569;
+    --ink-3: #94A3B8;
+    --brand-50: #EFF6FF;
+    --brand-100: #DBEAFE;
+    --brand-200: #BFDBFE;
+    --brand-600: #2563EB;
+    --brand-700: #1D4ED8;
+    --brand-900: #1E3A8A;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "palt" 1;
+  }
+  button { font-family: inherit; }
+  input, textarea { font-family: inherit; }
+
+  .page-head { text-align: center; padding: 28px 20px 8px; }
+  .page-head .badge {
+    display: inline-block; padding: 5px 12px; border-radius: 999px;
+    background: var(--brand-50); border: 1px solid var(--brand-200);
+    color: var(--brand-700); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  .page-head h1 {
+    margin: 14px 0 6px; font-size: 26px; font-weight: 600;
+    letter-spacing: -0.015em; color: var(--ink);
+  }
+  .page-head p {
+    margin: 0 auto 14px; max-width: 580px; font-size: 13px;
+    line-height: 1.85; color: var(--ink-2);
+  }
+
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+    margin: 10px auto 0; max-width: 760px; padding: 0 16px;
+  }
+  .controls button {
+    font-size: 12px; padding: 7px 14px; border-radius: 999px;
+    border: 1px solid var(--line); background: #fff;
+    color: var(--ink); font-weight: 500; cursor: pointer;
+  }
+  .controls button:hover { border-color: var(--ink); }
+  .controls button.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  .stage { padding: 0; width: 100%; min-height: 100vh; }
+  .phone {
+    width: 100%; max-width: none;
+    background: var(--canvas);
+    border: none;
+    border-radius: 0; padding: 0; position: relative;
+    box-shadow: none;
+    overflow: hidden;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+  }
+  .phone::before { display: none; }
+  .screen {
+    flex: 1;
+    background: var(--canvas); border-radius: 0; overflow: visible;
+    color: var(--ink); display: grid; grid-template-columns: 1fr 360px;
+    min-height: 0; position: relative;
+  }
+  .main { display: flex; flex-direction: column; min-width: 0; }
+  .aside-pc {
+    background: var(--surface);
+    border-left: 1px solid var(--line);
+    padding: 22px 20px;
+    display: flex; flex-direction: column; gap: 14px;
+    position: relative;
+  }
+  .aside-pc .ah { display: flex; align-items: center; gap: 12px; }
+  .aside-pc .ah .av {
+    width: 56px; height: 56px; border-radius: 50%;
+    overflow: hidden; background: var(--brand-50);
+    border: 1px solid var(--brand-200); flex-shrink: 0;
+  }
+  .aside-pc .ah .av svg { width: 100%; height: 100%; }
+  .aside-pc .ah .role { font-size: 10px; letter-spacing: 0.22em; color: var(--brand-600); font-weight: 700; }
+  .aside-pc .ah .nm { font-size: 16px; font-weight: 600; margin-top: 4px; }
+  .aside-pc .bubble {
+    background: var(--brand-50); border: 1px solid var(--brand-200);
+    border-radius: 14px; padding: 12px 14px;
+    font-size: 12.5px; line-height: 1.85; color: var(--ink);
+    min-height: 36px;
+  }
+  .aside-pc .sg-l {
+    font-size: 10px; letter-spacing: 0.22em; color: var(--ink-3);
+    font-weight: 700; margin-top: 4px;
+  }
+  .aside-pc .sg { display: flex; flex-direction: column; gap: 6px; }
+  .aside-pc .sg button {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 13px;
+    background: #fff; border: 1px solid var(--line);
+    border-radius: 12px; font-size: 12.5px; font-weight: 500;
+    color: var(--ink); cursor: pointer; text-align: left;
+    transition: border-color .15s, transform .12s;
+    position: relative; overflow: hidden;
+  }
+  .aside-pc .sg button:hover { border-color: var(--ink); }
+  .aside-pc .sg button:active { transform: scale(0.985); }
+  .aside-pc .sg button.primary { background: var(--brand-600); color: #fff; border-color: var(--brand-600); }
+  .aside-pc .sg button.primary:hover { background: var(--brand-700); }
+  .aside-pc .foot { margin-top: auto; font-size: 10px; letter-spacing: 0.22em; color: var(--ink-3); font-weight: 700; }
+  .ainav-fab { display: none; }
+
+  .site-header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 16px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+  .site-brand { display: flex; align-items: center; gap: 12px; }
+  .logo-mark { width: 40px; height: 40px; flex-shrink: 0; }
+  .logo-mark svg { width: 100%; height: 100%; }
+  .logo-text { line-height: 1.25; }
+  .brand-line {
+    display: flex; align-items: baseline; gap: 8px;
+    font-size: 16px; font-weight: 700;
+    letter-spacing: -0.005em;
+    color: var(--navy);
+  }
+  .brand-line .brand-divider { color: var(--ink-3); font-weight: 400; }
+  .brand-line .brand-legal {
+    font-size: 12px; font-weight: 500; color: var(--ink-2);
+  }
+  .brand-tagline {
+    font-size: 11.5px; color: var(--ink-2); margin-top: 2px;
+    letter-spacing: 0.04em;
+  }
+  .site-tags { display: flex; gap: 6px; }
+  .site-tag {
+    font-size: 11px; padding: 5px 11px; border-radius: 999px;
+    background: var(--panel); color: var(--ink-2);
+    font-weight: 600; border: 1px solid var(--line);
+    cursor: pointer; transition: all .15s;
+  }
+  .site-tag:hover { background: var(--brand-50); color: var(--brand-700); border-color: var(--brand-200); }
+  .site-tag.active { background: var(--brand-600); color: #fff; border-color: var(--brand-600); }
+
+  .site-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 16px 24px;
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+  }
+  .sf-brand { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .sf-meta { font-size: 11px; color: var(--ink-2); margin-top: 3px; }
+  .sf-right { display: flex; gap: 18px; flex-wrap: wrap; }
+  .sf-link {
+    font-size: 11.5px; color: var(--ink-2); cursor: pointer;
+    transition: color .15s;
+  }
+  .sf-link:hover { color: var(--ink); }
+
+  .topbar {
+    background: transparent;
+    border-bottom: 1px solid var(--line);
+    padding: 10px 18px 12px;
+  }
+  .topbar .crumb .root { display: none; }
+  .topbar.is-home { display: none; }
+
+  @media (max-width: 760px) {
+    .phone { max-width: 460px; border-radius: 28px; }
+    .screen { grid-template-columns: 1fr; min-height: 640px; }
+    .aside-pc { display: none; }
+    .ainav-fab { display: flex; }
+    .body { padding-bottom: 110px !important; }
+  }
+
+  .topbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px 12px; border-bottom: 1px solid var(--line); background: var(--canvas);
+  }
+  .topbar .back {
+    width: 34px; height: 34px; border-radius: 11px;
+    border: 1px solid var(--line); background: #fff;
+    display: grid; place-items: center; color: var(--ink);
+    cursor: pointer; flex-shrink: 0; transition: border-color .15s;
+  }
+  .topbar .back:disabled { color: #CBD5E1; cursor: default; }
+  .topbar .back:hover:not(:disabled) { border-color: var(--ink); }
+  .topbar .crumb {
+    font-size: 11.5px; color: var(--ink-2);
+    display: flex; align-items: center; gap: 6px;
+    min-width: 0; flex: 1; overflow-x: auto; white-space: nowrap;
+  }
+  .topbar .crumb::-webkit-scrollbar { display: none; }
+  .topbar .crumb .root { font-size: 9.5px; letter-spacing: 0.22em; color: var(--ink-3); font-weight: 700; }
+  .topbar .crumb .sep { color: var(--ink-3); }
+  .topbar .crumb .now { color: var(--ink); font-weight: 600; }
+  .topbar .nav-btn {
+    width: 34px; height: 34px; border-radius: 11px;
+    border: 1px solid var(--line); background: #fff;
+    display: grid; place-items: center; color: var(--brand-600);
+    cursor: pointer; flex-shrink: 0; transition: border-color .15s;
+  }
+  .topbar .nav-btn:hover { border-color: var(--brand-600); }
+
+  .body { flex: 1; padding: 0; min-width: 0; }
+  .body > * { padding: 28px 26px 36px; }
+  .body > .home-root { padding: 0; }
+  .body > .home-root > .home-hero { padding-top: 56px; padding-bottom: 44px; }
+  .body > .home-root > .home-choices,
+  .body > .home-root > .employee-row,
+  .body > .home-root > .home-section-head,
+  .body > .home-root > .stats-home { padding-left: 26px; padding-right: 26px; }
+
+  .home-root { padding: 0 0 8px; }
+  .home-hero {
+    position: relative; overflow: hidden;
+    padding: 56px 32px 44px;
+    background: linear-gradient(180deg, #F4F7FB 0%, #FAFBFD 100%);
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-aurora {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+  .hero-aurora::before, .hero-aurora::after {
+    content: ""; position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.55;
+  }
+  .hero-aurora::before {
+    top: -100px; right: -40px; width: 360px; height: 360px;
+    background: radial-gradient(circle, rgba(34,211,238,0.45), transparent 70%);
+  }
+  .hero-aurora::after {
+    bottom: -120px; left: -60px; width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(37,99,235,0.30), transparent 70%);
+  }
+  .hero-inner { position: relative; max-width: 640px; }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11.5px; letter-spacing: 0.16em;
+    color: var(--brand-700); font-weight: 700;
+    padding: 6px 14px; border-radius: 999px;
+    background: rgba(255,255,255,0.7); border: 1px solid var(--brand-200);
+    backdrop-filter: blur(8px);
+  }
+  .dot-live {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--success); position: relative;
+  }
+  .dot-live::after {
+    content: ""; position: absolute; inset: -3px;
+    border-radius: 50%; background: var(--success); opacity: 0.4;
+    animation: livePulse 2s ease-in-out infinite;
+  }
+  @keyframes livePulse {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.6); opacity: 0; }
+  }
+  .hero-title {
+    font-size: 38px; line-height: 1.2; font-weight: 700;
+    letter-spacing: -0.025em; color: var(--navy);
+    margin: 18px 0 14px;
+  }
+  .hero-sub {
+    font-size: 14.5px; line-height: 1.95; color: var(--ink-2);
+    margin: 0 0 22px; max-width: 540px;
+  }
+  .hero-ask {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 12px 18px; background: #fff;
+    border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: 0 8px 24px -16px rgba(15,23,42,0.20);
+  }
+  .hero-ask .ask-q {
+    font-size: 14px; font-weight: 600; color: var(--ink);
+  }
+
+  .home-choices {
+    padding: 24px 24px 6px;
+    display: grid; gap: 8px;
+  }
+  .home-choices .choice {
+    padding: 18px 18px;
+    border-radius: 16px;
+    margin-bottom: 0;
+  }
+
+  .home-root .employee-row {
+    margin: 14px 24px 0;
+  }
+
+  .home-section-head {
+    padding: 32px 24px 12px;
+  }
+  .home-section-head .hs-eyebrow {
+    font-size: 10.5px; letter-spacing: 0.22em;
+    color: var(--brand-600); font-weight: 700;
+  }
+  .home-section-head .hs-title {
+    font-size: 22px; font-weight: 700; color: var(--ink);
+    margin-top: 6px; letter-spacing: -0.01em;
+  }
+  .home-root .stats-home {
+    padding: 0 24px 24px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+
+  .chip {
+    display: inline-flex; align-items: center;
+    font-size: 10.5px; padding: 4px 11px; border-radius: 999px;
+    background: var(--brand-50); border: 1px solid var(--brand-200);
+    color: var(--brand-700); font-weight: 600; letter-spacing: 0.02em;
+  }
+  h1.h1 {
+    font-size: 21px; font-weight: 600; line-height: 1.3;
+    letter-spacing: -0.01em; margin: 12px 0 8px; color: var(--ink);
+  }
+  p.lead {
+    font-size: 13px; line-height: 1.85; color: var(--ink-2); margin: 0 0 16px;
+  }
+
+  .choice {
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; width: 100%; padding: 14px 14px;
+    background: #fff; border: 1px solid var(--line);
+    border-radius: 16px; margin-bottom: 7px;
+    font-size: 13.5px; color: var(--ink); font-weight: 500;
+    cursor: pointer; text-align: left;
+    transition: border-color .15s, transform .15s, box-shadow .15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .choice:hover { border-color: var(--ink); transform: translateY(-1px); box-shadow: 0 4px 14px -8px rgba(15,23,42,0.25); }
+  .choice:active { transform: scale(0.985); }
+  .choice.primary { background: var(--brand-600); color: #fff; border-color: var(--brand-600); }
+  .choice.primary:hover { background: var(--brand-700); border-color: var(--brand-700); }
+  .choice.primary .ripple { background: rgba(255,255,255,0.35); }
+  .choice .ic {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: var(--brand-50); color: var(--brand-700);
+    display: grid; place-items: center; font-size: 16px; flex-shrink: 0;
+  }
+  .choice.primary .ic { background: rgba(255,255,255,0.18); color: #fff; }
+  .choice .left { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
+  .choice .ttl { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; gap: 2px; }
+  .choice .ttl .label { line-height: 1.35; }
+  .choice .ttl .hint { font-size: 11px; font-weight: 400; color: var(--ink-3); }
+  .choice.primary .ttl .hint { color: rgba(255,255,255,0.78); }
+  .choice .arr { color: var(--ink-3); font-size: 16px; flex-shrink: 0; }
+  .choice.primary .arr { color: #fff; }
+
+  .employee-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; padding: 12px 14px;
+    background: var(--panel); border: 1px solid rgba(15,23,42,0.06);
+    border-radius: 16px; margin-top: 14px;
+  }
+  .employee-row .l .ey { font-size: 9.5px; letter-spacing: 0.22em; color: var(--ink-3); font-weight: 700; }
+  .employee-row .l .nm { font-size: 13.5px; font-weight: 500; color: var(--ink); margin-top: 2px; }
+  .employee-row .b {
+    font-size: 12px; padding: 8px 14px; border-radius: 12px;
+    background: #fff; border: 1px solid var(--rule);
+    color: var(--ink); font-weight: 500; cursor: pointer;
+  }
+  .employee-row .b:hover { border-color: var(--ink); }
+
+  .stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px;
+  }
+  .stat {
+    background: var(--panel); border-radius: 14px;
+    padding: 11px 13px; border: 1px solid rgba(15,23,42,0.06);
+  }
+  .stat .l { font-size: 9.5px; letter-spacing: 0.22em; color: var(--ink-3); font-weight: 700; }
+  .stat .v {
+    font-size: 24px; font-weight: 600; letter-spacing: -0.02em;
+    margin-top: 6px; color: var(--ink);
+  }
+  .stat .v .u { font-size: 11px; vertical-align: top; color: var(--ink-2); margin-left: 2px; font-weight: 600; }
+  .stat .c { font-size: 10.5px; color: var(--ink-2); margin-top: 6px; line-height: 1.6; }
+
+  .three-strengths { display: grid; gap: 8px; margin-top: 14px; }
+  .expandable {
+    position: relative; overflow: hidden;
+    background: #fff; border: 1px solid var(--line); border-radius: 14px;
+    cursor: pointer;
+    transition: border-color .18s, transform .12s, box-shadow .18s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .expandable:hover { border-color: var(--rule); }
+  .expandable:active { transform: scale(0.985); }
+  .expandable .ex-head {
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .expandable .ex-meta { flex: 1; min-width: 0; }
+  .expandable .chev {
+    width: 26px; height: 26px; border-radius: 8px;
+    background: var(--panel); color: var(--ink-2);
+    display: grid; place-items: center; font-size: 14px;
+    transition: background .18s, color .18s, transform .15s;
+    flex-shrink: 0;
+  }
+  .expandable:hover .chev { background: var(--brand-50); color: var(--brand-700); transform: translateX(2px); }
+  .expandable .ex-body { display: none; }
+  .expandable .ex-inner {
+    padding: 0 14px 14px;
+    border-top: 1px dashed var(--line);
+    padding-top: 12px;
+    animation: fadeInUp .3s ease;
+  }
+
+  .detail-root { display: flex; flex-direction: column; gap: 18px; }
+  .detail-hero {
+    padding: 22px 24px;
+    background: linear-gradient(180deg, #F4F7FB 0%, #FAFBFD 100%);
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    position: relative; overflow: hidden;
+  }
+  .detail-hero::before {
+    content: ""; position: absolute;
+    top: -60px; right: -40px; width: 240px; height: 240px;
+    border-radius: 50%; filter: blur(50px);
+    background: radial-gradient(circle, rgba(34,211,238,0.30), transparent 70%);
+    pointer-events: none;
+  }
+  .detail-hero .dh-eyebrow {
+    font-size: 10.5px; letter-spacing: 0.22em; color: var(--brand-600); font-weight: 700;
+  }
+  .detail-hero .dh-title {
+    font-size: 26px; font-weight: 700; color: var(--navy);
+    line-height: 1.35; letter-spacing: -0.015em; margin-top: 8px; position: relative;
+  }
+  .detail-hero .dh-lead {
+    font-size: 13.5px; line-height: 1.95; color: var(--ink-2);
+    margin-top: 12px; max-width: 580px; position: relative;
+  }
+  .detail-body { display: flex; flex-direction: column; gap: 14px; }
+  .detail-card {
+    background: #fff; border: 1px solid var(--line);
+    border-radius: 14px; padding: 18px 18px;
+    animation: fadeInUp .35s ease both;
+  }
+  .stat-big {
+    background: linear-gradient(180deg, #EFF6FF 0%, #FAFBFD 100%);
+    border: 1px solid var(--brand-200); border-radius: 16px;
+    padding: 28px 24px; text-align: center;
+  }
+  .stat-big .stat-num {
+    font-size: 56px; font-weight: 700; color: var(--navy);
+    letter-spacing: -0.03em; line-height: 1;
+  }
+  .stat-big .stat-num .u { font-size: 22px; vertical-align: top; margin-left: 4px; color: var(--ink-2); }
+  .stat-big .stat-cap { font-size: 13px; color: var(--ink-2); margin-top: 14px; line-height: 1.85; }
+
+  .kpi-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px; margin-top: 4px;
+  }
+  .kpi {
+    background: #fff; border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 16px; position: relative; overflow: hidden;
+  }
+  .kpi::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; background: var(--brand-600); border-radius: 3px 0 0 3px;
+  }
+  .kpi .k-l { font-size: 10.5px; letter-spacing: 0.18em; color: var(--ink-3); font-weight: 700; }
+  .kpi .k-v {
+    font-size: 26px; font-weight: 700; color: var(--navy);
+    letter-spacing: -0.025em; line-height: 1; margin-top: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi .k-v .u { font-size: 12px; font-weight: 600; color: var(--ink-2); margin-left: 3px; vertical-align: top; }
+  .kpi .k-sub { font-size: 11px; color: var(--ink-2); margin-top: 6px; line-height: 1.6; }
+
+  .section-title {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 4px;
+  }
+  .section-title .st-eyebrow {
+    font-size: 10px; letter-spacing: 0.22em; color: var(--brand-600); font-weight: 700;
+  }
+  .section-title .st-line { flex: 1; height: 1px; background: var(--line); }
+  .section-title .st-text {
+    font-size: 15px; font-weight: 700; color: var(--ink); letter-spacing: -0.005em;
+  }
+
+  .flow {
+    display: grid; gap: 8px; grid-template-columns: 1fr;
+  }
+  .flow-step {
+    background: #fff; border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; display: grid; grid-template-columns: 48px 1fr; gap: 14px; align-items: flex-start;
+    position: relative;
+  }
+  .flow-step::after {
+    content: ""; position: absolute; left: 36px; top: 100%;
+    width: 1px; height: 8px; background: var(--brand-200);
+  }
+  .flow-step:last-child::after { display: none; }
+  .flow-step .num {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--brand-50); border: 1px solid var(--brand-200);
+    color: var(--brand-700); display: grid; place-items: center;
+    font-weight: 700; font-size: 13px;
+  }
+  .flow-step .ft { font-size: 13.5px; font-weight: 600; color: var(--ink); }
+  .flow-step .fb { font-size: 11.5px; color: var(--ink-2); margin-top: 4px; line-height: 1.75; }
+
+  .compare {
+    display: grid; gap: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+  }
+  .compare .head {
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: var(--panel); border-bottom: 1px solid var(--line);
+  }
+  .compare .head > div {
+    padding: 12px 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.16em;
+    color: var(--ink-3);
+  }
+  .compare .head > div + div { border-left: 1px solid var(--line); color: var(--brand-700); }
+  .compare .row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--line);
+  }
+  .compare .row:last-child { border-bottom: none; }
+  .compare .row > div {
+    padding: 10px 14px; font-size: 12.5px; color: var(--ink); line-height: 1.7;
+  }
+  .compare .row > div + div { border-left: 1px solid var(--line); background: rgba(37,99,235,0.04); font-weight: 600; color: var(--brand-900); }
+
+  .skill-compare { display: grid; gap: 10px; }
+  .skill-compare .row { display: grid; grid-template-columns: 96px 1fr; gap: 10px; align-items: center; }
+  .skill-compare .lbl { font-size: 12px; font-weight: 600; color: var(--ink-2); }
+  .skill-compare .bars { display: grid; gap: 4px; }
+  .skill-compare .bar-line {
+    display: grid; grid-template-columns: 32px 1fr 32px; gap: 8px;
+    align-items: center; font-size: 10px; font-variant-numeric: tabular-nums;
+  }
+  .skill-compare .bar-line .tag {
+    font-size: 9px; letter-spacing: 0.16em; font-weight: 700;
+  }
+  .skill-compare .bar-line.before .tag { color: var(--ink-3); }
+  .skill-compare .bar-line.after .tag { color: var(--brand-700); }
+  .skill-compare .track {
+    height: 8px; background: rgba(15,23,42,0.05); border-radius: 4px; overflow: hidden;
+  }
+  .skill-compare .track > span {
+    display: block; height: 100%; border-radius: 4px;
+    transition: width .9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .skill-compare .bar-line.before .track > span { background: var(--ink-3); }
+  .skill-compare .bar-line.after .track > span { background: var(--brand-600); }
+  .skill-compare .bar-line .v { font-weight: 600; color: var(--ink); }
+
+  .sparkline {
+    background: linear-gradient(180deg, #EFF6FF 0%, #FAFBFD 100%);
+    border: 1px solid var(--brand-200); border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .sparkline .sp-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .sparkline .sp-l { font-size: 10.5px; letter-spacing: 0.18em; color: var(--brand-700); font-weight: 700; }
+  .sparkline .sp-v {
+    font-size: 24px; font-weight: 700; color: var(--navy);
+    letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
+  }
+  .sparkline svg { width: 100%; height: 56px; margin-top: 10px; display: block; }
+  .sparkline .sp-labels {
+    display: flex; justify-content: space-between; margin-top: 6px;
+    font-size: 9.5px; color: var(--ink-2); font-variant-numeric: tabular-nums;
+  }
+
+  .curri {
+    list-style: none; margin: 0; padding: 0;
+    background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+  }
+  .curri li {
+    display: grid; grid-template-columns: 56px 1fr; gap: 12px; align-items: center;
+    padding: 12px 16px; border-top: 1px solid var(--line);
+    font-size: 13px;
+  }
+  .curri li:first-child { border-top: none; }
+  .curri li .ix { font-size: 10.5px; letter-spacing: 0.18em; color: var(--brand-600); font-weight: 700; }
+  .curri li .ct { color: var(--ink); font-weight: 500; }
+
+  .info-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+  }
+  .info-grid .info-card {
+    background: #fff; border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .info-grid .info-card .il { font-size: 10px; letter-spacing: 0.18em; color: var(--ink-3); font-weight: 700; }
+  .info-grid .info-card .iv { font-size: 13.5px; font-weight: 600; color: var(--ink); margin-top: 4px; }
+
+  .tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag-cloud .tg {
+    font-size: 11px; padding: 5px 11px; border-radius: 999px;
+    background: var(--brand-50); border: 1px solid var(--brand-200);
+    color: var(--brand-700); font-weight: 600;
+  }
+
+  .related {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px;
+  }
+  .related .rh { font-size: 10.5px; letter-spacing: 0.18em; color: var(--ink-3); font-weight: 700; }
+  .related .links { display: grid; gap: 4px; margin-top: 8px; }
+  .related .links a {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 12px; background: #fff; border: 1px solid var(--line);
+    border-radius: 9px; font-size: 12px; color: var(--ink); cursor: pointer;
+    text-decoration: none; font-weight: 500;
+  }
+  .related .links a:hover { border-color: var(--ink); }
+  .related .links a .arr { color: var(--ink-3); }
+
+  .quote-pull {
+    margin: 4px 0;
+    padding: 16px 18px;
+    background: linear-gradient(135deg, #EFF6FF 0%, rgba(34,211,238,0.10) 100%);
+    border-left: 4px solid var(--brand-600);
+    border-radius: 0 12px 12px 0;
+    font-size: 14px; font-style: italic; font-weight: 500;
+    color: var(--brand-900); line-height: 1.85;
+  }
+  .quote-pull .auth { display: block; font-size: 11px; font-style: normal; font-weight: 700; color: var(--ink-2); margin-top: 8px; letter-spacing: 0.04em; }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .ripple {
+    position: absolute; border-radius: 50%; pointer-events: none;
+    background: rgba(37, 99, 235, 0.30);
+    transform: scale(0); animation: ripple-anim .55s ease-out forwards;
+  }
+  @keyframes ripple-anim { to { transform: scale(2.6); opacity: 0; } }
+
+  .view-slide-fwd { animation: slideFwd .35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .view-slide-back { animation: slideBack .35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  @keyframes slideFwd {
+    from { opacity: 0; transform: translateX(28px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes slideBack {
+    from { opacity: 0; transform: translateX(-28px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .glow-halo { animation: glowHalo .9s ease-out; }
+  @keyframes glowHalo {
+    0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.45); }
+    70% { box-shadow: 0 0 0 14px rgba(37, 99, 235, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+  }
+  .chip-btn.active { position: relative; }
+  .chip-btn.active::after {
+    content: ""; position: absolute; inset: -2px;
+    border-radius: 999px; border: 2px solid rgba(37,99,235,0);
+    animation: chipHalo 1.4s ease-out infinite;
+    pointer-events: none;
+  }
+  @keyframes chipHalo {
+    0% { transform: scale(1); border-color: rgba(37,99,235,0.45); opacity: 1; }
+    100% { transform: scale(1.25); border-color: rgba(37,99,235,0); opacity: 0; }
+  }
+
+  .sparkle {
+    position: absolute; pointer-events: none;
+    width: 14px; height: 14px;
+    color: #FBBF24;
+    animation: sparkleFly .85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  @keyframes sparkleFly {
+    0% { transform: scale(0) translate(0, 0) rotate(0deg); opacity: 0; }
+    25% { opacity: 1; }
+    100% { transform: scale(1.1) translate(var(--sx, 0), var(--sy, -40px)) rotate(180deg); opacity: 0; }
+  }
+
+  .toast-host {
+    position: absolute; top: 56px; left: 14px; right: 14px;
+    display: flex; flex-direction: column; gap: 6px;
+    pointer-events: none; z-index: 60;
+  }
+  .toast {
+    background: var(--ink); color: #fff;
+    padding: 10px 14px; border-radius: 12px;
+    font-size: 12.5px; font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+    box-shadow: 0 10px 30px -12px rgba(15,23,42,0.45);
+    animation: toastIn .35s cubic-bezier(0.22, 1, 0.36, 1) both, toastOut .3s ease 2.3s forwards;
+  }
+  .toast .ic {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--success); color: #fff;
+    display: grid; place-items: center; font-size: 13px; flex-shrink: 0;
+  }
+  @keyframes toastIn {
+    from { transform: translateY(-12px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes toastOut {
+    to { transform: translateY(-8px); opacity: 0; }
+  }
+
+  .typing { display: inline-flex; gap: 3px; align-items: center; height: 14px; }
+  .typing span {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--brand-600); opacity: 0.4;
+    animation: typingBounce 1s ease-in-out infinite;
+  }
+  .typing span:nth-child(2) { animation-delay: 0.15s; }
+  .typing span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes typingBounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-3px); opacity: 1; }
+  }
+
+  .fade-up {
+    opacity: 0; transform: translateY(12px);
+    transition: opacity .5s ease, transform .5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .fade-up.in-view { opacity: 1; transform: translateY(0); }
+
+  .progress .seg { transition: background .45s cubic-bezier(0.22, 1, 0.36, 1); }
+  .progress .seg.on { background: var(--brand-600); position: relative; overflow: hidden; }
+  .progress .seg.on::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    animation: progressShine 1.4s ease-in-out;
+  }
+  @keyframes progressShine {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+  }
+
+  .strength {
+    background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px;
+  }
+  .strength .head { display: flex; align-items: center; gap: 10px; }
+  .strength .ico {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: var(--brand-50); color: var(--brand-700);
+    display: grid; place-items: center; font-size: 16px;
+  }
+  .strength .num { font-size: 9.5px; letter-spacing: 0.22em; color: var(--brand-600); font-weight: 700; }
+  .strength .ttl { font-size: 14.5px; font-weight: 600; margin-top: 1px; }
+  .strength .body { font-size: 11.5px; line-height: 1.85; color: var(--ink-2); margin-top: 8px; }
+  .ex-section { margin-top: 4px; }
+  .ex-section + .ex-section { margin-top: 12px; }
+  .ex-section .sl {
+    font-size: 9.5px; letter-spacing: 0.22em; color: var(--brand-600);
+    font-weight: 700; text-transform: uppercase;
+  }
+  .ex-section .st { font-size: 12.5px; font-weight: 600; margin-top: 4px; color: var(--ink); }
+  .ex-section .sd { font-size: 11.5px; line-height: 1.85; color: var(--ink-2); margin-top: 6px; }
+  .ex-bullets { margin: 8px 0 0; padding-left: 0; list-style: none; }
+  .ex-bullets li {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 11.5px; line-height: 1.7; color: var(--ink-2);
+    padding: 4px 0;
+  }
+  .ex-bullets li::before {
+    content: ""; width: 4px; height: 4px; border-radius: 50%;
+    background: var(--brand-600); margin-top: 8px; flex-shrink: 0;
+  }
+  .ex-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+  .ex-tag {
+    font-size: 10.5px; padding: 3px 9px; border-radius: 999px;
+    background: var(--brand-50); border: 1px solid var(--brand-200);
+    color: var(--brand-700); font-weight: 600;
+  }
+
+  .info-row {
+    display: grid; grid-template-columns: 100px 1fr; gap: 8px 12px;
+    background: var(--panel); border: 1px solid rgba(15,23,42,0.06);
+    border-radius: 12px; padding: 12px 14px; margin-top: 6px;
+    font-size: 12px;
+  }
+  .info-row dt { color: var(--ink-3); font-weight: 600; }
+  .info-row dd { margin: 0; color: var(--ink); font-weight: 500; }
+
+  .case-card {
+    background: #fff; border: 1px solid var(--line); border-radius: 14px;
+    padding: 14px; margin-top: 8px;
+  }
+  .income-graph {
+    margin-top: 12px; padding: 14px; background: var(--panel);
+    border-radius: 12px; border: 1px solid var(--line);
+  }
+  .income-graph .gh {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .income-graph .gh .gl {
+    font-size: 10px; letter-spacing: 0.22em; color: var(--brand-600); font-weight: 700;
+  }
+  .income-graph .gh .gt {
+    font-size: 13px; font-weight: 600; color: var(--ink);
+  }
+  .income-graph .bar-row {
+    display: grid; grid-template-columns: 72px 1fr 78px;
+    align-items: center; gap: 10px; padding: 4px 0;
+  }
+  .income-graph .bar-lbl {
+    font-size: 10.5px; color: var(--ink-2); font-weight: 600;
+  }
+  .income-graph .bar-track {
+    height: 18px; background: rgba(15,23,42,0.05); border-radius: 6px;
+    overflow: hidden; position: relative;
+  }
+  .income-graph .bar {
+    height: 100%; width: 0;
+    background: var(--brand-600); border-radius: 6px;
+    transition: width 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+  }
+  .income-graph .bar.before { background: var(--ink-3); }
+  .income-graph .bar.join { background: var(--brand-400); }
+  .income-graph .bar.future { background: var(--brand-700); }
+  .income-graph .bar.future::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: incomeShine 2.2s ease-in-out 0.6s 1;
+  }
+  @keyframes incomeShine {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+  }
+  .income-graph .bar-val {
+    font-size: 13px; font-weight: 600; color: var(--ink);
+    text-align: right; font-variant-numeric: tabular-nums;
+  }
+  .income-graph .bar-val .diff {
+    display: inline-block; margin-left: 4px;
+    font-size: 10px; color: var(--success); font-weight: 700;
+  }
+  .income-graph .gain {
+    margin-top: 12px; padding: 10px 12px;
+    background: #fff; border: 1px solid var(--brand-200);
+    border-radius: 10px; display: flex; align-items: center;
+    justify-content: space-between; gap: 8px;
+  }
+  .income-graph .gain .gain-l { font-size: 10.5px; color: var(--ink-2); font-weight: 600; }
+  .income-graph .gain .gain-v {
+    font-size: 20px; font-weight: 600; color: var(--brand-700);
+    letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
+  }
+  .case-card .who { font-size: 12.5px; font-weight: 600; color: var(--ink); }
+  .case-card .quote {
+    margin-top: 10px; padding: 10px 12px;
+    background: var(--brand-50); border: 1px solid var(--brand-200);
+    border-radius: 10px; font-size: 11.5px;
+    color: var(--brand-900); line-height: 1.75;
+  }
+  .case-card .steps { display: grid; gap: 5px; margin-top: 10px; }
+  .case-card .step {
+    display: grid; grid-template-columns: 60px 1fr; gap: 8px;
+    padding: 7px 10px; background: var(--panel); border-radius: 9px;
+    font-size: 11px; align-items: baseline;
+  }
+  .case-card .step .y { color: var(--ink-3); font-weight: 700; font-size: 10px; letter-spacing: 0.12em; }
+  .case-card .step .v { color: var(--ink); font-weight: 500; }
+  .case-card .story {
+    margin-top: 10px; font-size: 11.5px;
+    color: var(--ink-2); line-height: 1.85;
+  }
+
+  .benefit-list { display: grid; gap: 6px; margin-top: 6px; }
+  .benefit-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px; background: #fff;
+    border: 1px solid var(--line); border-radius: 12px;
+  }
+  .benefit-item .ic {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--brand-50); color: var(--brand-700);
+    display: grid; place-items: center; font-size: 13px; flex-shrink: 0;
+  }
+  .benefit-item .ttl { font-size: 12.5px; font-weight: 600; color: var(--ink); }
+  .benefit-item .body { font-size: 10.5px; color: var(--ink-2); line-height: 1.7; margin-top: 2px; }
+
+  .training-list { display: grid; gap: 6px; margin-top: 6px; }
+  .training-item {
+    background: #fff; border: 1px solid var(--line);
+    border-radius: 12px; padding: 11px 13px;
+  }
+  .training-item .head { display: flex; align-items: center; gap: 8px; }
+  .training-item .tag {
+    font-size: 9.5px; padding: 3px 8px; border-radius: 999px;
+    background: var(--brand-50); border: 1px solid var(--brand-200);
+    color: var(--brand-700); font-weight: 700; letter-spacing: 0.12em;
+  }
+  .training-item .ttl { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .training-item .body { font-size: 11px; color: var(--ink-2); line-height: 1.7; margin-top: 6px; }
+
+  .progress { display: flex; gap: 6px; margin: 10px 0 16px; }
+  .progress .seg { flex: 1; height: 3px; background: rgba(15,23,42,0.10); border-radius: 999px; transition: background .25s; }
+  .progress .seg.on { background: var(--brand-600); }
+  .qnum { font-size: 10.5px; letter-spacing: 0.22em; color: var(--brand-600); font-weight: 700; }
+  .qstem { font-size: 16px; font-weight: 600; color: var(--ink); line-height: 1.5; margin: 10px 0 14px; }
+
+  .chips-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chip-btn {
+    font-size: 11.5px; padding: 6px 12px; border-radius: 999px;
+    border: 1px solid var(--line); background: #fff; color: var(--ink);
+    font-weight: 500; cursor: pointer; transition: all .15s;
+  }
+  .chip-btn:hover { border-color: var(--ink); }
+  .chip-btn.active { background: var(--brand-600); color: #fff; border-color: var(--brand-600); }
+
+  .lbl { font-size: 10.5px; letter-spacing: 0.22em; color: var(--ink-3); margin-top: 16px; display: block; font-weight: 700; }
+  .strong-text { font-size: 13.5px; color: var(--ink); margin: 6px 0 0; font-weight: 500; }
+
+  .form-field {
+    background: #fff; border: 1px solid var(--line); border-radius: 12px;
+    padding: 11px 13px; margin-bottom: 8px;
+  }
+  .form-field .flbl { font-size: 9.5px; letter-spacing: 0.22em; color: var(--ink-3); font-weight: 700; }
+  .form-field input {
+    width: 100%; border: none; outline: none; background: transparent;
+    font-size: 13.5px; margin-top: 6px; color: var(--ink); padding: 0;
+  }
+  .form-field input::placeholder { color: var(--ink-3); }
+
+  .result-box {
+    background: var(--brand-50); border: 1px solid var(--brand-200);
+    border-radius: 16px; padding: 16px; margin-top: 12px;
+  }
+  .result-box .rh { font-size: 10.5px; letter-spacing: 0.22em; color: var(--brand-700); font-weight: 700; }
+  .result-box .rt { font-size: 19px; font-weight: 600; color: var(--ink); margin-top: 8px; letter-spacing: -0.01em; }
+  .result-box .rs { font-size: 12.5px; color: var(--brand-900); line-height: 1.85; margin-top: 10px; }
+
+  .portal-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .portal-tile {
+    background: #fff; border: 1px solid var(--line); border-radius: 14px;
+    padding: 11px; text-align: left; cursor: pointer; transition: border-color .15s;
+  }
+  .portal-tile:hover { border-color: var(--ink); }
+  .portal-tile .ic {
+    width: 30px; height: 30px; border-radius: 10px;
+    background: var(--brand-50); color: var(--brand-700);
+    display: grid; place-items: center; font-size: 14px;
+  }
+  .portal-tile .t { font-size: 11.5px; font-weight: 600; margin-top: 9px; color: var(--ink); }
+  .portal-tile .d { font-size: 10px; color: var(--ink-2); margin-top: 3px; }
+
+  .topic {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: var(--panel); border-radius: 14px;
+    padding: 11px 13px; margin-top: 7px;
+    border: 1px solid rgba(15,23,42,0.06);
+  }
+  .topic .ic {
+    width: 26px; height: 26px; border-radius: 8px;
+    background: var(--brand-100); color: var(--brand-700);
+    display: grid; place-items: center; font-size: 13px; flex-shrink: 0;
+  }
+  .topic .cat { font-size: 9px; letter-spacing: 0.22em; color: var(--ink-3); font-weight: 700; }
+  .topic .title { font-size: 12.5px; font-weight: 600; color: var(--ink); margin-top: 3px; line-height: 1.4; }
+  .topic .desc { font-size: 11px; color: var(--ink-2); margin-top: 3px; line-height: 1.65; }
+
+  .action-row { display: flex; gap: 8px; margin-top: 14px; }
+  .action-row .btn {
+    flex: 1; padding: 13px; border-radius: 13px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    border: 1px solid; text-align: center;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: transform .15s, background .15s;
+  }
+  .action-row .btn.primary { background: var(--brand-600); color: #fff; border-color: var(--brand-600); }
+  .action-row .btn.primary:hover { background: var(--brand-700); border-color: var(--brand-700); }
+  .action-row .btn.outline { background: #fff; color: var(--ink); border-color: var(--rule); }
+  .action-row .btn.outline:hover { border-color: var(--ink); }
+  .action-row .btn:hover { transform: translateY(-1px); }
+
+  .ainav-fab {
+    position: absolute; left: 14px; right: 14px; bottom: 14px;
+    background: #fff; border: 1px solid var(--line); border-radius: 18px;
+    padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer; transition: border-color .15s;
+    box-shadow: 0 -10px 30px -10px rgba(15,23,42,0.10);
+  }
+  .ainav-fab:hover { border-color: var(--brand-600); }
+  .ainav-fab .av {
+    width: 36px; height: 36px; border-radius: 50%;
+    overflow: hidden; background: var(--brand-50);
+    border: 1px solid var(--brand-200); flex-shrink: 0;
+  }
+  .ainav-fab .av svg { width: 100%; height: 100%; display: block; }
+  .ainav-fab .meta { flex: 1; min-width: 0; }
+  .ainav-fab .meta .name { font-size: 9.5px; letter-spacing: 0.22em; color: var(--brand-600); font-weight: 700; }
+  .ainav-fab .meta .text { font-size: 12px; color: var(--ink); font-weight: 500; margin-top: 2px; line-height: 1.3; }
+  .ainav-fab .open { font-size: 11px; padding: 6px 11px; border-radius: 999px; background: var(--brand-600); color: #fff; font-weight: 600; flex-shrink: 0; }
+
+  .sheet-backdrop {
+    position: absolute; inset: 0; background: rgba(15,23,42,0.45);
+    display: flex; align-items: flex-end; z-index: 50;
+    animation: fadeIn .2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+  .sheet {
+    width: 100%; max-height: 85%; background: #fff;
+    border-top-left-radius: 24px; border-top-right-radius: 24px;
+    padding: 20px 18px 24px;
+    display: flex; flex-direction: column; gap: 14px;
+    animation: slideUp .25s cubic-bezier(0.32, 0.72, 0.16, 1);
+  }
+  @keyframes slideUp { from { transform: translateY(100%) } to { transform: translateY(0) } }
+  .sheet .handle { width: 36px; height: 4px; background: rgba(15,23,42,0.18); border-radius: 999px; margin: -8px auto 4px; }
+  .sheet .sh-head { display: flex; align-items: center; justify-content: space-between; }
+  .sheet .sh-head .ey { font-size: 10px; letter-spacing: 0.22em; color: var(--brand-600); font-weight: 700; }
+  .sheet .sh-head .close { width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--line); background: #fff; display: grid; place-items: center; color: var(--ink); cursor: pointer; font-size: 16px; }
+  .sheet .sh-greet { display: flex; align-items: center; gap: 12px; }
+  .sheet .sh-greet .av { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; background: var(--brand-50); border: 1px solid var(--brand-200); flex-shrink: 0; }
+  .sheet .sh-greet .av svg { width: 100%; height: 100%; }
+  .sheet .sh-greet .role { font-size: 10px; letter-spacing: 0.22em; color: var(--brand-600); font-weight: 700; }
+  .sheet .sh-greet .name { font-size: 15px; font-weight: 600; margin-top: 2px; }
+  .sheet .sh-bubble {
+    background: var(--brand-50); border: 1px solid var(--brand-200);
+    border-radius: 16px; padding: 12px 14px;
+    font-size: 13px; line-height: 1.85; color: var(--ink);
+  }
+  .sheet .sh-sgg-l { font-size: 10px; letter-spacing: 0.22em; color: var(--ink-3); font-weight: 700; margin-top: 4px; }
+  .sheet .sh-suggest { display: flex; flex-direction: column; gap: 6px; }
+  .sheet .sh-suggest button {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px;
+    background: #fff; border: 1px solid var(--line); border-radius: 13px;
+    font-size: 13px; font-weight: 500; color: var(--ink); cursor: pointer;
+    transition: border-color .15s;
+  }
+  .sheet .sh-suggest button:hover { border-color: var(--ink); }
+  .sheet .sh-suggest button.primary { background: var(--brand-600); color: #fff; border-color: var(--brand-600); }
+  .sheet .sh-suggest button.primary:hover { background: var(--brand-700); border-color: var(--brand-700); }
+
+  .footer { text-align: center; padding: 0 16px 32px; font-size: 11px; color: var(--ink-3); }
+
+  @media (max-width: 460px) {
+    .phone { width: 100%; border-radius: 28px; padding: 7px; }
+    .screen { border-radius: 22px; min-height: calc(100vh - 200px); }
+  }
+</style>
+</head>
+<body>
+
+
+<div class="stage">
+  <div class="phone">
+    <header class="site-header">
+      <div class="site-brand">
+        <div class="logo-mark">
+          <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="2" y="2" width="36" height="36" rx="9" fill="#0B1A33"/>
+            <path d="M11 12 L20 28 L29 12" stroke="#22D3EE" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="20" cy="28" r="2.2" fill="#22D3EE"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <div class="brand-line">
+            <span class="brand-name">VantageWorks</span>
+            <span class="brand-divider">|</span>
+            <span class="brand-legal">株式会社CP</span>
+          </div>
+          <div class="brand-tagline">選べる・上がる・伸びる、を仕組みで。</div>
+        </div>
+      </div>
+      <div class="site-tags">
+        <span class="site-tag" data-aud="jobseeker">求職者</span>
+        <span class="site-tag" data-aud="business">法人</span>
+        <span class="site-tag" data-aud="sales">提案</span>
+        <span class="site-tag" data-aud="employee">社員</span>
+      </div>
+    </header>
+    <div class="screen">
+      <div class="main">
+        <div class="topbar">
+          <button class="back" id="vw-back" aria-label="戻る"><i class="ti ti-arrow-left"></i></button>
+          <nav class="crumb" id="vw-crumb"></nav>
+          <button class="nav-btn" id="vw-nav" aria-label="AIナビを開く"><i class="ti ti-sparkles"></i></button>
+        </div>
+        <div class="toast-host" id="vw-toast"></div>
+        <div class="body" id="vw-body"></div>
+      </div>
+      <aside class="aside-pc" id="vw-aside"></aside>
+      <div class="ainav-fab" id="vw-fab" role="button" aria-label="AIナビを開く">
+        <div class="av">
+          <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="28" cy="28" r="27" fill="#EFF6FF" stroke="rgba(15,23,42,0.10)"/>
+            <path d="M9 50c2-9 9-14 19-14s17 5 19 14v6H9z" fill="#2563EB"/>
+            <ellipse cx="28" cy="26" rx="10.5" ry="11.5" fill="#FCE6D2"/>
+            <path d="M17 22c1-7.5 6-12.5 11-12.5s10.5 5 11 12.5c0 .5-.2.8-.4 1.1-1.2-2.8-3-5-5.3-6.3-1.3-.8-3-1.2-4-1.2-1.2 0-2.8.4-4.1 1.2-2.3 1.3-4.3 3.5-5.5 6.3-.3-.3-.4-.6-.4-1.1z" fill="#1E3A8A"/>
+            <path d="M16 18c-1 5-1 8 .5 12C18 27 20 23 22 21c-2 0-4-1-6-3z" fill="#1E3A8A"/>
+            <path d="M40 18c1 5 1 8-.5 12C38 27 36 23 34 21c2 0 4-1 6-3z" fill="#1E3A8A"/>
+            <rect x="18" y="27.4" width="2" height="2.8" rx="1" fill="#1E3A8A"/>
+            <rect x="36" y="27.4" width="2" height="2.8" rx="1" fill="#1E3A8A"/>
+            <path d="M24 33c1 1 2.4 1.6 4 1.6s3-.6 4-1.6" stroke="#1E3A8A" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <div class="meta">
+          <div class="name">アヤ</div>
+          <div class="text" id="vw-fab-text">次のおすすめ: VantageWorksの事を知りたい</div>
+        </div>
+        <div class="open">開く</div>
+      </div>
+      <div id="vw-sheet"></div>
+    </div>
+    <footer class="site-footer">
+      <div class="sf-left">
+        <div class="sf-brand">VantageWorks · 株式会社CP</div>
+        <div class="sf-meta">エンジニアの成長と案件選択を、仕組みで支える会社。 グループ：株式会社チームテック</div>
+      </div>
+      <div class="sf-right">
+        <span class="sf-link">採用情報</span>
+        <span class="sf-link">法人のお客様</span>
+        <span class="sf-link">営業提案</span>
+        <span class="sf-link">プライバシー</span>
+      </div>
+    </footer>
+  </div>
+</div>
+
+
+<script>
+(function(){
+  const profile = {
+    brand: "VantageWorks",
+    legal: "株式会社CP",
+    group: "株式会社チームテック",
+    founded: "2021年7月1日",
+    ceo: "岩田 慎司",
+    capital: "900万円",
+    address: "東京都目黒区下目黒1-8-1 ARCOTOWER 6F",
+    biz: "システムエンジニアリングサービス事業"
+  };
+
+  const meta = {
+    "home": { crumb: ["ホーム"], intro: "VantageWorks（株式会社CP）のスマートサイトへようこそ。本日はどのようなご用件でしょうか？", fab: "次のおすすめ: VantageWorksの事を知りたい" },
+    "jobseeker.menu": { crumb: ["ホーム","求職者向け"], intro: "「選べる・上がる・伸びる」を仕組みで実現する会社です。知りたい内容を選んでください。", fab: "知りたいテーマを選んでください" },
+    "jobseeker.company": { crumb: ["ホーム","求職者","会社情報"], intro: "VantageWorks（株式会社CP）の3つの特徴と会社情報です。", fab: "3つの特徴を見ています" },
+    "jobseeker.jobs": { crumb: ["ホーム","求職者","案件"], intro: "案件は「検索システム」と「営業提案」の2通り。すべてガラス張りです。", fab: "気になる領域を選んでください" },
+    "jobseeker.training": { crumb: ["ホーム","求職者","研修"], intro: "学ぶ→作る→使う。実機ハンズオン研修と資格支援が両輪です。", fab: "研修と資格支援のメニューです" },
+    "jobseeker.salary": { crumb: ["ホーム","求職者","年収UP事例"], intro: "Aさん:1年で年収+180万、Bさん:1年で年収+144万。具体事例で見ていきます。", fab: "実際の年収UP事例を確認できます" },
+    "jobseeker.diagnose": { crumb: ["ホーム","求職者","キャリア診断"], intro: "4問で、おすすめのキャリア方向を判定します。", fab: "迷ったら一番近いものをどうぞ" },
+    "jobseeker.casual": { crumb: ["ホーム","求職者","カジュアル面談"], intro: "30分のオンライン面談です。応募の強制はありません。", fab: "面談日時を選んでください" },
+    "business.menu": { crumb: ["ホーム","企業向け"], intro: "ご相談内容に近いものをお選びください。SES発注、協業、案件相談に対応しています。", fab: "用件を選んでください" },
+    "business.ses": { crumb: ["ホーム","企業向け","SES発注"], intro: "必要な人材像を選んでください。AWS/Azure構築・運用、ネットワーク、開発まで対応可能です。", fab: "領域とレベルを選んでください" },
+    "sales.menu": { crumb: ["ホーム","営業提案"], intro: "通常問い合わせと分けて受付しています。提案カテゴリを選んでください。", fab: "提案カテゴリを選んでください" },
+    "sales.form": { crumb: ["ホーム","営業提案","提案フォーム"], intro: "提案概要を入力してください。商談希望の有無も選べます。", fab: "入力は最小限で大丈夫です" },
+    "employee.login": { crumb: ["ホーム","社員ログイン"], intro: "社員番号と社員名を入力してください。本番では各種SSOに切替予定です。", fab: "本番では各種SSOを利用予定" },
+    "employee.portal": { crumb: ["ホーム","社員","ポータル"], intro: "今日は何を確認しますか？お知らせ・研修・案件希望などにアクセスできます。", fab: "キャリア相談はこちらから" },
+    "smart.data": { crumb: ["ホーム","Smart Data"], intro: "いま、株式会社CPの中で動いている数字。社内データから自動反映できます。", fab: "気になるカードをタップ" }
+  };
+
+  const suggestions = {
+    "home": [
+      { label: "VantageWorksの事を知りたい", goto: "jobseeker.menu", primary: true },
+      { label: "協業・仕事を発注したい", goto: "business.menu", primary: true },
+      { label: "営業提案したい", goto: "sales.menu", primary: true },
+      { label: "社員の方はこちら", goto: "employee.login" }
+    ],
+    "jobseeker.menu": [
+      { label: "自分に合うか診断", goto: "jobseeker.diagnose", primary: true },
+      { label: "年収UP事例を見る", goto: "jobseeker.salary", primary: true },
+      { label: "ホームに戻る", goto: "home" }
+    ],
+    "jobseeker.company": [
+      { label: "案件の選び方を見る", goto: "jobseeker.jobs", primary: true },
+      { label: "研修を見る", goto: "jobseeker.training" },
+      { label: "求職者メニューへ戻る", goto: "jobseeker.menu" }
+    ],
+    "jobseeker.jobs": [
+      { label: "研修を見る", goto: "jobseeker.training" },
+      { label: "年収UP事例", goto: "jobseeker.salary", primary: true },
+      { label: "カジュアル面談", goto: "jobseeker.casual", primary: true }
+    ],
+    "jobseeker.training": [
+      { label: "年収UP事例", goto: "jobseeker.salary", primary: true },
+      { label: "カジュアル面談", goto: "jobseeker.casual", primary: true },
+      { label: "求職者メニューへ戻る", goto: "jobseeker.menu" }
+    ],
+    "jobseeker.salary": [
+      { label: "カジュアル面談", goto: "jobseeker.casual", primary: true },
+      { label: "求職者メニューへ戻る", goto: "jobseeker.menu" }
+    ],
+    "jobseeker.diagnose": [
+      { label: "求職者メニューへ戻る", goto: "jobseeker.menu" },
+      { label: "ホームに戻る", goto: "home" }
+    ],
+    "jobseeker.casual": [
+      { label: "求職者メニューへ戻る", goto: "jobseeker.menu" }
+    ],
+    "business.menu": [
+      { label: "SES発注を相談", goto: "business.ses", primary: true },
+      { label: "ホームに戻る", goto: "home" }
+    ],
+    "business.ses": [
+      { label: "企業メニューへ戻る", goto: "business.menu" },
+      { label: "ホームに戻る", goto: "home" }
+    ],
+    "sales.menu": [
+      { label: "提案フォームへ", goto: "sales.form", primary: true },
+      { label: "ホームに戻る", goto: "home" }
+    ],
+    "sales.form": [
+      { label: "営業提案メニューへ戻る", goto: "sales.menu" },
+      { label: "ホームに戻る", goto: "home" }
+    ],
+    "employee.login": [
+      { label: "ホームに戻る", goto: "home" }
+    ],
+    "employee.portal": [
+      { label: "ホームに戻る", goto: "home" }
+    ],
+    "smart.data": [
+      { label: "ホームに戻る", goto: "home" }
+    ]
+  };
+
+  const stats = [
+    { l: "稼働中エンジニア", v: 128, u: "名", c: "NW・サーバー・クラウド中心" },
+    { l: "公開中の案件", v: 76, u: "件", c: "検索システムから自分で応募" },
+    { l: "今月のカジュアル面談", v: 42, u: "件", c: "30分オンライン" },
+    { l: "資格取得サポート", v: 318, u: "件", c: "AWS/Azure/Cisco/応用情報" },
+    { l: "ハンズオン研修参加者", v: 54, u: "名", c: "AWS/Azure/NW研修ベース" },
+    { l: "年間休日数", v: 130, u: "日", c: "業界高水準・夏季+年末年始+誕生日休暇" }
+  ];
+
+  const topics = [
+    { c: "研修", t: "AWSハンズオン研修を実施", d: "VPC・IAM・EC2・S3を通しで構築。研修後の経歴書に書ける成果物まで。", ic: "school" },
+    { c: "資格", t: "AWS SAA / Azure AZ-104 の支援を拡充", d: "教材・受験費補助+合格報奨金+勉強会の3点セット。", ic: "certificate" },
+    { c: "案件", t: "Go言語マイクロサービス案件を追加", d: "単価85〜95万、フルリモート、稼働140〜180h。検索システムから応募可。", ic: "cloud" },
+    { c: "協業", t: "クラウド構築領域の協業パートナー募集", d: "AWS/Azureの設計・構築フェーズで、共同体制のご相談を歓迎。", ic: "users-group" }
+  ];
+
+  const strengths = [
+    {
+      num: "POINT 01", ic: "list-search", t: "案件選択",
+      b: "検索システムで自分で探すことも、営業からの提案を受けることもできます。すべての案件がガラス張りで、単価・働き方・必須スキルが事前にわかります。",
+      detail: [
+        { sl: "METHOD 01", st: "検索システムで自分で選ぶ", sd: "全案件がオープン。スキル・単価・働き方で絞り込み、必須要件まで確認のうえ応募できます。", tags: ["フルリモート可", "週4〜", "単価80万〜"] },
+        { sl: "METHOD 02", st: "営業から提案を受ける", sd: "希望ヒアリング後、非公開案件や高単価案件を厳選して提案します。", bullets: ["①希望ヒアリング", "②マッチング", "③厳選してご提案"] },
+        { sl: "SAMPLE", st: "公開中の案件サンプル", bullets: ["大手通信キャリア向けアプリ開発支援 (Java/Spring/AWS) 80〜90万", "Go言語マイクロサービス開発 (Go/gRPC/Docker) 85〜95万", "Reactフロントエンド (React/TS) 75〜85万 週1出社"] }
+      ]
+    },
+    {
+      num: "POINT 02", ic: "trending-up", t: "わかりやすい昇給",
+      b: "型の評価制度。いつ・何が・どう上がるかが明確なルール。曖昧な評価を排除し、計算式がオープンです。",
+      detail: [
+        { sl: "RULE", st: "型の評価制度", sd: "評価のタイミング・項目・基準が事前に開示されます。「なぜ上がったか／上がらなかったか」が説明可能な仕組みです。" },
+        { sl: "TIMING", st: "昇給と賞与", sd: "昇給は年1回（4月）、賞与は年2回（7月・12月）。市場価値に合わせて想定単価を見直します。" },
+        { sl: "CASE", st: "Bさんの実例（35歳・経験11年）", sd: "前職480万 → 入社時570万（+90万） → 1年後624万（+144万）。案件選択で単価UP、S評価で還元率+2%。", tags: ["+144万 / 1年", "S評価で還元率+2%"] }
+      ]
+    },
+    {
+      num: "POINT 03", ic: "tool", t: "ハンズオン研修",
+      b: "座学だけでなく、成果物を作って現場で使えるレベルまで持ち上げる。学ぶ→作る→使うの3ステップ。",
+      detail: [
+        { sl: "FLOW", st: "学ぶ → 作る → 使う", sd: "動画とテキストで基礎を学び、ラボ環境で成果物を作成、案件参画時の武器として使います。" },
+        { sl: "MENU", st: "用意されている研修", bullets: ["ネットワーク：ルーティング基礎、社内LAN構築", "AWS：LAMP構築、VPN構築", "Azure：LAMP/VPN/ストレージ構築"] },
+        { sl: "CERT", st: "資格取得サポート", tags: ["CCNA", "CCNP ENCOR", "CCNP ENARSI", "AWS CLF", "AWS SAA", "Azure AZ-104"] }
+      ]
+    }
+  ];
+
+  const trainings = [
+    {
+      tag: "NW", t: "ルーティング基礎構築 / 社内LAN構築",
+      b: "ネットワーク制御の基礎から、実機を使った社内LAN構築まで。",
+      detail: [
+        { sl: "LEARN", st: "学べる内容", bullets: ["L2/L3スイッチング、VLAN", "OSPF/BGPなどのルーティングプロトコル", "Firewall、IPSec VPNの基礎"] },
+        { sl: "OUTPUT", st: "作る成果物", sd: "実機ベースの構成図、設定コンフィグ、検証手順書まで。研修後の経歴書に書ける形に整えます。" }
+      ]
+    },
+    {
+      tag: "AWS", t: "AWS LAMP構築 / VPN構築",
+      b: "VPC、IAM、EC2、RDSを使った構築コース。研修後の経歴書に書ける成果物まで作成。",
+      detail: [
+        { sl: "LEARN", st: "学べる内容", bullets: ["VPC設計、サブネット分割、ルーティング", "IAM、EC2、RDS、S3、CloudWatch", "Site-to-Site VPN、Client VPNの構築"] },
+        { sl: "OUTPUT", st: "作る成果物", sd: "本番想定のLAMP環境を一通り構築。設計書とランブックを成果物として残します。" }
+      ]
+    },
+    {
+      tag: "Azure", t: "Azure LAMP / VPN / ストレージ構築",
+      b: "Virtual Network、AD連携、ストレージの基本までを実機演習。",
+      detail: [
+        { sl: "LEARN", st: "学べる内容", bullets: ["Virtual Network、NSG、Application Gateway", "Azure AD、Entra ID連携", "Blob/File/Disk Storage、バックアップ"] },
+        { sl: "OUTPUT", st: "作る成果物", sd: "AAD連携した社内システム想定の環境を構築。Microsoft案件にスムーズに入れる土台になります。" }
+      ]
+    },
+    {
+      tag: "資格", t: "Cisco CCNA / CCNP Enterprise (ENCOR / ENARSI)",
+      b: "教材・受験費補助、合格報奨金、勉強会の3点セット。",
+      detail: [
+        { sl: "SUPPORT", st: "受けられる支援", bullets: ["教材費補助（指定教材は会社負担）", "受験費補助（合格時に支給）", "合格報奨金", "社内勉強会への参加"] },
+        { sl: "CAREER", st: "資格後のキャリア", sd: "CCNA取得で運用→構築へ、CCNP取得で設計・リードへステップアップ。" }
+      ]
+    },
+    {
+      tag: "資格", t: "AWS Cloud Practitioner / SAA、Azure AZ-104",
+      b: "クラウド資格でキャリアの幅と単価を広げる。",
+      detail: [
+        { sl: "SUPPORT", st: "受けられる支援", bullets: ["教材費・受験費補助", "合格報奨金", "クラウド勉強会"] },
+        { sl: "CAREER", st: "資格後のキャリア", sd: "AWS SAA / Azure AZ-104があると、クラウド構築フェーズ案件への参画と単価UPに直結します。" }
+      ]
+    }
+  ];
+
+  const benefits = [
+    {
+      ic: "shield-check", t: "社会保険完備",
+      b: "健康保険・厚生年金・雇用・労災を完備。",
+      detail: { sd: "入社月から加入。安心して長く働ける土台を整えています。" }
+    },
+    {
+      ic: "trending-up", t: "昇給あり（年1回 / 4月）",
+      b: "市場価値に合わせて想定単価を適正に見直し。",
+      detail: { sd: "型の評価制度に沿って、上昇要素と計算式がオープンに公開されます。", bullets: ["評価項目が事前開示", "計算式オープン", "実例: Bさん 1年で年収+144万"] }
+    },
+    {
+      ic: "gift", t: "賞与あり（年2回 / 7月・12月）",
+      b: "夏期・冬期賞与で還元。",
+      detail: { sd: "夏期・冬期の年2回支給。会社業績と個人評価に応じて支給額が決まります。" }
+    },
+    {
+      ic: "school", t: "研修無料",
+      b: "グループ内企業のIT研修（年数十万相当）を無料で受講可能。",
+      detail: { sd: "ハンズオン研修・eラーニング・社内勉強会・資格支援まで含めて無料で受講できます。", bullets: ["NW / AWS / Azureハンズオン", "Cisco / AWS / Azure資格支援", "社内勉強会・eラーニング"] }
+    },
+    {
+      ic: "truck-delivery", t: "引越し補助",
+      b: "賃貸契約時の仲介手数料を無料化（会社が仲介）。",
+      detail: { sd: "会社が仲介となることで、初期費用の負担を軽くしています。地方からのIターン入社にも対応。" }
+    },
+    {
+      ic: "heart-handshake", t: "各種手当・お祝い金",
+      b: "結婚祝い金、出産祝い金、特別休暇など。",
+      detail: { sd: "ライフイベントを応援する手当を用意しています。", bullets: ["結婚祝い金", "出産祝い金", "結婚休暇", "慶弔休暇", "リフレッシュ休暇"] }
+    },
+    {
+      ic: "train", t: "交通費支給",
+      b: "月最大 3万円まで支給。",
+      detail: { sd: "通勤交通費を月最大3万円まで支給。リモート併用時も実費精算が可能です。" }
+    },
+    {
+      ic: "calendar", t: "年間休日130日以上",
+      b: "完全週休2日。夏季3日／年末年始／バースデー／リフレッシュなど。",
+      detail: {
+        sd: "業界高水準の年間休日数。プライベートとキャリアを両立できる時間を確保します。",
+        bullets: ["完全週休2日制（土日祝）", "夏季休暇 3日（7-9月で取得）", "年末年始 12/29〜1/3", "バースデー休暇 1日", "リフレッシュ休暇 1日", "有給10日〜（入社6ヶ月後）"]
+      }
+    }
+  ];
+
+  const cases = [
+    {
+      who: "Aさん 29歳 / IT経験3年",
+      amounts: [
+        { y: "前職", income: 320, role: "運用保守・監視" },
+        { y: "入社時", income: 420, role: "運用保守 + ハンズオン研修" },
+        { y: "1年後", income: 500, role: "AWS保守 + 構築" }
+      ],
+      story: "運用保守の繰り返しでスキルアップが見込めず、年収も停滞していたところからCPへ。ハンズオン研修＋現場で構築フェーズへ。",
+      quote: "1年で180万UPは驚きでした。研修の成果で自信がつきました。"
+    },
+    {
+      who: "Bさん 35歳 / IT経験11年",
+      amounts: [
+        { y: "前職", income: 480, role: "単価70万・クラウド設計/構築" },
+        { y: "入社時", income: 570, role: "単価80万・案件選択でUP" },
+        { y: "1年後", income: 624, role: "単価85万・S評価で還元率+2%" }
+      ],
+      story: "直近3年間で30万しか昇給しなかったところから、案件選択で単価UP→S評価で還元率+2%加算。",
+      quote: "単価も評価もガラス張り。1年で年収144万UPは、前の会社ではあり得なかった。"
+    }
+  ];
+
+  const diagQuestions = [
+    { q: "現在のご経験に近いものは？", opts: ["未経験","運用保守","ネットワーク","サーバー","クラウド","開発(Java/Go等)"] },
+    { q: "今後、伸ばしたい方向は？", opts: ["インフラ基礎","構築へ進む","クラウドへ","セキュリティへ","まだ迷っている"] },
+    { q: "転職で重視したいことは？", opts: ["成長できること","年収アップ","案件を選べること","働きやすさ・休日","相談しやすさ"] },
+    { q: "現在の転職意欲は？", opts: ["すぐに転職したい","良い会社があれば","情報収集している","まだ迷っている"] }
+  ];
+
+  let state = {
+    stack: ["home"], sheetOpen: false, diagAnswers: [],
+    sesArea: "クラウド", sesLevel: "構築", salesMeeting: "資料先送付",
+    expanded: {}, direction: "forward", justFinishedDiag: false
+  };
+
+  function vibrate(ms) {
+    try { if (navigator && navigator.vibrate) navigator.vibrate(ms); } catch (e) {}
+  }
+  function showToast(text, iconName) {
+    const host = document.getElementById("vw-toast");
+    const t = document.createElement("div");
+    t.className = "toast";
+    const ic = document.createElement("div");
+    ic.className = "ic";
+    const i = document.createElement("i");
+    i.className = "ti ti-" + (iconName || "check");
+    ic.appendChild(i);
+    t.appendChild(ic);
+    const sp = document.createElement("span");
+    sp.textContent = text;
+    t.appendChild(sp);
+    host.appendChild(t);
+    setTimeout(() => { t.remove(); }, 2700);
+  }
+  function spawnSparkles(host, count) {
+    const rect = host.getBoundingClientRect();
+    const cx = rect.width / 2, cy = rect.height / 3;
+    for (let i = 0; i < (count || 6); i++) {
+      const s = document.createElement("i");
+      s.className = "ti ti-sparkles sparkle";
+      const angle = (Math.PI * 2 * i) / (count || 6) + (Math.random() * 0.6);
+      const dist = 30 + Math.random() * 25;
+      s.style.left = (cx - 7) + "px";
+      s.style.top = (cy - 7) + "px";
+      s.style.setProperty("--sx", (Math.cos(angle) * dist) + "px");
+      s.style.setProperty("--sy", (Math.sin(angle) * dist - 10) + "px");
+      s.style.animationDelay = (i * 30) + "ms";
+      s.style.fontSize = (12 + Math.random() * 6) + "px";
+      host.appendChild(s);
+      setTimeout(() => s.remove(), 900 + i * 30);
+    }
+  }
+  function applyFadeUpObserver(root) {
+    if (!root) return;
+    const els = root.querySelectorAll(".fade-up");
+    if (!els.length) return;
+    if (typeof IntersectionObserver === "undefined") {
+      els.forEach(e => e.classList.add("in-view"));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add("in-view");
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    els.forEach(e => io.observe(e));
+  }
+
+  function isOpen(id) { return !!state.expanded[id]; }
+  function toggleOpen(id) {
+    state.expanded[id] = !state.expanded[id];
+    render();
+  }
+  function addRipple(e, host) {
+    const rect = host.getBoundingClientRect();
+    const x = (e.clientX || (rect.left + rect.width / 2)) - rect.left;
+    const y = (e.clientY || (rect.top + rect.height / 2)) - rect.top;
+    const r = Math.max(rect.width, rect.height) * 0.6;
+    const span = document.createElement("span");
+    span.className = "ripple";
+    span.style.left = (x - r) + "px";
+    span.style.top = (y - r) + "px";
+    span.style.width = (r * 2) + "px";
+    span.style.height = (r * 2) + "px";
+    host.appendChild(span);
+    setTimeout(() => { span.remove(); }, 600);
+  }
+
+  function expandable(id, headBuilder, _detailBuilder) {
+    const wrap = el("div", { class: "expandable fade-up" });
+    const head = el("div", { class: "ex-head" });
+    headBuilder(head);
+    const chev = el("div", { class: "chev" });
+    chev.appendChild(icon("chevron-right"));
+    head.appendChild(chev);
+    wrap.appendChild(head);
+    wrap.onclick = (e) => {
+      addRipple(e, wrap);
+      vibrate(8);
+      const dash = id.lastIndexOf("-");
+      const type = id.slice(0, dash);
+      const idx = parseInt(id.slice(dash + 1), 10);
+      setTimeout(() => goDetail(type, idx), 80);
+    };
+    return wrap;
+  }
+
+  function buildSection(parent, s) {
+    const sec = el("div", { class: "ex-section" });
+    if (s.sl) sec.appendChild(el("div", { class: "sl" }, s.sl));
+    if (s.st) sec.appendChild(el("div", { class: "st" }, s.st));
+    if (s.sd) sec.appendChild(el("div", { class: "sd" }, s.sd));
+    if (s.bullets) {
+      const ul = el("ul", { class: "ex-bullets" });
+      s.bullets.forEach(b => ul.appendChild(el("li", null, b)));
+      sec.appendChild(ul);
+    }
+    if (s.tags) {
+      const tr = el("div", { class: "ex-tags" });
+      s.tags.forEach(t => tr.appendChild(el("span", { class: "ex-tag" }, t)));
+      sec.appendChild(tr);
+    }
+    parent.appendChild(sec);
+  }
+
+  function currentEntry() { return state.stack[state.stack.length - 1]; }
+  function currentView() {
+    const e = currentEntry();
+    return typeof e === "object" ? e.type : e;
+  }
+  function currentDetail() {
+    const e = currentEntry();
+    return (typeof e === "object" && e.type === "detail") ? { dt: e.detailType, idx: e.index } : null;
+  }
+  function go(view) {
+    if (currentView() === view && !currentDetail()) { render(); return; }
+    state.stack.push(view);
+    state.direction = "forward";
+    state.sheetOpen = false;
+    if (view === "jobseeker.diagnose") state.diagAnswers = [];
+    vibrate(12);
+    render();
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function goDetail(detailType, index) {
+    state.stack.push({ type: "detail", detailType: detailType, index: index });
+    state.direction = "forward";
+    state.sheetOpen = false;
+    vibrate(12);
+    render();
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function detailLabel(dt, idx) {
+    if (dt === "strength") return strengths[idx].t;
+    if (dt === "training") return trainings[idx].t;
+    if (dt === "case") return "CASE " + String.fromCharCode(65 + idx) + " · " + cases[idx].who;
+    if (dt === "benefit") return benefits[idx].t;
+    if (dt === "stat") return stats[idx].l;
+    if (dt === "topic") return topics[idx].t;
+    return "詳細";
+  }
+  function detailIntro(dt, idx) {
+    if (dt === "strength") return strengths[idx].b;
+    if (dt === "training") return trainings[idx].b;
+    if (dt === "case") return "1年で +" + (cases[idx].amounts[2].income - cases[idx].amounts[0].income) + "万 UP の実例です。";
+    if (dt === "benefit") return benefits[idx].b;
+    if (dt === "stat") return stats[idx].c;
+    if (dt === "topic") return topics[idx].d;
+    return "";
+  }
+  function parentViewFor(dt) {
+    return { strength: "jobseeker.company", training: "jobseeker.training", case: "jobseeker.salary", benefit: "jobseeker.salary", stat: "smart.data", topic: "smart.data" }[dt];
+  }
+  function detailSectionLabel(dt) {
+    return { strength: "CPの特徴", training: "ハンズオン研修", case: "年収UP事例", benefit: "福利厚生・休暇", stat: "Smart Data", topic: "Smart Topics" }[dt] || "詳細";
+  }
+
+  const strengthKPIs = [
+    [
+      { l: "公開中の案件", v: "76", u: "件", sub: "検索で自分で応募できる" },
+      { l: "非公開案件 (月)", v: "32", u: "件", sub: "営業からの提案で参画" },
+      { l: "案件変更の柔軟性", v: "希望", u: "ベース", sub: "強要なし。エリア・領域を相談" }
+    ],
+    [
+      { l: "昇給ルールの透明度", v: "100", u: "%", sub: "計算式オープン" },
+      { l: "昇給・賞与の機会", v: "1+2", u: "回/年", sub: "4月昇給・夏冬賞与" },
+      { l: "1年UP幅 (実例)", v: "+144", u: "万", sub: "Bさん・経験11年" }
+    ],
+    [
+      { l: "研修費用", v: "全額", u: "負担", sub: "教材・受験費・eラーニング" },
+      { l: "今月の参加者", v: "54", u: "名", sub: "AWS/Azure/NWを横断" },
+      { l: "資格取得サポート", v: "318", u: "件", sub: "累計・AWS/Azure/Cisco" }
+    ]
+  ];
+  const strengthCompare = [
+    {
+      head: ["他社で起きがちなこと", "VantageWorks (株式会社CP) では"],
+      rows: [
+        ["上から案件を押し付けられる", "検索 or 営業提案から、自分で選ぶ"],
+        ["単価や働き方が見えない", "単価・稼働・必須スキルがガラス張り"],
+        ["希望と違う案件で疲弊", "希望ヒアリングを経て厳選提案"]
+      ]
+    },
+    {
+      head: ["不透明な評価", "型の評価制度"],
+      rows: [
+        ["上司の主観で決まる", "評価項目・計算式が事前開示"],
+        ["3年で30万しか上がらない", "1年で +90〜180万の実例"],
+        ["S評価の基準が分からない", "S評価 → 還元率+2% を加算"]
+      ]
+    },
+    {
+      head: ["座学だけの研修", "学ぶ → 作る → 使う"],
+      rows: [
+        ["動画とテキストで完結", "ラボ環境で実機を触る"],
+        ["研修後に何も残らない", "成果物を作って経歴書に書ける"],
+        ["費用は自己負担", "教材・受験費・報奨金まで会社負担"]
+      ]
+    }
+  ];
+
+  const strengthFlows = [
+    [
+      { ft: "希望をヒアリング", fb: "領域・働き方・単価レンジ・時間帯。30分のオンラインで整理します。" },
+      { ft: "マッチング", fb: "公開・非公開を含む全案件から、条件に合うものを抽出。" },
+      { ft: "厳選してご提案", fb: "上位3〜5件をスキルシートと一緒にお送りします。" },
+      { ft: "面談 → 参画", fb: "クライアントとのオンライン面談を経て、最短2週間で参画。" }
+    ],
+    null,
+    [
+      { ft: "学ぶ", fb: "動画・テキストで基礎を理解。" },
+      { ft: "作る", fb: "ラボ環境で成果物を構築。設計書・ランブックも作成。" },
+      { ft: "使う", fb: "実案件で成果物を活用。経歴書に書ける形に。" }
+    ]
+  ];
+
+  const trainingInfo = [
+    {
+      info: { 期間: "全6日", 形式: "オンライン+集合", 対象: "未経験〜中堅" },
+      curriculum: ["L2スイッチング基礎", "VLAN・トランキング", "ルーティング基礎", "OSPF実機演習", "Firewall入門", "監視・運用"],
+      skills: ["Cisco IOS", "VLAN", "OSPF", "BGP", "ACL", "監視SNMP"],
+      outputs: ["論理構成図", "物理構成図", "Ciscoコンフィグ", "検証手順書"]
+    },
+    {
+      info: { 期間: "全8日", 形式: "オンライン+ラボ", 対象: "運用保守 → 構築志望" },
+      curriculum: ["VPC設計", "IAMとセキュリティ", "EC2/RDS構築", "ALB・Route 53", "CloudWatch監視", "Site-to-Site VPN", "コスト最適化"],
+      skills: ["VPC", "IAM", "EC2", "RDS", "S3", "CloudWatch", "Terraform"],
+      outputs: ["AWS設計書", "ランブック", "CloudFormationテンプレート"]
+    },
+    {
+      info: { 期間: "全7日", 形式: "オンライン+ラボ", 対象: "Microsoft案件志望" },
+      curriculum: ["Virtual Network設計", "Entra ID連携", "App Service / Functions", "Azure VPN", "Storage・バックアップ"],
+      skills: ["Azure VNet", "Entra ID", "App Service", "Azure VPN", "Blob Storage"],
+      outputs: ["Azure設計書", "AAD連携設計", "監視ダッシュボード"]
+    },
+    {
+      info: { 期間: "受験毎", 形式: "勉強会+模試", 対象: "全社員" },
+      curriculum: ["公式教材によるインプット", "実機演習でのアウトプット", "模試で弱点洗い出し", "受験前直前対策"],
+      skills: ["CCNA", "CCNP ENCOR", "CCNP ENARSI"],
+      outputs: ["合格証", "経歴書への記載", "報奨金支給"]
+    },
+    {
+      info: { 期間: "受験毎", 形式: "勉強会+模試", 対象: "全社員" },
+      curriculum: ["公式教材によるインプット", "実機(ラボ)で構築演習", "模試で弱点洗い出し", "受験前直前対策"],
+      skills: ["AWS CLF", "AWS SAA", "Azure AZ-104"],
+      outputs: ["合格証", "経歴書への記載", "報奨金支給"]
+    }
+  ];
+
+  const caseSkills = [
+    [
+      { l: "運用保守", before: 80, after: 80 },
+      { l: "監視・障害対応", before: 70, after: 75 },
+      { l: "AWS基礎", before: 30, after: 85 },
+      { l: "AWS構築", before: 10, after: 65 },
+      { l: "提案・ドキュメント", before: 40, after: 70 }
+    ],
+    [
+      { l: "クラウド設計", before: 70, after: 90 },
+      { l: "AWS実装", before: 65, after: 85 },
+      { l: "顧客折衝", before: 60, after: 85 },
+      { l: "ハイブリッド勤務適応", before: 50, after: 90 },
+      { l: "S評価獲得", before: 0, after: 100 }
+    ]
+  ];
+
+  const caseMilestones = [
+    [
+      { m: "0ヶ月", t: "入社", d: "前職: 運用保守320万。CPで運用保守 + AWSハンズオン研修を開始。" },
+      { m: "3ヶ月", t: "研修修了", d: "AWS SAA合格。VPC/EC2/RDSの構築経験を経歴書に。" },
+      { m: "6ヶ月", t: "案件移動", d: "運用保守からAWS保守+構築フェーズへ。" },
+      { m: "12ヶ月", t: "+180万 達成", d: "AWS構築リードへステップアップ。年収500万到達。" }
+    ],
+    [
+      { m: "0ヶ月", t: "入社", d: "前職: クラウド設計480万・単価70万。案件選択で単価80万案件へ。" },
+      { m: "6ヶ月", t: "ハイブリッド定着", d: "リモートと出社のバランスを取り、顧客評価UP。" },
+      { m: "12ヶ月", t: "S評価獲得", d: "単価85万へUP、還元率+2%加算。年収624万到達。" }
+    ]
+  ];
+
+  const benefitDetailExtras = {
+    "社会保険完備": { flow: [{ft:"入社月から加入", fb:"健康保険・厚生年金・雇用・労災"}, {ft:"任意継続も対応", fb:"退職後の手続きもサポート"}] },
+    "昇給あり（年1回 / 4月）": { related: ["わかりやすい昇給", "S評価で還元率+2%", "案件選択で単価UP"] },
+    "賞与あり（年2回 / 7月・12月）": { related: ["評価制度", "S評価", "プロジェクト貢献"] },
+    "研修無料": { related: ["AWSハンズオン", "Azureハンズオン", "Cisco資格", "AWS資格"] },
+    "引越し補助": { flow: [{ft:"会社が仲介", fb:"提携不動産経由で契約"}, {ft:"仲介手数料を無料化", fb:"初期費用を圧縮"}, {ft:"地方からの転居も対応", fb:"Iターン入社の実績あり"}] },
+    "各種手当・お祝い金": { related: ["結婚祝い金", "出産祝い金", "結婚休暇", "慶弔休暇", "リフレッシュ休暇"] },
+    "交通費支給": { flow: [{ft:"月額最大3万円", fb:"通勤交通費を実費精算"}, {ft:"リモート併用OK", fb:"出社日のみ算定"}] },
+    "年間休日130日以上": { related: ["完全週休2日 (土日祝)", "夏季休暇 3日", "年末年始 12/29-1/3", "バースデー休暇", "リフレッシュ休暇", "結婚休暇", "慶弔休暇"] }
+  };
+
+  const statTrends = [
+    { vals: [114, 118, 121, 123, 125, 128], note: "前年同月比 +12名。クラウド領域の伸びが顕著。" },
+    { vals: [62, 65, 68, 70, 73, 76], note: "クラウド系の追加が中心。Java・Go・React案件も増加。" },
+    { vals: [28, 32, 36, 38, 40, 42], note: "夕方・土曜枠の追加で +14件。" },
+    { vals: [280, 290, 298, 305, 312, 318], note: "AWS SAA・Azure AZ-104が増加傾向。" },
+    { vals: [38, 42, 46, 48, 51, 54], note: "AWS / Azure / NW それぞれ満席状態。" },
+    { vals: [130, 130, 130, 130, 130, 130], note: "業界平均は約122日。完全週休2日+休暇制度。" }
+  ];
+
+  const topicRelated = {
+    0: [1, 4],
+    1: [2, 0],
+    2: [0, 4],
+    3: [4]
+  };
+  function back() {
+    if (state.stack.length > 1) {
+      state.stack.pop();
+      state.direction = "back";
+      state.sheetOpen = false;
+      vibrate(8);
+      render();
+      if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+  document.addEventListener("click", function(ev) {
+    const el = ev.target && ev.target.closest && ev.target.closest("#vw-back");
+    if (el && !el.disabled) {
+      ev.preventDefault();
+      back();
+    }
+  });
+  window.vwJump = function(view) {
+    state.stack = view === "home" ? ["home"] : ["home", view];
+    state.sheetOpen = false;
+    if (view === "jobseeker.diagnose") state.diagAnswers = [];
+    render();
+  };
+
+  function el(tag, attrs, children) {
+    const e = document.createElement(tag);
+    if (attrs) Object.entries(attrs).forEach(([k, v]) => {
+      if (k === "class") e.className = v;
+      else if (k === "onclick") e.onclick = v;
+      else if (k === "style") e.style.cssText = v;
+      else e.setAttribute(k, v);
+    });
+    if (children != null) (Array.isArray(children) ? children : [children]).forEach(c => {
+      if (c == null) return;
+      if (typeof c === "string") e.appendChild(document.createTextNode(c));
+      else e.appendChild(c);
+    });
+    return e;
+  }
+  function icon(name) { return el("i", { class: "ti ti-" + name, "aria-hidden": "true" }); }
+
+  function choice(opts) {
+    const btn = el("button", {
+      class: "choice" + (opts.primary ? " primary" : ""),
+      onclick: (e) => {
+        addRipple(e, btn);
+        setTimeout(() => go(opts.goto), 80);
+      }
+    });
+    const left = el("span", { class: "left" });
+    if (opts.icon) {
+      const ic = el("span", { class: "ic" });
+      ic.appendChild(icon(opts.icon));
+      left.appendChild(ic);
+    }
+    const ttl = el("span", { class: "ttl" });
+    ttl.appendChild(el("span", { class: "label" }, opts.label));
+    if (opts.hint) ttl.appendChild(el("span", { class: "hint" }, opts.hint));
+    left.appendChild(ttl);
+    btn.appendChild(left);
+    btn.appendChild(el("span", { class: "arr" }, "→"));
+    return btn;
+  }
+
+  function renderHome() {
+    const root = el("div", { class: "home-root" });
+
+    const hero = el("section", { class: "home-hero" });
+    hero.appendChild(el("div", { class: "hero-aurora" }));
+    const heroInner = el("div", { class: "hero-inner" });
+    const tagLine = el("div", { class: "hero-eyebrow" });
+    tagLine.appendChild(el("span", { class: "dot-live" }));
+    tagLine.appendChild(document.createTextNode("VantageWorks Smart Site"));
+    heroInner.appendChild(tagLine);
+    heroInner.appendChild(el("h1", { class: "hero-title" }, "選べる・上がる・伸びる。"));
+    heroInner.appendChild(el("p", { class: "hero-sub" }, "案件・キャリア・働き方を、自分の意思で選べる会社。AIナビ「アヤ」が、あなたの目的に必要な情報まで案内します。"));
+    const askLine = el("div", { class: "hero-ask" });
+    askLine.appendChild(el("span", { class: "ask-q" }, "本日は、どのようなご用件でしょうか？"));
+    heroInner.appendChild(askLine);
+    hero.appendChild(heroInner);
+    root.appendChild(hero);
+
+    const choices = el("div", { class: "home-choices" });
+    choices.appendChild(choice({ label: "VantageWorksの事を知りたい", hint: "求職者さま向け", goto: "jobseeker.menu", primary: true, icon: "users" }));
+    choices.appendChild(choice({ label: "協業・仕事を発注したい", hint: "企業様向け", goto: "business.menu", primary: true, icon: "briefcase" }));
+    choices.appendChild(choice({ label: "営業提案したいサービスがある", hint: "提案受付", goto: "sales.menu", primary: true, icon: "message-circle" }));
+    root.appendChild(choices);
+
+    const emp = el("div", { class: "employee-row" });
+    const l = el("div", { class: "l" });
+    l.appendChild(el("div", { class: "ey" }, "FOR EMPLOYEE"));
+    l.appendChild(el("div", { class: "nm" }, "社員の方はこちら"));
+    emp.appendChild(l);
+    emp.appendChild(el("button", { class: "b", onclick: () => go("employee.login") }, "ログインへ →"));
+    root.appendChild(emp);
+
+    const sdHead = el("div", { class: "home-section-head" });
+    sdHead.appendChild(el("div", { class: "hs-eyebrow" }, "SMART DATA"));
+    sdHead.appendChild(el("div", { class: "hs-title" }, "いま、VantageWorksでは"));
+    root.appendChild(sdHead);
+    const sg = el("div", { class: "stats stats-home" });
+    stats.slice(0, 3).forEach(s => {
+      const c = el("div", { class: "stat" });
+      c.appendChild(el("div", { class: "l" }, s.l));
+      const v = el("div", { class: "v" });
+      v.appendChild(document.createTextNode(s.v));
+      v.appendChild(el("span", { class: "u" }, s.u));
+      c.appendChild(v);
+      c.appendChild(el("div", { class: "c" }, s.c));
+      sg.appendChild(c);
+    });
+    root.appendChild(sg);
+    return root;
+  }
+
+  function renderJobseekerMenu() {
+    const root = el("div");
+    root.appendChild(el("span", { class: "chip" }, "求職者向け"));
+    root.appendChild(el("h1", { class: "h1" }, "選べる・上がる・伸びる、を仕組みで。"));
+    root.appendChild(el("p", { class: "lead" }, "VantageWorks（株式会社CP）に興味を持っていただきありがとうございます。知りたい内容を選んでください。"));
+    root.appendChild(choice({ label: "どんな会社なのか", goto: "jobseeker.company", icon: "building" }));
+    root.appendChild(choice({ label: "どんな案件があるのか", goto: "jobseeker.jobs", icon: "list-search" }));
+    root.appendChild(choice({ label: "ハンズオン研修・資格支援", goto: "jobseeker.training", icon: "school" }));
+    root.appendChild(choice({ label: "給与・年収UPの仕組み", goto: "jobseeker.salary", icon: "trending-up" }));
+    root.appendChild(choice({ label: "自分に合うか診断", goto: "jobseeker.diagnose", primary: true, icon: "clipboard-check" }));
+    root.appendChild(choice({ label: "まずは気軽に相談", goto: "jobseeker.casual", primary: true, icon: "message-circle" }));
+    return root;
+  }
+
+  function renderCompany() {
+    const root = el("div");
+    root.appendChild(el("span", { class: "chip" }, "会社情報"));
+    root.appendChild(el("h1", { class: "h1" }, "CPの3つの特徴。"));
+    root.appendChild(el("p", { class: "lead" }, "カードをタップすると詳細が開きます。"));
+    const sw = el("div", { class: "three-strengths" });
+    strengths.forEach((s, idx) => {
+      const id = "strength-" + idx;
+      const card = expandable(id,
+        (head) => {
+          const ic = el("div", { class: "ico" });
+          ic.appendChild(icon(s.ic));
+          head.appendChild(ic);
+          const meta = el("div", { class: "ex-meta" });
+          meta.appendChild(el("div", { class: "num" }, s.num));
+          meta.appendChild(el("div", { class: "ttl" }, s.t));
+          meta.appendChild(el("div", { class: "body", style: "margin-top: 6px;" }, s.b));
+          head.appendChild(meta);
+        },
+        (inner) => {
+          s.detail.forEach(sec => buildSection(inner, sec));
+        }
+      );
+      sw.appendChild(card);
+    });
+    root.appendChild(sw);
+
+    root.appendChild(el("span", { class: "lbl" }, "Company Profile"));
+    const info = el("dl", { class: "info-row" });
+    [
+      ["会社名", profile.legal + "（VantageWorks）"],
+      ["グループ", profile.group],
+      ["設立日", profile.founded],
+      ["代表者", profile.ceo + "（代表取締役社長 CEO）"],
+      ["資本金", profile.capital],
+      ["所在地", profile.address],
+      ["事業内容", profile.biz]
+    ].forEach(([k, v]) => {
+      info.appendChild(el("dt", null, k));
+      info.appendChild(el("dd", null, v));
+    });
+    root.appendChild(info);
+
+    const ar = el("div", { class: "action-row" });
+    const b1 = el("button", { class: "btn primary", onclick: () => go("jobseeker.casual") });
+    b1.appendChild(icon("calendar-check"));
+    b1.appendChild(document.createTextNode("カジュアル面談へ"));
+    ar.appendChild(b1);
+    const b2 = el("button", { class: "btn outline", onclick: () => go("jobseeker.salary") });
+    b2.appendChild(document.createTextNode("年収UP事例を見る"));
+    ar.appendChild(b2);
+    root.appendChild(ar);
+    return root;
+  }
+
+  function renderJobs() {
+    const root = el("div");
+    root.appendChild(el("span", { class: "chip" }, "案件の選び方"));
+    root.appendChild(el("h1", { class: "h1" }, "案件はガラス張り、自分で選べる。"));
+    root.appendChild(el("p", { class: "lead" }, "検索システムで自分で探すか、営業から非公開案件の提案を受けるか、2通りで選べます。"));
+    const sw = el("div", { class: "three-strengths" });
+    [
+      { num: "METHOD 01", ic: "search", t: "検索システムで自分で探す", b: "全案件がオープン。単価・働き方・必須スキルを事前確認のうえ応募。" },
+      { num: "METHOD 02", ic: "message-2", t: "営業からの提案を受ける", b: "希望ヒアリング後、非公開案件や高単価案件を厳選してご提案。" }
+    ].forEach(s => {
+      const w = el("div", { class: "strength" });
+      const h = el("div", { class: "head" });
+      const ic = el("div", { class: "ico" });
+      ic.appendChild(icon(s.ic));
+      h.appendChild(ic);
+      const meta = el("div");
+      meta.appendChild(el("div", { class: "num" }, s.num));
+      meta.appendChild(el("div", { class: "ttl" }, s.t));
+      h.appendChild(meta);
+      w.appendChild(h);
+      w.appendChild(el("div", { class: "body" }, s.b));
+      sw.appendChild(w);
+    });
+    root.appendChild(sw);
+
+    root.appendChild(el("span", { class: "lbl" }, "案件サンプル"));
+    [
+      { tag: "クラウド", t: "大手通信キャリア向けアプリ開発支援", b: "Java / Spring Boot / AWS。フルリモート 80〜90万 / 140-180h" },
+      { tag: "クラウド", t: "Go言語バックエンド開発（マイクロサービス）", b: "Go / gRPC / Docker。フルリモート 85〜95万" },
+      { tag: "Web", t: "Reactフロントエンド開発（SaaSプロダクト）", b: "React / TypeScript。週1出社 75〜85万" }
+    ].forEach(c => {
+      const ti = el("div", { class: "training-item" });
+      const h = el("div", { class: "head" });
+      h.appendChild(el("span", { class: "tag" }, c.tag));
+      h.appendChild(el("span", { class: "ttl" }, c.t));
+      ti.appendChild(h);
+      ti.appendChild(el("div", { class: "body" }, c.b));
+      root.appendChild(ti);
+    });
+
+    const ar = el("div", { class: "action-row" });
+    const b1 = el("button", { class: "btn primary", onclick: () => go("jobseeker.casual") });
+    b1.appendChild(icon("calendar-check"));
+    b1.appendChild(document.createTextNode("案件相談に進む"));
+    ar.appendChild(b1);
+    root.appendChild(ar);
+    return root;
+  }
+
+  function renderTraining() {
+    const root = el("div");
+    root.appendChild(el("span", { class: "chip" }, "ハンズオン研修"));
+    root.appendChild(el("h1", { class: "h1" }, "学ぶ→作る→使う、の3ステップ。"));
+    root.appendChild(el("p", { class: "lead" }, "カードをタップすると、各研修の詳細が開きます。"));
+    const tl = el("div", { class: "training-list" });
+    trainings.forEach((t, idx) => {
+      const id = "training-" + idx;
+      const card = expandable(id,
+        (head) => {
+          const meta = el("div", { class: "ex-meta" });
+          const top = el("div", { style: "display:flex; align-items:center; gap:8px;" });
+          top.appendChild(el("span", { class: "tag", style: "font-size:9.5px; padding:3px 8px; border-radius:999px; background:var(--brand-50); border:1px solid var(--brand-200); color:var(--brand-700); font-weight:700; letter-spacing:0.12em;" }, t.tag));
+          top.appendChild(el("span", { style: "font-size:13px; font-weight:600;" }, t.t));
+          meta.appendChild(top);
+          meta.appendChild(el("div", { style: "font-size:11px; color:var(--ink-2); line-height:1.7; margin-top:6px;" }, t.b));
+          head.appendChild(meta);
+        },
+        (inner) => {
+          if (t.detail) t.detail.forEach(sec => buildSection(inner, sec));
+        }
+      );
+      tl.appendChild(card);
+    });
+    root.appendChild(tl);
+    const ar = el("div", { class: "action-row" });
+    const b1 = el("button", { class: "btn primary", onclick: () => go("jobseeker.casual") });
+    b1.appendChild(icon("calendar-check"));
+    b1.appendChild(document.createTextNode("研修内容を相談"));
+    ar.appendChild(b1);
+    const b2 = el("button", { class: "btn outline", onclick: () => go("jobseeker.salary") });
+    b2.appendChild(document.createTextNode("年収UP事例"));
+    ar.appendChild(b2);
+    root.appendChild(ar);
+    return root;
+  }
+
+  function renderSalary() {
+    const root = el("div");
+    root.appendChild(el("span", { class: "chip" }, "年収UP事例"));
+    root.appendChild(el("h1", { class: "h1" }, "1年で +180万 / +144万 UPの実績。"));
+    root.appendChild(el("p", { class: "lead" }, "型の評価制度と案件選択の組み合わせで、実際の年収UPを実現しています。事例カードをタップで詳細を開きます。"));
+    cases.forEach((c, idx) => {
+      const id = "case-" + idx;
+      const max = Math.max.apply(null, c.amounts.map(a => a.income));
+      const totalGain = c.amounts[c.amounts.length - 1].income - c.amounts[0].income;
+      const card = expandable(id,
+        (head) => {
+          const meta = el("div", { class: "ex-meta" });
+          meta.appendChild(el("div", { style: "font-size:11px; font-weight:600; color:var(--brand-600); letter-spacing:0.12em;" }, "CASE " + String.fromCharCode(65 + idx)));
+          meta.appendChild(el("div", { style: "font-size:13.5px; font-weight:600; margin-top:3px;" }, c.who));
+          const summary = c.amounts[0].income + "万 → " + c.amounts[c.amounts.length - 1].income + "万（+" + totalGain + "万 / 1年）";
+          meta.appendChild(el("div", { style: "font-size:11px; color:var(--ink-2); margin-top:6px; line-height:1.7;" }, summary));
+          head.appendChild(meta);
+        },
+        (inner) => {
+          const graph = el("div", { class: "income-graph" });
+          const gh = el("div", { class: "gh" });
+          gh.appendChild(el("span", { class: "gl" }, "ANNUAL INCOME"));
+          gh.appendChild(el("span", { class: "gt" }, c.who));
+          graph.appendChild(gh);
+
+          c.amounts.forEach((a, ai) => {
+            const row = el("div", { class: "bar-row" });
+            row.appendChild(el("div", { class: "bar-lbl" }, a.y));
+            const track = el("div", { class: "bar-track" });
+            const cls = ai === 0 ? "before" : ai === 1 ? "join" : "future";
+            const bar = el("div", { class: "bar " + cls });
+            track.appendChild(bar);
+            row.appendChild(track);
+            const valWrap = el("div", { class: "bar-val" });
+            valWrap.appendChild(document.createTextNode(a.income + "万"));
+            if (ai > 0) {
+              const diff = a.income - c.amounts[0].income;
+              valWrap.appendChild(el("span", { class: "diff" }, "+" + diff));
+            }
+            row.appendChild(valWrap);
+            graph.appendChild(row);
+
+            const pct = Math.round((a.income / max) * 96) + "%";
+            setTimeout(() => { bar.style.width = pct; }, 80 + ai * 220);
+          });
+
+          const gain = el("div", { class: "gain" });
+          gain.appendChild(el("span", { class: "gain-l" }, "1年でのUP幅"));
+          const gainV = el("span", { class: "gain-v" }, "+" + totalGain + "万");
+          gain.appendChild(gainV);
+          graph.appendChild(gain);
+          inner.appendChild(graph);
+
+          const roleRow = el("div", { style: "margin-top:12px; display:grid; gap:5px;" });
+          c.amounts.forEach(a => {
+            const r = el("div", { style: "display:grid; grid-template-columns:60px 1fr; gap:8px; padding:7px 10px; background:var(--panel); border-radius:9px; font-size:11px; align-items:baseline;" });
+            r.appendChild(el("span", { style: "color:var(--ink-3); font-weight:700; font-size:10px; letter-spacing:0.12em;" }, a.y));
+            r.appendChild(el("span", { style: "color:var(--ink); font-weight:500;" }, a.role));
+            roleRow.appendChild(r);
+          });
+          inner.appendChild(roleRow);
+
+          inner.appendChild(el("div", { style: "margin-top:10px; font-size:11.5px; color:var(--ink-2); line-height:1.85;" }, c.story));
+          inner.appendChild(el("div", { style: "margin-top:10px; padding:10px 12px; background:var(--brand-50); border:1px solid var(--brand-200); border-radius:10px; font-size:11.5px; color:var(--brand-900); line-height:1.75;" }, "「" + c.quote + "」"));
+        }
+      );
+      root.appendChild(card);
+    });
+
+    root.appendChild(el("span", { class: "lbl" }, "福利厚生・休暇"));
+    const bl = el("div", { class: "benefit-list" });
+    benefits.forEach((b, idx) => {
+      const id = "benefit-" + idx;
+      const card = expandable(id,
+        (head) => {
+          const ic = el("div", { class: "ic", style: "width:28px; height:28px; border-radius:8px; background:var(--brand-50); color:var(--brand-700); display:grid; place-items:center; font-size:13px; flex-shrink:0;" });
+          ic.appendChild(icon(b.ic));
+          head.appendChild(ic);
+          const meta = el("div", { class: "ex-meta" });
+          meta.appendChild(el("div", { style: "font-size:12.5px; font-weight:600;" }, b.t));
+          meta.appendChild(el("div", { style: "font-size:10.5px; color:var(--ink-2); line-height:1.7; margin-top:2px;" }, b.b));
+          head.appendChild(meta);
+        },
+        (inner) => {
+          if (b.detail) {
+            buildSection(inner, b.detail);
+          }
+        }
+      );
+      bl.appendChild(card);
+    });
+    root.appendChild(bl);
+
+    const ar = el("div", { class: "action-row" });
+    const b1 = el("button", { class: "btn primary", onclick: () => go("jobseeker.casual") });
+    b1.appendChild(icon("calendar-check"));
+    b1.appendChild(document.createTextNode("カジュアル面談を予約"));
+    ar.appendChild(b1);
+    const b2 = el("button", { class: "btn outline", onclick: () => go("jobseeker.diagnose") });
+    b2.appendChild(document.createTextNode("キャリア診断へ"));
+    ar.appendChild(b2);
+    root.appendChild(ar);
+    return root;
+  }
+
+  function renderDiagnose() {
+    const root = el("div");
+    root.appendChild(el("span", { class: "chip" }, "キャリア診断"));
+    root.appendChild(el("h1", { class: "h1" }, "4問でキャリア方向を判定。"));
+    const prog = el("div", { class: "progress" });
+    diagQuestions.forEach((q, i) => {
+      prog.appendChild(el("div", { class: "seg" + (i < state.diagAnswers.length ? " on" : "") }));
+    });
+    root.appendChild(prog);
+
+    if (state.diagAnswers.length === diagQuestions.length) {
+      const res = el("div", { class: "result-box" });
+      res.appendChild(el("div", { class: "rh" }, "診断結果"));
+      res.appendChild(el("div", { class: "rt" }, "クラウドステップアップ型"));
+      res.appendChild(el("div", { class: "rs" }, "現在の経験を活かしつつ、AWSハンズオン研修+現場経験を組み合わせて、クラウド領域へ進むルートが合いそうです。実例: Aさんは1年で年収+180万。"));
+      root.appendChild(res);
+      const tags = el("div", { class: "chips-row" });
+      ["AWS/Azureハンズオン","クラウド構築案件","資格取得サポート"].forEach(t => {
+        tags.appendChild(el("span", { class: "chip-btn active" }, t));
+      });
+      root.appendChild(tags);
+      const ar = el("div", { class: "action-row" });
+      const b1 = el("button", { class: "btn primary", onclick: () => go("jobseeker.casual") });
+      b1.appendChild(icon("calendar-check"));
+      b1.appendChild(document.createTextNode("面談を予約"));
+      ar.appendChild(b1);
+      const b2 = el("button", { class: "btn outline", onclick: () => { state.diagAnswers = []; render(); } });
+      b2.appendChild(icon("refresh"));
+      b2.appendChild(document.createTextNode("もう一度診断"));
+      ar.appendChild(b2);
+      root.appendChild(ar);
+    } else {
+      const q = diagQuestions[state.diagAnswers.length];
+      root.appendChild(el("span", { class: "qnum" }, "QUESTION 0" + (state.diagAnswers.length + 1)));
+      root.appendChild(el("p", { class: "qstem" }, q.q));
+      q.opts.forEach(o => {
+        const c = el("button", { class: "choice", onclick: (e) => {
+          addRipple(e, c);
+          vibrate(8);
+          state.diagAnswers.push(o);
+          if (state.diagAnswers.length === diagQuestions.length) {
+            state.justFinishedDiag = true;
+          }
+          render();
+        } });
+        const left = el("span", { class: "left" });
+        const ttl = el("span", { class: "ttl" });
+        ttl.appendChild(el("span", { class: "label" }, o));
+        left.appendChild(ttl);
+        c.appendChild(left);
+        c.appendChild(el("span", { class: "arr" }, "→"));
+        root.appendChild(c);
+      });
+      if (state.diagAnswers.length > 0) {
+        const backb = el("button", {
+          style: "margin-top: 12px; padding: 8px 12px; font-size: 11.5px; background: #fff; color: var(--ink-2); border: 1px solid var(--line); border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;",
+          onclick: () => { state.diagAnswers.pop(); render(); }
+        });
+        backb.appendChild(icon("arrow-left"));
+        backb.appendChild(document.createTextNode("前の質問へ"));
+        root.appendChild(backb);
+      }
+    }
+    return root;
+  }
+
+  function renderCasual() {
+    const slots = ["2026/05/13(水) 19:00","2026/05/15(金) 12:00","2026/05/17(日) 10:00","2026/05/20(水) 19:00"];
+    const themes = ["クラウドへのキャリア","未経験からの始め方","案件選択の考え方","年収・働き方","資格取得支援"];
+    const root = el("div");
+    root.appendChild(el("span", { class: "chip" }, "カジュアル面談"));
+    root.appendChild(el("h1", { class: "h1" }, "30分のオンライン面談。応募の強制はありません。"));
+    root.appendChild(el("span", { class: "lbl" }, "話したいテーマ"));
+    const tr = el("div", { class: "chips-row" });
+    themes.forEach(t => tr.appendChild(el("span", { class: "chip-btn" + (t === "クラウドへのキャリア" ? " active" : "") }, t)));
+    root.appendChild(tr);
+    root.appendChild(el("span", { class: "lbl" }, "希望時間帯"));
+    slots.forEach((s, i) => {
+      const c = el("button", { class: "choice" + (i === 0 ? " primary" : "") });
+      const left = el("span", { class: "left" });
+      left.appendChild(el("span", { class: "ttl" }, [el("span", { class: "label" }, s)]));
+      c.appendChild(left);
+      c.appendChild(el("span", { class: "arr" }, i === 0 ? "✓" : "→"));
+      root.appendChild(c);
+    });
+    const ar = el("div", { class: "action-row" });
+    const b1 = el("button", { class: "btn primary", onclick: () => { vibrate([10, 40, 10]); showToast("カジュアル面談を予約しました", "calendar-check"); } });
+    b1.appendChild(icon("calendar-check"));
+    b1.appendChild(document.createTextNode("この内容で予約する"));
+    ar.appendChild(b1);
+    root.appendChild(ar);
+    return root;
+  }
+
+  function renderBusinessMenu() {
+    const root = el("div");
+    root.appendChild(el("span", { class: "chip" }, "企業様向け"));
+    root.appendChild(el("h1", { class: "h1" }, "ご相談内容を選んでください。"));
+    root.appendChild(el("p", { class: "lead" }, "VantageWorks（株式会社CP）はSES事業中心の会社です。"));
+    root.appendChild(choice({ label: "協業・パートナー提携", goto: "home", icon: "users-group" }));
+    root.appendChild(choice({ label: "SESで人材を依頼", goto: "business.ses", primary: true, icon: "user-search" }));
+    root.appendChild(choice({ label: "インフラ/クラウド案件", goto: "home", icon: "cloud" }));
+    root.appendChild(choice({ label: "会社情報・対応領域", goto: "home", icon: "info-circle" }));
+    root.appendChild(choice({ label: "まずは問い合わせ", goto: "home", primary: true, icon: "mail" }));
+    return root;
+  }
+
+  function renderSes() {
+    const root = el("div");
+    root.appendChild(el("span", { class: "chip" }, "SES発注相談"));
+    root.appendChild(el("h1", { class: "h1" }, "必要な人材像を整理。"));
+    root.appendChild(el("p", { class: "lead" }, "AWS/Azure構築・運用、ネットワーク、開発(Java/Go/React)など対応可能です。"));
+    root.appendChild(el("span", { class: "lbl" }, "必要な領域"));
+    const areas = ["ネットワーク","サーバー","クラウド","セキュリティ","開発"];
+    const arow = el("div", { class: "chips-row" });
+    areas.forEach(a => {
+      const b = el("button", {
+        class: "chip-btn" + (state.sesArea === a ? " active" : ""),
+        onclick: () => { state.sesArea = a; render(); }
+      }, a);
+      arow.appendChild(b);
+    });
+    root.appendChild(arow);
+    root.appendChild(el("span", { class: "lbl" }, "必要なレベル"));
+    const levels = ["運用改善","構築","設計"];
+    const lrow = el("div", { class: "chips-row" });
+    levels.forEach(lv => {
+      const b = el("button", {
+        class: "chip-btn" + (state.sesLevel === lv ? " active" : ""),
+        onclick: () => { state.sesLevel = lv; render(); }
+      }, lv);
+      lrow.appendChild(b);
+    });
+    root.appendChild(lrow);
+    root.appendChild(el("span", { class: "lbl" }, "よく使う技術"));
+    const tools = {
+      "クラウド": "AWS / Azure",
+      "ネットワーク": "Cisco / Fortinet / Paloalto",
+      "サーバー": "Windows Server / Linux / VMware",
+      "セキュリティ": "SIEM / IDS / EDR",
+      "開発": "Java / Go / TypeScript / Python / Terraform"
+    };
+    root.appendChild(el("p", { class: "strong-text" }, tools[state.sesArea]));
+    const ar = el("div", { class: "action-row" });
+    const b1 = el("button", { class: "btn primary", onclick: () => { vibrate([10, 40, 10]); showToast("要件を送信しました。1営業日内にご連絡します", "send"); } });
+    b1.appendChild(icon("send"));
+    b1.appendChild(document.createTextNode("要件を送って打合せ希望"));
+    ar.appendChild(b1);
+    root.appendChild(ar);
+    return root;
+  }
+
+  function renderSalesMenu() {
+    const root = el("div");
+    root.appendChild(el("span", { class: "chip" }, "営業提案"));
+    root.appendChild(el("h1", { class: "h1" }, "ご提案カテゴリを選んでください。"));
+    root.appendChild(el("p", { class: "lead" }, "通常問い合わせと分けて受け付けています。"));
+    root.appendChild(choice({ label: "採用支援サービス", goto: "sales.form", icon: "user-search" }));
+    root.appendChild(choice({ label: "営業・マーケ支援", goto: "sales.form", icon: "chart-line" }));
+    root.appendChild(choice({ label: "業務効率化・DX", goto: "sales.form", icon: "bolt" }));
+    root.appendChild(choice({ label: "研修・教育", goto: "sales.form", icon: "school" }));
+    root.appendChild(choice({ label: "システム・ツール", goto: "sales.form", icon: "device-laptop" }));
+    root.appendChild(choice({ label: "その他の提案", goto: "sales.form", icon: "dots" }));
+    return root;
+  }
+
+  function renderSalesForm() {
+    const root = el("div");
+    root.appendChild(el("span", { class: "chip" }, "提案フォーム"));
+    root.appendChild(el("h1", { class: "h1" }, "提案内容を、シンプルに。"));
+    [
+      { l: "会社名", p: "例：株式会社サンプル" },
+      { l: "サービス名", p: "例：採用管理ツール ◯◯" },
+      { l: "サービス概要", p: "解決できる課題を簡潔に" }
+    ].forEach(f => {
+      const w = el("div", { class: "form-field" });
+      w.appendChild(el("div", { class: "flbl" }, f.l));
+      w.appendChild(el("input", { type: "text", placeholder: f.p }));
+      root.appendChild(w);
+    });
+    root.appendChild(el("span", { class: "lbl" }, "商談希望"));
+    const meets = ["資料先送付","30分商談","資料のみ"];
+    const mrow = el("div", { class: "chips-row" });
+    meets.forEach(m => {
+      const b = el("button", {
+        class: "chip-btn" + (state.salesMeeting === m ? " active" : ""),
+        onclick: () => { state.salesMeeting = m; render(); }
+      }, m);
+      mrow.appendChild(b);
+    });
+    root.appendChild(mrow);
+    const ar = el("div", { class: "action-row" });
+    const b1 = el("button", { class: "btn primary", onclick: () => { vibrate([10, 40, 10]); showToast("提案を送信しました。担当者が確認します", "send"); } });
+    b1.appendChild(icon("send"));
+    b1.appendChild(document.createTextNode("提案内容を送信する"));
+    ar.appendChild(b1);
+    root.appendChild(ar);
+    return root;
+  }
+
+  function renderEmployeeLogin() {
+    const root = el("div");
+    root.appendChild(el("span", { class: "chip" }, "社員ログイン"));
+    root.appendChild(el("h1", { class: "h1" }, "社員番号と社員名を入力。"));
+    root.appendChild(el("p", { class: "lead" }, "本番ではGoogle / Microsoft / LINE WORKSの認証に切替予定です。"));
+    [
+      { l: "社員番号", p: "例：CP-0123" },
+      { l: "社員名", p: "例：山田 太郎" }
+    ].forEach(f => {
+      const w = el("div", { class: "form-field" });
+      w.appendChild(el("div", { class: "flbl" }, f.l));
+      w.appendChild(el("input", { type: "text", placeholder: f.p }));
+      root.appendChild(w);
+    });
+    const ar = el("div", { class: "action-row" });
+    const b1 = el("button", { class: "btn primary", onclick: () => go("employee.portal") });
+    b1.appendChild(icon("login-2"));
+    b1.appendChild(document.createTextNode("確認する"));
+    ar.appendChild(b1);
+    root.appendChild(ar);
+    root.appendChild(el("span", { class: "lbl" }, "本番想定の認証"));
+    const arow = el("div", { class: "chips-row" });
+    ["Google","Microsoft","LINE WORKS"].forEach(p => {
+      arow.appendChild(el("span", { class: "chip-btn" }, p));
+    });
+    root.appendChild(arow);
+    return root;
+  }
+
+  function renderEmployeePortal() {
+    const root = el("div");
+    root.appendChild(el("span", { class: "chip" }, "社員ポータル"));
+    root.appendChild(el("h1", { class: "h1" }, "今日は何を確認しますか？"));
+    const tiles = [
+      { ic: "bell", t: "お知らせ", d: "社内ニュース" },
+      { ic: "school", t: "研修", d: "申込・履歴" },
+      { ic: "certificate", t: "資格", d: "対象・補助" },
+      { ic: "list-check", t: "案件希望", d: "フォーム" },
+      { ic: "message-2", t: "キャリア", d: "面談予約" },
+      { ic: "help", t: "FAQ", d: "社内ルール" }
+    ];
+    const g = el("div", { class: "portal-grid" });
+    tiles.forEach(t => {
+      const b = el("button", { class: "portal-tile", onclick: () => { vibrate(8); showToast(t.t + " を開きます", t.ic); } });
+      const ic = el("div", { class: "ic" });
+      ic.appendChild(icon(t.ic));
+      b.appendChild(ic);
+      b.appendChild(el("div", { class: "t" }, t.t));
+      b.appendChild(el("div", { class: "d" }, t.d));
+      g.appendChild(b);
+    });
+    root.appendChild(g);
+    root.appendChild(el("span", { class: "lbl" }, "今週の社内動き"));
+    [
+      { c: "お知らせ", t: "上期評価面談スタート", d: "型の評価制度に沿って実施。予約はポータルから。", ic: "bell" },
+      { c: "研修", t: "Azureハンズオン Vol.6 募集中", d: "対象：運用保守 / インフラ経験者。土曜開催。", ic: "school" },
+      { c: "案件", t: "Go言語案件 社内募集", d: "本人希望ベース。詳細は案件検索システムから。", ic: "cloud" }
+    ].forEach(tp => {
+      const tw = el("div", { class: "topic" });
+      const ic = el("div", { class: "ic" });
+      ic.appendChild(icon(tp.ic));
+      tw.appendChild(ic);
+      const bd = el("div", { style: "min-width: 0" });
+      bd.appendChild(el("div", { class: "cat" }, tp.c));
+      bd.appendChild(el("div", { class: "title" }, tp.t));
+      bd.appendChild(el("div", { class: "desc" }, tp.d));
+      tw.appendChild(bd);
+      root.appendChild(tw);
+    });
+    return root;
+  }
+
+  function renderSmartData() {
+    const statDetails = {
+      "稼働中エンジニア": "ネットワーク・サーバー・クラウド領域を中心に、運用保守から構築・設計までさまざまなフェーズで稼働中。来季は更に増員予定です。",
+      "公開中の案件": "検索システムから単価・働き方・必須スキルで絞り込めます。営業から非公開案件のご紹介も可能です。",
+      "今月のカジュアル面談": "オンライン30分。応募の強制はありません。土日や夕方の枠を増やしています。",
+      "資格取得サポート": "教材・受験費補助、合格報奨金、勉強会の3点セット。AWS / Azure / Cisco / 応用情報など対象。",
+      "ハンズオン研修参加者": "AWS・Azure・NW・社内LANまで、座学→ラボ→成果物作成の3ステップで進めます。",
+      "年間休日数": "完全週休2日（土日祝）。夏季3日、年末年始、バースデー、リフレッシュなど。"
+    };
+    const root = el("div");
+    root.appendChild(el("span", { class: "chip" }, "Smart Data"));
+    root.appendChild(el("h1", { class: "h1" }, "いま、株式会社CPでは"));
+    root.appendChild(el("p", { class: "lead" }, "社内データから自動反映。カードをタップすると数字の背景を開きます。"));
+    const g = el("div", { class: "stats" });
+    stats.forEach((s, idx) => {
+      const id = "stat-" + idx;
+      const card = expandable(id,
+        (head) => {
+          const meta = el("div", { class: "ex-meta" });
+          meta.appendChild(el("div", { style: "font-size:9.5px; letter-spacing:0.22em; color:var(--ink-3); font-weight:700;" }, s.l));
+          const v = el("div", { style: "font-size:22px; font-weight:600; letter-spacing:-0.02em; margin-top:4px; color:var(--ink);" });
+          v.appendChild(document.createTextNode(Math.round(s.v)));
+          v.appendChild(el("span", { style: "font-size:10px; vertical-align:top; color:var(--ink-2); margin-left:2px; font-weight:600;" }, s.u));
+          meta.appendChild(v);
+          meta.appendChild(el("div", { style: "font-size:10.5px; color:var(--ink-2); margin-top:4px; line-height:1.6;" }, s.c));
+          head.appendChild(meta);
+        },
+        (inner) => {
+          buildSection(inner, { sl: "DETAIL", sd: statDetails[s.l] || s.c });
+        }
+      );
+      g.appendChild(card);
+    });
+    root.appendChild(g);
+    root.appendChild(el("span", { class: "lbl" }, "今週の動き"));
+    topics.forEach((t, idx) => {
+      const id = "topic-" + idx;
+      const card = expandable(id,
+        (head) => {
+          const ic = el("div", { style: "width:26px; height:26px; border-radius:8px; background:var(--brand-100); color:var(--brand-700); display:grid; place-items:center; font-size:13px; flex-shrink:0;" });
+          ic.appendChild(icon(t.ic));
+          head.appendChild(ic);
+          const meta = el("div", { class: "ex-meta" });
+          meta.appendChild(el("div", { style: "font-size:9px; letter-spacing:0.22em; color:var(--ink-3); font-weight:700;" }, t.c));
+          meta.appendChild(el("div", { style: "font-size:12.5px; font-weight:600; margin-top:3px;" }, t.t));
+          meta.appendChild(el("div", { style: "font-size:11px; color:var(--ink-2); margin-top:3px; line-height:1.65;" }, t.d));
+          head.appendChild(meta);
+        },
+        (inner) => {
+          buildSection(inner, { sl: "MORE", sd: t.d + " 詳細は社内ポータル・採用担当からも確認できます。" });
+        }
+      );
+      root.appendChild(card);
+    });
+    return root;
+  }
+
+  function renderView() {
+    const view = currentView();
+    const body = document.getElementById("vw-body");
+    body.innerHTML = "";
+    body.classList.remove("view-slide-fwd", "view-slide-back");
+    void body.offsetWidth;
+    body.classList.add(state.direction === "back" ? "view-slide-back" : "view-slide-fwd");
+    let node;
+    switch (view) {
+      case "home": node = renderHome(); break;
+      case "jobseeker.menu": node = renderJobseekerMenu(); break;
+      case "jobseeker.company": node = renderCompany(); break;
+      case "jobseeker.jobs": node = renderJobs(); break;
+      case "jobseeker.training": node = renderTraining(); break;
+      case "jobseeker.salary": node = renderSalary(); break;
+      case "jobseeker.diagnose": node = renderDiagnose(); break;
+      case "jobseeker.casual": node = renderCasual(); break;
+      case "business.menu": node = renderBusinessMenu(); break;
+      case "business.ses": node = renderSes(); break;
+      case "sales.menu": node = renderSalesMenu(); break;
+      case "sales.form": node = renderSalesForm(); break;
+      case "employee.login": node = renderEmployeeLogin(); break;
+      case "employee.portal": node = renderEmployeePortal(); break;
+      case "smart.data": node = renderSmartData(); break;
+      case "detail": node = renderDetail(); break;
+      default: node = renderHome();
+    }
+    body.appendChild(node);
+  }
+
+  function renderDetail() {
+    const d = currentDetail();
+    if (!d) return renderHome();
+    const root = el("div", { class: "detail-root" });
+
+    const hero = el("div", { class: "detail-hero" });
+    hero.appendChild(el("div", { class: "dh-eyebrow" }, detailSectionLabel(d.dt)));
+    hero.appendChild(el("div", { class: "dh-title" }, detailLabel(d.dt, d.idx)));
+    hero.appendChild(el("div", { class: "dh-lead" }, detailIntro(d.dt, d.idx)));
+    root.appendChild(hero);
+
+    const body = el("div", { class: "detail-body" });
+
+    function appendSectionTitle(parent, eyebrow, text) {
+      const st = el("div", { class: "section-title" });
+      st.appendChild(el("span", { class: "st-eyebrow" }, eyebrow));
+      st.appendChild(el("span", { class: "st-line" }));
+      st.appendChild(el("span", { class: "st-text" }, text));
+      parent.appendChild(st);
+    }
+    function appendKPIs(parent, kpis) {
+      const row = el("div", { class: "kpi-row" });
+      kpis.forEach(k => {
+        const c = el("div", { class: "kpi" });
+        c.appendChild(el("div", { class: "k-l" }, k.l));
+        const v = el("div", { class: "k-v" });
+        v.appendChild(document.createTextNode(k.v));
+        if (k.u) v.appendChild(el("span", { class: "u" }, k.u));
+        c.appendChild(v);
+        if (k.sub) c.appendChild(el("div", { class: "k-sub" }, k.sub));
+        row.appendChild(c);
+      });
+      parent.appendChild(row);
+    }
+    function appendFlow(parent, steps) {
+      const f = el("div", { class: "flow" });
+      steps.forEach((s, i) => {
+        const w = el("div", { class: "flow-step" });
+        w.appendChild(el("div", { class: "num" }, String(i + 1).padStart(2, "0")));
+        const meta = el("div");
+        meta.appendChild(el("div", { class: "ft" }, s.ft));
+        meta.appendChild(el("div", { class: "fb" }, s.fb));
+        w.appendChild(meta);
+        f.appendChild(w);
+      });
+      parent.appendChild(f);
+    }
+    function appendCompare(parent, cmp) {
+      const w = el("div", { class: "compare" });
+      const head = el("div", { class: "head" });
+      head.appendChild(el("div", null, cmp.head[0]));
+      head.appendChild(el("div", null, cmp.head[1]));
+      w.appendChild(head);
+      cmp.rows.forEach(r => {
+        const row = el("div", { class: "row" });
+        row.appendChild(el("div", null, r[0]));
+        row.appendChild(el("div", null, r[1]));
+        w.appendChild(row);
+      });
+      parent.appendChild(w);
+    }
+    function appendSparkline(parent, label, trend) {
+      const w = el("div", { class: "sparkline" });
+      const head = el("div", { class: "sp-head" });
+      head.appendChild(el("span", { class: "sp-l" }, label));
+      head.appendChild(el("span", { class: "sp-v" }, trend.vals[trend.vals.length - 1] + ""));
+      w.appendChild(head);
+      const max = Math.max.apply(null, trend.vals);
+      const min = Math.min.apply(null, trend.vals);
+      const range = (max - min) || 1;
+      const W = 280, H = 56;
+      const step = W / (trend.vals.length - 1);
+      const points = trend.vals.map((v, i) => {
+        const x = i * step;
+        const y = H - 6 - ((v - min) / range) * (H - 14);
+        return x + "," + y;
+      }).join(" ");
+      const svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' +
+        '<polyline points="' + points + '" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<circle cx="' + ((trend.vals.length - 1) * step) + '" cy="' + (H - 6 - ((trend.vals[trend.vals.length - 1] - min) / range) * (H - 14)) + '" r="4" fill="#2563EB"/>' +
+        '</svg>';
+      const svgWrap = el("div");
+      svgWrap.innerHTML = svg;
+      w.appendChild(svgWrap.firstChild);
+      const labels = el("div", { class: "sp-labels" });
+      ["6ヶ月前", "5ヶ月前", "4ヶ月前", "3ヶ月前", "先月", "今月"].forEach(t => labels.appendChild(el("span", null, t)));
+      w.appendChild(labels);
+      if (trend.note) w.appendChild(el("div", { style: "font-size:11.5px; color:var(--ink-2); margin-top:10px; line-height:1.75;" }, trend.note));
+      parent.appendChild(w);
+    }
+
+    if (d.dt === "strength") {
+      const s = strengths[d.idx];
+      if (strengthKPIs[d.idx]) appendKPIs(body, strengthKPIs[d.idx]);
+      appendSectionTitle(body, "DETAIL", "詳しく見ていく");
+      (s.detail || []).forEach(sec => {
+        const card = el("div", { class: "detail-card" });
+        buildSection(card, sec);
+        body.appendChild(card);
+      });
+      if (strengthFlows[d.idx]) {
+        appendSectionTitle(body, "HOW IT WORKS", "実際の流れ");
+        appendFlow(body, strengthFlows[d.idx]);
+      }
+      if (strengthCompare[d.idx]) {
+        appendSectionTitle(body, "COMPARE", "他社との違い");
+        appendCompare(body, strengthCompare[d.idx]);
+      }
+    } else if (d.dt === "training") {
+      const t = trainings[d.idx];
+      const ext = trainingInfo[d.idx];
+      if (ext && ext.info) {
+        const ig = el("div", { class: "info-grid" });
+        Object.keys(ext.info).forEach(k => {
+          const c = el("div", { class: "info-card" });
+          c.appendChild(el("div", { class: "il" }, k));
+          c.appendChild(el("div", { class: "iv" }, ext.info[k]));
+          ig.appendChild(c);
+        });
+        body.appendChild(ig);
+      }
+      appendSectionTitle(body, "OVERVIEW", "研修の中身");
+      (t.detail || []).forEach(sec => {
+        const card = el("div", { class: "detail-card" });
+        buildSection(card, sec);
+        body.appendChild(card);
+      });
+      if (ext && ext.curriculum) {
+        appendSectionTitle(body, "CURRICULUM", "カリキュラム");
+        const ul = el("ol", { class: "curri" });
+        ext.curriculum.forEach((c, i) => {
+          const li = el("li");
+          li.appendChild(el("span", { class: "ix" }, "CHAPTER " + String(i + 1).padStart(2, "0")));
+          li.appendChild(el("span", { class: "ct" }, c));
+          ul.appendChild(li);
+        });
+        body.appendChild(ul);
+      }
+      if (ext && ext.skills) {
+        appendSectionTitle(body, "SKILLS", "身につく技術");
+        const tc = el("div", { class: "tag-cloud" });
+        ext.skills.forEach(s => tc.appendChild(el("span", { class: "tg" }, s)));
+        body.appendChild(tc);
+      }
+      if (ext && ext.outputs) {
+        appendSectionTitle(body, "OUTPUTS", "成果物（経歴書に書けるもの）");
+        const tc = el("div", { class: "tag-cloud" });
+        ext.outputs.forEach(s => tc.appendChild(el("span", { class: "tg" }, s)));
+        body.appendChild(tc);
+      }
+    } else if (d.dt === "case") {
+      const c = cases[d.idx];
+      const max = Math.max.apply(null, c.amounts.map(a => a.income));
+      const totalGain = c.amounts[c.amounts.length - 1].income - c.amounts[0].income;
+
+      const graphCard = el("div", { class: "detail-card" });
+      const graph = el("div", { class: "income-graph" });
+      const gh = el("div", { class: "gh" });
+      gh.appendChild(el("span", { class: "gl" }, "ANNUAL INCOME"));
+      gh.appendChild(el("span", { class: "gt" }, c.who));
+      graph.appendChild(gh);
+      c.amounts.forEach((a, ai) => {
+        const row = el("div", { class: "bar-row" });
+        row.appendChild(el("div", { class: "bar-lbl" }, a.y));
+        const track = el("div", { class: "bar-track" });
+        const cls = ai === 0 ? "before" : ai === 1 ? "join" : "future";
+        const bar = el("div", { class: "bar " + cls });
+        track.appendChild(bar);
+        row.appendChild(track);
+        const valWrap = el("div", { class: "bar-val" });
+        valWrap.appendChild(document.createTextNode(a.income + "万"));
+        if (ai > 0) {
+          const diff = a.income - c.amounts[0].income;
+          valWrap.appendChild(el("span", { class: "diff" }, "+" + diff));
+        }
+        row.appendChild(valWrap);
+        graph.appendChild(row);
+        const pct = Math.round((a.income / max) * 96) + "%";
+        setTimeout(() => { bar.style.width = pct; }, 120 + ai * 240);
+      });
+      const gain = el("div", { class: "gain" });
+      gain.appendChild(el("span", { class: "gain-l" }, "1年でのUP幅"));
+      gain.appendChild(el("span", { class: "gain-v" }, "+" + totalGain + "万"));
+      graph.appendChild(gain);
+      graphCard.appendChild(graph);
+      body.appendChild(graphCard);
+
+      const stepsCard = el("div", { class: "detail-card" });
+      stepsCard.appendChild(el("div", { class: "sl", style: "font-size:10px; letter-spacing:0.22em; color:var(--brand-600); font-weight:700;" }, "ROLE TIMELINE"));
+      const rolesGrid = el("div", { style: "margin-top:10px; display:grid; gap:6px;" });
+      c.amounts.forEach(a => {
+        const r = el("div", { style: "display:grid; grid-template-columns:80px 1fr; gap:10px; padding:9px 12px; background:var(--panel); border-radius:10px; font-size:12px; align-items:baseline;" });
+        r.appendChild(el("span", { style: "color:var(--ink-3); font-weight:700; font-size:10.5px; letter-spacing:0.12em;" }, a.y));
+        r.appendChild(el("span", { style: "color:var(--ink); font-weight:500;" }, a.role));
+        rolesGrid.appendChild(r);
+      });
+      stepsCard.appendChild(rolesGrid);
+      body.appendChild(stepsCard);
+
+      if (caseSkills[d.idx]) {
+        appendSectionTitle(body, "SKILLS BEFORE / AFTER", "1年で伸びたスキル");
+        const sc = el("div", { class: "skill-compare detail-card" });
+        caseSkills[d.idx].forEach(sk => {
+          const row = el("div", { class: "row" });
+          row.appendChild(el("div", { class: "lbl" }, sk.l));
+          const bars = el("div", { class: "bars" });
+          const beforeLine = el("div", { class: "bar-line before" });
+          beforeLine.appendChild(el("span", { class: "tag" }, "前"));
+          const beforeTrack = el("div", { class: "track" });
+          const beforeBar = el("span");
+          beforeTrack.appendChild(beforeBar);
+          beforeLine.appendChild(beforeTrack);
+          beforeLine.appendChild(el("span", { class: "v" }, sk.before + ""));
+          bars.appendChild(beforeLine);
+          const afterLine = el("div", { class: "bar-line after" });
+          afterLine.appendChild(el("span", { class: "tag" }, "後"));
+          const afterTrack = el("div", { class: "track" });
+          const afterBar = el("span");
+          afterTrack.appendChild(afterBar);
+          afterLine.appendChild(afterTrack);
+          afterLine.appendChild(el("span", { class: "v" }, sk.after + ""));
+          bars.appendChild(afterLine);
+          row.appendChild(bars);
+          sc.appendChild(row);
+          setTimeout(() => {
+            beforeBar.style.width = sk.before + "%";
+            afterBar.style.width = sk.after + "%";
+          }, 150);
+        });
+        body.appendChild(sc);
+      }
+
+      if (caseMilestones[d.idx]) {
+        appendSectionTitle(body, "MILESTONES", "1年の歩み");
+        appendFlow(body, caseMilestones[d.idx].map(m => ({ ft: m.m + " · " + m.t, fb: m.d })));
+      }
+
+      appendSectionTitle(body, "STORY", "ご本人の体験");
+      const storyCard = el("div", { class: "detail-card" });
+      storyCard.appendChild(el("p", { style: "margin:0; font-size:13.5px; color:var(--ink); line-height:1.95;" }, c.story));
+      body.appendChild(storyCard);
+
+      const pull = el("blockquote", { class: "quote-pull" }, "「" + c.quote + "」");
+      pull.appendChild(el("span", { class: "auth" }, "— " + c.who));
+      body.appendChild(pull);
+    } else if (d.dt === "benefit") {
+      const b = benefits[d.idx];
+      const ext = benefitDetailExtras[b.t];
+      if (b.detail) {
+        const card = el("div", { class: "detail-card" });
+        buildSection(card, b.detail);
+        body.appendChild(card);
+      }
+      if (ext && ext.flow) {
+        appendSectionTitle(body, "HOW TO USE", "利用の流れ");
+        appendFlow(body, ext.flow);
+      }
+      if (ext && ext.related) {
+        appendSectionTitle(body, "RELATED", "関連する制度");
+        const r = el("div", { class: "related" });
+        r.appendChild(el("div", { class: "rh" }, "あわせて使える制度"));
+        const links = el("div", { class: "links" });
+        ext.related.forEach(rl => {
+          const a = el("a", { onclick: (e) => { e.preventDefault(); vibrate(8); } });
+          a.appendChild(el("span", null, rl));
+          a.appendChild(el("span", { class: "arr" }, "→"));
+          links.appendChild(a);
+        });
+        r.appendChild(links);
+        body.appendChild(r);
+      }
+    } else if (d.dt === "stat") {
+      const s = stats[d.idx];
+      const big = el("div", { class: "stat-big" });
+      const num = el("div", { class: "stat-num" });
+      num.appendChild(document.createTextNode(s.v));
+      num.appendChild(el("span", { class: "u" }, s.u));
+      big.appendChild(num);
+      big.appendChild(el("div", { class: "stat-cap" }, s.c));
+      body.appendChild(big);
+
+      if (statTrends[d.idx]) {
+        appendSectionTitle(body, "TREND", "直近6ヶ月の推移");
+        appendSparkline(body, s.l + " (推移)", statTrends[d.idx]);
+      }
+
+      appendSectionTitle(body, "ABOUT", "この数字の意味");
+      const card = el("div", { class: "detail-card" });
+      buildSection(card, {
+        sd: "この数字は社内データから自動反映されています。本番では Googleスプレッドシート、Notion、Supabase などに接続し、毎日更新できます。",
+        bullets: [
+          "更新頻度：毎日朝6時に自動同期",
+          "ソース：社内基幹システム + 採用管理ツール",
+          "障害時：前日値を表示し、復旧後に追従"
+        ]
+      });
+      body.appendChild(card);
+    } else if (d.dt === "topic") {
+      const t = topics[d.idx];
+      const card = el("div", { class: "detail-card" });
+      card.appendChild(el("div", { style: "font-size:10px; letter-spacing:0.22em; color:var(--brand-600); font-weight:700;" }, t.c));
+      card.appendChild(el("p", { style: "margin:10px 0 0; font-size:14px; font-weight:600; color:var(--ink); line-height:1.6;" }, t.t));
+      card.appendChild(el("p", { style: "margin:10px 0 0; font-size:13px; color:var(--ink-2); line-height:1.95;" }, t.d));
+      body.appendChild(card);
+
+      const rel = topicRelated[d.idx];
+      if (rel && rel.length) {
+        appendSectionTitle(body, "RELATED", "関連トピック");
+        const r = el("div", { class: "related" });
+        r.appendChild(el("div", { class: "rh" }, "あわせて読みたい"));
+        const links = el("div", { class: "links" });
+        rel.forEach(ri => {
+          if (!topics[ri]) return;
+          const a = el("a", { onclick: (e) => { e.preventDefault(); goDetail("topic", ri); } });
+          a.appendChild(el("span", null, topics[ri].t));
+          a.appendChild(el("span", { class: "arr" }, "→"));
+          links.appendChild(a);
+        });
+        r.appendChild(links);
+        body.appendChild(r);
+      }
+    }
+    root.appendChild(body);
+
+    const ar = el("div", { class: "action-row", style: "margin-top:8px;" });
+    const b1 = el("button", { class: "btn outline", onclick: () => back() });
+    b1.appendChild(icon("arrow-left"));
+    b1.appendChild(document.createTextNode("一覧へ戻る"));
+    ar.appendChild(b1);
+    const ctaMap = {
+      strength: { label: "カジュアル面談へ", goto: "jobseeker.casual", icon: "calendar-check" },
+      training: { label: "カジュアル面談へ", goto: "jobseeker.casual", icon: "calendar-check" },
+      case: { label: "面談で詳細を聞く", goto: "jobseeker.casual", icon: "calendar-check" },
+      benefit: { label: "面談で確認する", goto: "jobseeker.casual", icon: "calendar-check" },
+      stat: { label: "ホームに戻る", goto: "home", icon: "home" },
+      topic: { label: "ホームに戻る", goto: "home", icon: "home" }
+    };
+    const cta = ctaMap[d.dt];
+    const b2 = el("button", { class: "btn primary", onclick: () => go(cta.goto) });
+    b2.appendChild(icon(cta.icon));
+    b2.appendChild(document.createTextNode(cta.label));
+    ar.appendChild(b2);
+    root.appendChild(ar);
+
+    return root;
+  }
+
+  function curMeta() {
+    if (currentView() === "detail") {
+      const d = currentDetail();
+      return {
+        crumb: [detailSectionLabel(d.dt), detailLabel(d.dt, d.idx)],
+        intro: detailIntro(d.dt, d.idx),
+        fab: detailLabel(d.dt, d.idx) + " の詳細を見ています"
+      };
+    }
+    return meta[currentView()] || { crumb: ["ホーム"], intro: "", fab: "" };
+  }
+
+  function renderCrumb() {
+    const m = curMeta();
+    const crumb = document.getElementById("vw-crumb");
+    crumb.innerHTML = "";
+    crumb.appendChild(el("span", { class: "root" }, "CP"));
+    m.crumb.forEach((c, i) => {
+      crumb.appendChild(el("span", { class: "sep" }, "›"));
+      const isLast = i === m.crumb.length - 1;
+      crumb.appendChild(el("span", { class: isLast ? "now" : "" }, c));
+    });
+  }
+
+  function renderTop() {
+    const back = document.getElementById("vw-back");
+    back.disabled = state.stack.length <= 1;
+    const top = document.querySelector(".topbar");
+    if (top) top.classList.toggle("is-home", currentView() === "home");
+
+    document.querySelectorAll(".site-tag").forEach(t => {
+      const aud = t.getAttribute("data-aud");
+      const v = currentView();
+      const map = {
+        jobseeker: ["jobseeker.menu","jobseeker.company","jobseeker.jobs","jobseeker.jobs.cloud","jobseeker.training","jobseeker.salary","jobseeker.diagnose","jobseeker.casual"],
+        business: ["business.menu","business.partner","business.ses","business.ses.cloud","business.project","business.company","business.contact"],
+        sales: ["sales.menu","sales.recruit","sales.marketing","sales.dx","sales.training","sales.tools","sales.other","sales.form"],
+        employee: ["employee.login","employee.portal"]
+      };
+      t.classList.toggle("active", (map[aud] || []).indexOf(v) >= 0);
+      t.onclick = (e) => {
+        addRipple(e, t);
+        vibrate(8);
+        const target = aud === "jobseeker" ? "jobseeker.menu" :
+          aud === "business" ? "business.menu" :
+          aud === "sales" ? "sales.menu" : "employee.login";
+        setTimeout(() => go(target), 60);
+      };
+    });
+  }
+
+  function renderFab() {
+    const txt = document.getElementById("vw-fab-text");
+    txt.innerHTML = '<span class="typing"><span></span><span></span><span></span></span>';
+    const target = curMeta().fab;
+    setTimeout(() => {
+      if (curMeta().fab === target) txt.textContent = target;
+    }, 500);
+    document.getElementById("vw-fab").onclick = () => { vibrate(10); state.sheetOpen = true; render(); };
+    document.getElementById("vw-nav").onclick = () => { vibrate(10); state.sheetOpen = true; render(); };
+  }
+
+  function renderAside() {
+    const aside = document.getElementById("vw-aside");
+    if (!aside) return;
+    aside.innerHTML = "";
+
+    const ah = el("div", { class: "ah" });
+    const av = el("div", { class: "av" });
+    av.innerHTML = '<svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><circle cx="28" cy="28" r="27" fill="#EFF6FF" stroke="rgba(15,23,42,0.10)"/><path d="M9 50c2-9 9-14 19-14s17 5 19 14v6H9z" fill="#2563EB"/><ellipse cx="28" cy="26" rx="10.5" ry="11.5" fill="#FCE6D2"/><path d="M17 22c1-7.5 6-12.5 11-12.5s10.5 5 11 12.5c0 .5-.2.8-.4 1.1-1.2-2.8-3-5-5.3-6.3-1.3-.8-3-1.2-4-1.2-1.2 0-2.8.4-4.1 1.2-2.3 1.3-4.3 3.5-5.5 6.3-.3-.3-.4-.6-.4-1.1z" fill="#1E3A8A"/><rect x="18" y="27.4" width="2" height="2.8" rx="1" fill="#1E3A8A"/><rect x="36" y="27.4" width="2" height="2.8" rx="1" fill="#1E3A8A"/></svg>';
+    ah.appendChild(av);
+    const ahm = el("div");
+    ahm.appendChild(el("div", { class: "role" }, "AI CONCIERGE"));
+    ahm.appendChild(el("div", { class: "nm" }, "アヤ"));
+    ah.appendChild(ahm);
+    aside.appendChild(ah);
+
+    const bubble = el("div", { class: "bubble" });
+    const typing = el("div", { class: "typing" });
+    typing.appendChild(el("span"));
+    typing.appendChild(el("span"));
+    typing.appendChild(el("span"));
+    bubble.appendChild(typing);
+    aside.appendChild(bubble);
+    const targetIntro = curMeta().intro;
+    setTimeout(() => {
+      if (curMeta().intro === targetIntro) bubble.textContent = targetIntro;
+    }, 550);
+
+    aside.appendChild(el("div", { class: "sg-l" }, "SUGGESTIONS"));
+    const sg = el("div", { class: "sg" });
+    let asideSugs = suggestions[currentView()] || [];
+    if (currentView() === "detail") {
+      const d = currentDetail();
+      asideSugs = [
+        { label: "一覧へ戻る", goto: parentViewFor(d.dt), primary: true },
+        { label: "ホームに戻る", goto: "home" }
+      ];
+    }
+    asideSugs.forEach(s => {
+      const b = el("button", {
+        class: s.primary ? "primary" : "",
+        onclick: (e) => { addRipple(e, b); vibrate(8); setTimeout(() => go(s.goto), 60); }
+      });
+      b.appendChild(el("span", null, s.label));
+      b.appendChild(el("span", null, "›"));
+      sg.appendChild(b);
+    });
+    aside.appendChild(sg);
+    aside.appendChild(el("div", { class: "foot" }, "VANTAGEWORKS · DEMO MODE"));
+  }
+
+  function renderSheet() {
+    const wrap = document.getElementById("vw-sheet");
+    wrap.innerHTML = "";
+    if (!state.sheetOpen) return;
+    const backdrop = el("div", { class: "sheet-backdrop", onclick: (e) => { if (e.target === backdrop) { state.sheetOpen = false; render(); } } });
+    const sheet = el("div", { class: "sheet" });
+    sheet.appendChild(el("div", { class: "handle" }));
+    const head = el("div", { class: "sh-head" });
+    head.appendChild(el("div", { class: "ey" }, "AI CONCIERGE"));
+    const close = el("button", { class: "close", onclick: () => { state.sheetOpen = false; render(); } });
+    close.appendChild(icon("x"));
+    head.appendChild(close);
+    sheet.appendChild(head);
+    const greet = el("div", { class: "sh-greet" });
+    const av = el("div", { class: "av" });
+    av.innerHTML = '<svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><circle cx="28" cy="28" r="27" fill="#EFF6FF" stroke="rgba(15,23,42,0.10)"/><path d="M9 50c2-9 9-14 19-14s17 5 19 14v6H9z" fill="#2563EB"/><ellipse cx="28" cy="26" rx="10.5" ry="11.5" fill="#FCE6D2"/><path d="M17 22c1-7.5 6-12.5 11-12.5s10.5 5 11 12.5c0 .5-.2.8-.4 1.1-1.2-2.8-3-5-5.3-6.3-1.3-.8-3-1.2-4-1.2-1.2 0-2.8.4-4.1 1.2-2.3 1.3-4.3 3.5-5.5 6.3-.3-.3-.4-.6-.4-1.1z" fill="#1E3A8A"/><rect x="18" y="27.4" width="2" height="2.8" rx="1" fill="#1E3A8A"/><rect x="36" y="27.4" width="2" height="2.8" rx="1" fill="#1E3A8A"/></svg>';
+    greet.appendChild(av);
+    const gmeta = el("div");
+    gmeta.appendChild(el("div", { class: "role" }, "AI CONCIERGE"));
+    gmeta.appendChild(el("div", { class: "name" }, "アヤ"));
+    greet.appendChild(gmeta);
+    sheet.appendChild(greet);
+    const bubble = el("div", { class: "sh-bubble" });
+    const typing = el("div", { class: "typing" });
+    typing.appendChild(el("span"));
+    typing.appendChild(el("span"));
+    typing.appendChild(el("span"));
+    bubble.appendChild(typing);
+    sheet.appendChild(bubble);
+    setTimeout(() => {
+      bubble.textContent = curMeta().intro;
+    }, 650);
+    sheet.appendChild(el("div", { class: "sh-sgg-l" }, "SUGGESTIONS"));
+    const sg = el("div", { class: "sh-suggest" });
+    let sheetSugs = suggestions[currentView()] || [];
+    if (currentView() === "detail") {
+      const d = currentDetail();
+      sheetSugs = [
+        { label: "一覧へ戻る", goto: parentViewFor(d.dt), primary: true },
+        { label: "ホームに戻る", goto: "home" }
+      ];
+    }
+    sheetSugs.forEach(s => {
+      const b = el("button", {
+        class: s.primary ? "primary" : "",
+        onclick: () => { state.sheetOpen = false; go(s.goto); }
+      });
+      b.appendChild(el("span", null, s.label));
+      b.appendChild(el("span", null, "›"));
+      sg.appendChild(b);
+    });
+    sheet.appendChild(sg);
+    backdrop.appendChild(sheet);
+    wrap.appendChild(backdrop);
+  }
+
+  function updateJumpButtons() {
+    document.querySelectorAll(".vw-jump").forEach(b => {
+      b.classList.toggle("active", b.dataset.view === currentView());
+    });
+  }
+
+  const autoExpandViews = {
+    "jobseeker.company": (idx, total) => "strength-" + idx,
+    "jobseeker.training": (idx, total) => "training-" + idx,
+    "jobseeker.salary": (idx, total) => idx < 2 ? "case-" + idx : "benefit-" + (idx - 2),
+    "smart.data": (idx, total) => idx < 6 ? "stat-" + idx : "topic-" + (idx - 6)
+  };
+  const autoExpandCounts = {
+    "jobseeker.company": 3,
+    "jobseeker.training": 5,
+    "jobseeker.salary": 10,
+    "smart.data": 10
+  };
+
+  function applyAutoExpand() {}
+
+  function render() {
+    applyAutoExpand();
+    renderCrumb();
+    renderTop();
+    renderView();
+    renderFab();
+    renderAside();
+    renderSheet();
+    updateJumpButtons();
+    const body = document.getElementById("vw-body");
+    applyFadeUpObserver(body);
+    if (state.justFinishedDiag) {
+      state.justFinishedDiag = false;
+      const result = body.querySelector(".result-box");
+      if (result) {
+        result.style.position = "relative";
+        spawnSparkles(result, 7);
+        vibrate([10, 60, 10]);
+      }
+    }
+    state.direction = "forward";
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
